@@ -11,7 +11,13 @@ bibliography: references.bib
 > **Abstract.** 
 > **Keywords.** 
 
-# Introduction
+# Objective and motivation
+
+The objective of this research is to use the Bayesian Vector Autoregressions (VARs) method to forecast the exchange rate on the US dollar exchange rate against the Australian dollar.
+
+The ability to accurately forecasting the foreign exchange rate is crucial for Australia’s global trade and investment. Given the prominence of the US dollar as the world primary reserve currency, the monetary policies of the US Federal Reserve have a world-wide effect on the world economy, its significant influence on Australia currency market should be important for domestic investors and policy maker as it can directly impact the AUD/USD exchange rate. Besides, America as one of the major trading partners for Australia, can impact bilateral trade flows and eventually affect the value of the AUD. Apart from the external from foreign countries, the domestic economic indicators can also be one of the determinants of the AUD/USD exchange rate.
+
+The research is aimed to address the question that for example, how the AUD/USD exchange rate will be in 3 month or even longer 1 year?
 
 
 ## A Simple Example
