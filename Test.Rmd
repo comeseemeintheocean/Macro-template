@@ -333,87 +333,8 @@ print(dff_dff_adf_table)
 ```
 
 
-## Model specification
-
-The use of fiscal policy to stimulate or regulate the economy follows the Keynesian approach generally practiced around the world (but especially in developing countries) to navigate economies through downturns or potential episodes of overheating, particularly in the short-run. The proposed model aims to investigate the effectiveness of these fiscal measures in managing growth and unemployment.
-
-Estimation proceeds through the following reduced form model:
-
-$$
-\begin{align}
-Y &= XA + U\\
-U| X &\sim _{iid} MN_{T\times N}( 0, \Sigma, \Omega)\\
-\Sigma &= B_0^{-1}B_0^{-1'}
-\end{align}
-$$ where matrix $Y$ contains vectors of endogenous variables $y_t$:
-
-$$y_t=\begin{pmatrix} unemp_t &= \text{unemployment rate}
-\\ realgdp_t &= \text{real GDP}
-\\ totaltax_t  &= \text{tax revenue}
-\\ nontax_t  &= \text{non-tax revenue}
-\\ pubinv_t  &= \text{government gross fixed capital formation}
-\\ pubtrans_t  &= \text{social assitance and benefits payments}
-\\ pubcons_t  &= \text{government final consumption}
-\\ cashrate_t  &= \text{cash rate target}
-\\ M3_t  &= \text{M3 money supply}
-\end{pmatrix}$$
-
-and $B_0^{-1}=B$ is the matrix of contemporaneous effects between variables.
-
-## Estimation and identification
-
-### Basic model
-
-For the basic model, the column-wise covariance matrix is set as $\Omega=I_N$. The likelihood function is expressed as:
-
-$$P(Y,X|A,\Sigma) \propto det(\Sigma)^{-\frac{T}{2}} exp \left\{-\frac{1}{2} tr \left[ \Sigma^{-1}(Y-XA)'(Y-XA) \right] \right\}\\$$ $$=det(\Sigma)^{-\frac{T}{2}} exp \left\{-\frac{1}{2} tr \left[ \Sigma^{-1}(A-\hat{A})'X'X(A-\hat{A}) \right] \right\} exp \left\{-\frac{1}{2} tr \left[\Sigma^{-1}(Y-X \hat{A})'(Y-X \hat{A}) \right] \right\}$$
-
-where the maximum likelihood estimators are expressed as:
-
-$$\hat{A} = (X'X)^{-1}X'Y $$ $$\hat{\Sigma} = \frac{1}{T} (Y-X \hat{A})'(Y-X \hat{A})$$
-
-The prior for $A$ and $\Sigma$ is assumed to be a matrix-normal inverse Wishart distribution that follows the Minnesota specification of Doan, Litterman & Sims (1984):
-
-$$p(A,\Sigma) =MNIW(\underline{A},\underline{S},\underline{V},\underline{\nu})$$
-
-$$A|\Sigma\sim MN_{K\times N}(\underline{A},\Sigma,\underline{V})$$ $$\Sigma\sim IW_N(\underline{S},\underline{\nu})$$
-
-where:
-
-$$\underline{A} = [0_{N \times 1} \quad I_N \quad 0_{N \times (p-1)N}]'$$ $$\underline{V} = diag([\kappa_2 \quad \kappa_1 (p^{-2} \otimes I_N)])$$
-
-This leads to the following posterior distribution, from which the basic reduced form model will be estimated:
-
-$$P(A|Y,X,\Sigma)=MN_{K\times N}(\bar{A},\Sigma,\bar{V})$$ $$P(\Sigma|Y,X)=IW_N(\bar{S},\bar{\nu})\\$$
-
-$$\bar{V}=(X'X+\underline{V}^{-1})^{-1}$$ $$\bar{A}=\bar{V}(X'Y+\underline{V}^{-1}\underline{A})$$ $$\bar{\nu}=T+\underline{\nu}$$ $$\bar{S}=\underline{S}+Y'Y+\underline{A}'\underline{V}^{-1}\underline{A}-
-\bar{A}'\bar{V}^{-1}\bar{A}$$
 
 
-## Forecasting with Bayesian VARs
- The Modelling Framework 
-
-## The Baseline Model
-
-The model used for the forecasting experiment is a VAR(p) model:
-
-```{=tex}
-\begin{aligned}
-& y_t  =\mu_0+A_1 y_{t-1}+\cdots+A_p y_{t-p}+\epsilon_t \\ & \epsilon_t \mid  Y_{t-1}  \sim i i d \mathcal{N}_N\left(\mathbf{0}_N, \Sigma\right)
-\end{aligned}
-```
-
-Where $N=11$ and $y_t$ is the vector of 11 variables:
-
-The model can also be written in matrix notation:
-
-```{=tex}
-\begin{aligned}
-Y & =X A+E \\E \mid X & \sim \mathcal{M N} _{T \times N}\left(\mathbf{0}_{T \times N}, \Sigma, I_T\right)
-\end{aligned}
-```
-
-Where $Y$ is a $T\times11$ matrix, $X$ is a $T\times(1+(11\times p))$, $A$ is a $(1+(11\times p))\times 11$ matrix that contains the relationships between the variables and $E$ is a $T\times11$. $p$ is 1 and $T$ is 135.
 
 ```{=tex}
 \begin{align}

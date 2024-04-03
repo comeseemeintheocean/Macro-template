@@ -131,7 +131,7 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 <blockquote class="blockquote">
-<p><strong>Abstract.</strong> <strong>Keywords.</strong></p>
+<p><strong>Abstract.</strong> This research report explores how Bayesian VARs model predict AUD/USD exchange rate. <strong>Keywords.</strong> Bayesian Vars, Exchange rate</p>
 </blockquote>
 <section id="objective-and-motivation" class="level1">
 <h1>Objective and motivation</h1>
@@ -141,13 +141,13 @@ ul.task-list li input[type="checkbox"] {
 <section id="data-and-variables" class="level2">
 <h2 class="anchored" data-anchor-id="data-and-variables">Data and variables</h2>
 <p>To better forecast the change in the exchange rate, the 12 variables are selected as follows which contain both domestic and US economic indicators that affect the exchange rate in different ways.</p>
-<p>Interest rates have a significant effect on the exchange rate, a higher interest rate in Australia may increase the demand for AUD, which will lead to an appreciation of AUD and a rise in the AUD/USD exchange rate. A higher CPI indicates a lower purchasing power relative to foreign currency which may lead to a depreciation of the domestic currency. The unemployment rate can in some way represent business activity and a country with a high unemployment rate will lower the attractiveness for foreign investors and weaken the domestic currency competitiveness in the currency market. The balance of trade, which is the difference between exports and imports, also can influence the demand for its currency, a trade surplus in AUD may increase the demand for AUD dollar.</p>
+<p>Real GDP and interest rates have a significant effect on the exchange rate, a higher realGDP/interest rate in Australia may increase the demand for AUD, which will lead to an appreciation of AUD and a rise in the AUD/USD exchange rate. A higher CPI indicates a lower purchasing power relative to foreign currency which may lead to a depreciation of the domestic currency. The unemployment rate can in some way represent business activity and a country with a high unemployment rate will lower the attractiveness for foreign investors and weaken the domestic currency competitiveness in the currency market. The balance of trade, which is the difference between exports and imports, also can influence the demand for its currency, a trade surplus in AUD may increase the demand for AUD dollar.</p>
 <ul>
 <li><p><span class="math inline">\(erate_{t}\)</span>: AUD/USD exchange rate</p></li>
 <li><p>AUS economic indicators</p>
 <ul>
 <li><span class="math inline">\(crateau_{t}\)</span>: The Cash Rate Target, Australia</li>
-<li><span class="math inline">\(rgdpau_{t}\)</span>: The Gross Domestic Product, Australia</li>
+<li><span class="math inline">\(rgdpau_{t}\)</span>: The Real Gross Domestic Product, Australia</li>
 <li><span class="math inline">\(cpiau_{t}\)</span>: The Consumer Price Index, Australia</li>
 <li><span class="math inline">\(unemrau_{t}\)</span>: The Unemployment rate, Australia</li>
 <li><span class="math inline">\(imporau_{t}\)</span>: The Imports of Goods and Services, Australia</li>
@@ -156,7 +156,7 @@ ul.task-list li input[type="checkbox"] {
 <li><p>US economic indicators</p>
 <ul>
 <li><span class="math inline">\(crateus_{t}\)</span>: The Federal Funds Effective Rate, United States</li>
-<li><span class="math inline">\(rgdpus_{t}\)</span>: The Gross Domestic Product, United States</li>
+<li><span class="math inline">\(rgdpus_{t}\)</span>: The Real Gross Domestic Product, United States</li>
 <li><span class="math inline">\(cpius_{t}\)</span>: The Consumer Price Index, United States</li>
 <li><span class="math inline">\(unemrus_{t}\)</span>: The Unemployment rate, United States</li>
 <li><span class="math inline">\(imporus_{t}\)</span>: The Imports of Goods and Services, United States</li>
@@ -203,7 +203,7 @@ unemployemtrate_au   0.354
 unemployemtrate_us   0.358</code></pre>
 </div>
 </div>
-<p>It is clear that the all variables in the first differences are stationary as the null hypothesis of non-stationary can be rejected.</p>
+<p>Below is the ADF test result for all non-stationary data taking the first difference. All variables in the first differences are stationary as the null hypothesis of non-stationary can be rejected.</p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>                   P-value
@@ -232,7 +232,7 @@ unemployemtrate_us   0.010</code></pre>
 <h4 class="anchored" data-anchor-id="the-basic-varp-model">The basic VAR(p) model</h4>
 <span class="math display">\[\begin{aligned}
 y_{t}=\mu_{0}+A_{1}y_{t-1}+\cdots+A_{p}y_{t-p}+\epsilon_{t} \\
-\epsilon_{t}|Y_{t-1}\sim iid(0_{10},\Sigma)
+\epsilon_{t}|Y_{t-1}\sim iid(0_{12},\Sigma)
 \end{aligned}\]</span>
 <p>Where N = 12 and <span class="math inline">\(y_{t}\)</span> is a vector of 12 variables.</p>
 <span class="math display">\[\begin{aligned}
