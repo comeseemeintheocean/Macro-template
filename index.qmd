@@ -276,7 +276,6 @@ rownames(adf_table)<- c("exchange rate",
 colnames(adf_table)<- c("P-value")
 print(adf_table)
 
-#clear that all >0.05 and reject the null that is stationary
 ```
 Below is the ADF test result for all non-stationary data taking the first difference. All variables in the first differences are stationary as the null hypothesis of non-stationary can be rejected.
 ```{r}
