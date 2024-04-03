@@ -141,7 +141,7 @@ ul.task-list li input[type="checkbox"] {
 <section id="data-and-variables" class="level2">
 <h2 class="anchored" data-anchor-id="data-and-variables">Data and variables</h2>
 <p>To better forecast the change in the exchange rate, the 12 variables are selected as follows which contain both domestic and US economic indicators that affect the exchange rate in different ways.</p>
-<p>Real GDP and interest rates have a significant effect on the exchange rate, a higher realGDP/interest rate in Australia may increase the demand for AUD, which will lead to an appreciation of AUD and a rise in the AUD/USD exchange rate. A higher CPI indicates a lower purchasing power relative to foreign currency which may lead to a depreciation of the domestic currency. The unemployment rate can in some way represent business activity and a country with a high unemployment rate will lower the attractiveness for foreign investors and weaken the domestic currency competitiveness in the currency market. The balance of trade, which is the difference between exports and imports, also can influence the demand for its currency, a trade surplus in AUD may increase the demand for AUD dollar.</p>
+<p>Real GDP and interest rates have a significant effect on the exchange rate, a higher realGDP and interest rate in Australia may increase the demand for AUD, which will lead to an appreciation of AUD and a rise in the AUD/USD exchange rate. A higher CPI indicates a lower purchasing power relative to foreign currency which may lead to a depreciation of the domestic currency. The unemployment rate can in some way represent business activity and a country with a high unemployment rate will lower the attractiveness for foreign investors and weaken the domestic currency competitiveness in the currency market. The balance of trade, which is the difference between exports and imports, also can influence the demand for its currency, a trade surplus in AUD may increase the demand for AUD dollar.</p>
 <ul>
 <li><p><span class="math inline">\(erate_{t}\)</span>: AUD/USD exchange rate</p></li>
 <li><p>AUS economic indicators</p>
@@ -261,7 +261,7 @@ Y =XA+E\\
 E|X\sim \mathcal{MN}_{T\times N}(0, \Sigma, I_T)\\
 Y|X,A,\Sigma\sim \mathcal{MN}_{T\times N} (XA, \Sigma, I_T)
 \end{align}\]</span>
-<p>Where <span class="math inline">\(Y\)</span> is a <span class="math inline">\(T\times 12\)</span> Matrix,<span class="math inline">\(X\)</span> is a <span class="math inline">\(T\times(1+p\times12)\)</span>, <span class="math inline">\(A\)</span> is a <span class="math inline">\((1+p\times12)\times12\)</span> matrix that contains <span class="math inline">\(\mu_{0}\)</span> and vectors of the autoregressive slope parameters and <span class="math inline">\(E\)</span> is a <span class="math inline">\(T\times12\)</span> matrix contains vetors of error terms.</p>
+<p>Where <span class="math inline">\(Y\)</span> is a <span class="math inline">\(T\times 12\)</span> Matrix, <span class="math inline">\(X\)</span> is a <span class="math inline">\(T\times(1+p\times12)\)</span>, <span class="math inline">\(A\)</span> is a <span class="math inline">\((1+p\times12)\times12\)</span> matrix that contains <span class="math inline">\(\mu_{0}\)</span> and vectors of the autoregressive slope parameters and <span class="math inline">\(E\)</span> is a <span class="math inline">\(T\times12\)</span> matrix contains vetors of error terms.</p>
 <p>For further research, we may use the predictive density function like 1-period forecast and forecast with Bayesian VARS.</p>
 
 
