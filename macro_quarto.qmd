@@ -1,0 +1,81 @@
+---
+title: "macro_quarto"
+author: "Qingqing Pang"
+format: pdf
+editor: visual
+---
+
+```{r}
+library(fredr)
+library(readrba)
+library(readabs)
+library(quantmod)
+fredr_set_key("75b470c4883ecfd5a7b4185f30437bd0")
+```
+
+```{r, warning=FALSE, message=FALSE}
+#| echo: false
+#| message: false
+#| warning: false
+#| results: hide
+
+#Y variable
+# AUD/USD exchange rate quarterly
+ex_rate <- read_rba(series_id = "FXRUSD")
+erate <- to.quarterly(xts(ex_rate$value, ex_rate$date), OHLC = FALSE)
+# Australia data
+
+# Australia real gdp seasonal adjusted quarterly
+rgdp_au <- read_rba(series_id = "GGDPCVGDP")
+
+#cash rate/interest rate of AUS quartly
+cashrate<- read_cashrate(type = c("target"))
+crate_au<- to.quarterly(xts(cashrate$value, cashrate$date), OHLC = FALSE)
+
+#CPI quartly
+cpi_au <- read_rba(series_id = "GCPIAG")
+
+#unemployment rate quartly
+unemprate <-read_rba(series_id = "GLFSURSA")
+unemr_au<- to.quarterly(xts(unemprate$value, unemprate$date), OHLC = FALSE)
+
+# International Trade in Goods and Services seasonal adjusted_quartly
+exportaus = read_abs(series_id = "A2718603V")   
+expor_au<- to.quarterly(xts(exportaus $value, exportaus $date), OHLC = FALSE)
+
+importaus = read_abs(series_id = "A2718577A")     
+impor_au<- to.quarterly(xts(importaus$value, importaus$date), OHLC = FALSE)
+
+# America data
+#real gdp us quartly
+usdgdplink =  "https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1318&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=GDPC1&scale=left&cosd=1947-01-01&coed=2023-10-01&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Quarterly&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2024-03-30&revision_date=2024-03-30&nd=1947-01-01"
+rgdp_us <- read.csv(usdgdplink)
+
+#Federal Funds Effective Rate/interest rate
+usdratelink = "https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1318&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=DFF&scale=left&cosd=1954-07-01&coed=2024-03-28&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Daily%2C%207-Day&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2024-03-30&revision_date=2024-03-30&nd=1954-07-01"
+crate_us <- read.csv(usdratelink)
+
+# cpi quartly
+cpiusd  <- fredr(series_id = "USACPIALLMINMEI")
+cpi_us<- to.quarterly(xts(cpiusd$value, cpiusd$date), OHLC = FALSE)
+
+# unemployment quartly
+unemprate_usd = fredr(series_id = "UNRATE")
+unemr_us <- to.quarterly(xts(unemprate_usd$value, unemprate_usd$date), OHLC = FALSE)
+
+#export_usd——quartly
+usdexportink = "https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1318&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=EXPGS&scale=left&cosd=1947-01-01&coed=2023-10-01&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Quarterly&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2024-03-30&revision_date=2024-03-30&nd=1947-01-01"
+expor_us <- read.csv(usdexportink)
+
+#import_usd_quartly
+usdimportlink = "https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1318&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=IMPGS&scale=left&cosd=1947-01-01&coed=2023-10-01&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Quarterly&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2024-03-30&revision_date=2024-03-30&nd=1947-01-01"
+impor_us <- read.csv(usdimportlink)
+```
+
+
+
+```{r}
+
+```
+
+

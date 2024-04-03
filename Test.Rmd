@@ -1,49 +1,9 @@
 ---
-title: "Exchange rate forecasting using Bayesian VARs model"
-author: "Qingqing Pang"
-
-execute:
-  echo: false
-  
-bibliography: references.bib
+title: "test"
+output: html_document
+date: "2024-04-02"
 ---
 
-> **Abstract.** 
-> **Keywords.** 
-
-# Objective and motivation
-
-The objective of this research is to use the Bayesian Vector Autoregressions (VARs) method to forecast the exchange rate of the US dollar exchange rate against the Australian dollar.
-
-The ability to accurately forecast the foreign exchange rate is crucial for Australia’s global trade and investment. Given the prominence of the US dollar as the world's primary reserve currency, the monetary policies of the US Federal Reserve have a worldwide effect on the world economy, its significant influence on the Australia currency market should be important for domestic investors and policy maker as it can directly impact the AUD/USD exchange rate. Besides, America as one of the major trading partners for Australia, can impact bilateral trade flows and eventually affect the value of the AUD. Apart from the external from foreign countries, the domestic economic indicators can also be one of the determinants of the AUD/USD exchange rate.
-
-The research is aimed to address the question for example, how the AUD/USD exchange rate will be in 3 months or even longer 1 year?
-
-## Data and variables
-
-To better forecast the change in the exchange rate, the 12 variables are selected as follows which contain both domestic and US economic indicators that affect the exchange rate in different ways.
-
-Interest rates have a significant effect on the exchange rate, a higher interest rate in Australia may increase the demand for AUD, which will lead to an appreciation of AUD and a rise in the AUD/USD exchange rate. A higher CPI indicates a lower purchasing power relative to foreign currency which may lead to a depreciation of the domestic currency. The unemployment rate can in some way represent business activity and a country with a high unemployment rate will lower the attractiveness for foreign investors and weaken the domestic currency competitiveness in the currency market. The balance of trade, which is the difference between exports and imports, also can influence the demand for its currency, a trade surplus in AUD may increase the demand for AUD dollar. 
-
-  -   $erate_{t}$: AUD/USD exchange rate
-
-* AUS economic indicators
-  +   $crateau_{t}$: The Cash Rate Target, Australia
-  +   $rgdpau_{t}$: The Gross Domestic Product, Australia
-  +   $cpiau_{t}$: The Consumer Price Index, Australia
-  +   $unemrau_{t}$: The Unemployment rate, Australia
-  +   $imporau_{t}$: The Imports of Goods and Services, Australia
-  +   $exporau_{t}$: The Exports of Goods and Services, Australia
-* US economic indicators
-  +   $crateus_{t}$: The Federal Funds Effective Rate, United States
-  +   $rgdpus_{t}$: The Gross Domestic Product, United States
-  +   $cpius_{t}$: The Consumer Price Index, United States
-  +   $unemrus_{t}$: The Unemployment rate, United States
-  +   $imporus_{t}$: The Imports of Goods and Services, United States
-  +   $exporus_{t}$: The Exports of Goods and Services, United States
-  
-### Data cleaning
-For the data cleaning part, most data for AUS is from Reserve Bank of Australia (RBA) and Australian Bureau of Statistics (ABS), and data for the US is from FRED, the dataset spans from 1990 Q1 to 2023 Q4, comprising 136 observations. To better fit the model, the data has been transformed to 'quarter' to ensure that seasonality effects are removed and logged transformations have been applied to most data except exchange rate and cash rate to reducing outlier effects.
 ```{r, warning=FALSE, message=FALSE}
 #| echo: false
 #| message: false
@@ -66,6 +26,7 @@ fredr_set_key("75b470c4883ecfd5a7b4185f30437bd0")
 
 #Y variable
 # AUD/USD exchange rate quarterly
+#
 ex_rate <- read_rba(series_id = "FXRUSD")
 ex_rate$date <- as.Date(ex_rate$date)
 erate <- xts(ex_rate$value, ex_rate$date)
@@ -73,18 +34,24 @@ erate <- apply.quarterly(erate,mean)
 index(erate) <- seq(as.Date("1969-09-01"), by = "3 months", length.out = nrow(erate))
 
 
-#gold price (2006-)
-#gpricelink <- "https://query1.finance.yahoo.com/v7/finance/download/GC%3DF?period1=1262304000&period2=1703980800&interval=1mo&filter=history&frequency=1mo&includeAdjustedClose=true"
-#gprice  <- read.csv(gpricelink)
-#gprice$Date <- as.Date(gprice$Date)
-#gprice <- xts(gprice$Adj.Close, gprice$Date)
-#gprice <- apply.quarterly(gprice,mean)
+exr_link        = "https://query1.finance.yahoo.com/v7/finance/download/AUDUSD%3DX?period1=1149120000&period2=1703980800&interval=1mo&filter=history&frequency=1mo&includeAdjustedClose=true"
+ex_rate <-read.csv(exr_link)
+ex_rate$Date <- as.Date(ex_rate$Date)
+erate <- xts(ex_rate$Adj.Close, ex_rate$Date)
+erate <- apply.quarterly(erate,mean)
+
+
+#gold price
+gpricelink <- "https://query1.finance.yahoo.com/v7/finance/download/GC%3DF?period1=1262304000&period2=1703980800&interval=1mo&filter=history&frequency=1mo&includeAdjustedClose=true"
+gprice  <- read.csv(gpricelink)
+gprice$Date <- as.Date(gprice$Date)
+gprice <- xts(gprice$Adj.Close, gprice$Date)
+gprice <- apply.quarterly(gprice,mean)
 
 # Australia real gdp seasonal adjusted quarterly
-#rgdp_au <- read_abs(series_id = "A2304404C")  
-rgdp_au <- read_rba(series_id = "GGDPCVGDP")
+#rgdp_au <- read_rba(series_id = "GGDPCVGDP")
+rgdp_au <- read_abs(series_id = "A2304404C")  
 rgdp_au <- xts::xts(rgdp_au$value, rgdp_au$date)
-index(rgdp_au)   <- seq(as.Date("1959-09-01"), by = "3 months", length.out = nrow(rgdp_au))
 
 #cash rate/interest rate of AUS quartly
 cashrate<- read_cashrate(type = c("target"))
@@ -113,9 +80,9 @@ importaus <- read_abs(series_id = "A2718577A")
 impor_au<- xts(importaus$value, importaus$date)
 impor_au<- apply.quarterly(impor_au,mean)
 
+
 # America data
 # us gdp
-#rgdpus <- fredr(series_id = "A939RX0Q048SBEA")
 rgdpus     <- fredr(series_id = "GDPC1")
 rgdp_us     <- to.quarterly(xts(rgdpus$value, rgdpus$date), OHLC = FALSE)
 index(rgdp_us) <- seq(as.Date("1947-03-01"), by = "3 months", length.out = nrow(rgdp_us))
@@ -126,7 +93,6 @@ crate_us <- read.csv(usdratelink)
 crate_us$DATE <- as.Date(crate_us$DATE)
 crate_us <- xts(crate_us$DFF, order.by = crate_us$DATE)
 crate_us <- apply.quarterly(crate_us,mean)
-#re-index
 crate_us<- xts(crate_us, seq(as.Date("1954-09-01"), by = "quarter", length.out = length(crate_us)))
 
 # cpi quartly
@@ -156,10 +122,6 @@ index(impor_us) <- seq(as.Date("1947-03-01"), by = "3 months", length.out = nrow
 ```
 
 ```{r}
-#| echo: false
-#| message: false
-#| warning: false
-
 # log transformation of data
 cpi_au <- log(cpi_au)
 cpi_us <- log(cpi_us)
@@ -169,7 +131,7 @@ impor_au <- log(impor_au)
 impor_us<- log(impor_us)
 expor_au <- log(expor_au)
 expor_us<- log(expor_us)
-#gprice <- log(gprice)
+gprice <- log(gprice)
 ```
 
 
@@ -177,51 +139,56 @@ expor_us<- log(expor_us)
 #| echo: false
 #| message: false
 #| warning: false
- 
+#| results: hide
+#| 
 # All Variables
-merged_data = na.omit(merge(erate, 
+merged_data = na.omit(merge(erate,
                             cpi_au, cpi_us, 
                             crate_au, crate_us, 
                             expor_au, expor_us,  
                             impor_au, impor_us, 
                             rgdp_au, rgdp_us,
                             unemr_au, unemr_us))
-colnames(merged_data)   = c("exchange rate","cpi_au",    
-                            "cpi_us","cashrate_au",  
-                            "cashrate_us","export_au", "export_us",
+colnames(merged_data)   = c("exchange rate",  
+                         "cpi_au",    "cpi_us", 
+                         "cashrate_au",  "cashrate_us", 
+                         "export_au", "export_us",
                          "import_au",   "import_us",
                          "realgdp_au", "realgdp_us",
                          "unemployemtrate_au", "unemployemtrate_us")
 
 
 ```
-#### Visualisation of data
-Plot the variables to see the patterns of data. It shows from the plots that the exchange rate and cash rate for the US fluctuate over time, the cash rate and unemployment for AU show a downward trend and all other variables have a clear upward trend, with the exports、imports, and GDP for both countries have a clear drop during the COVID-19 period.
+
+
 ```{r all variables plot}
 #| echo: false
 #| message: false
 #| warning: false
 
-par(mfrow = c(4, 4), mar=c(2,2,2,2))
-for (i in 1:13) { 
+par(mfcol = c(4, 2), mar=c(2,2,2,2))
+for (i in 1:6) { 
+  ts.plot(merged_data[, i], main = colnames(merged_data)[i], 
+          ylab = "", xlab = "")
+}
+
+par(mfrow = c(4, 2), mar=c(2,2,2,2))
+for (i in 7:13) { 
   ts.plot(merged_data[, i], main = colnames(merged_data)[i], 
           ylab = "", xlab = "")
 }
 
 ```
-Since most variables show a non-stationary pattern. To determine whether a unit root is present in a time series dataset, the ADF test will be conducted below.
+
 ```{r}
-#| echo: false
-#| message: false
-#| warning: false
-x_varibales <-  na.omit(merge(
+x_varibales <-  na.omit(merge(gprice,
                             cpi_au, cpi_us, 
                             crate_au, crate_us, 
                             expor_au, expor_us,  
                             impor_au, impor_us, 
                             rgdp_au, rgdp_us,
                             unemr_au, unemr_us))
-colnames(x_varibales)   = c(
+colnames(x_varibales)   = c("gold price", 
                          "cpi_au",    "cpi_us", 
                          "cashrate_au",  "cashrate_us", 
                          "export_au", "export_us",
@@ -230,42 +197,59 @@ colnames(x_varibales)   = c(
                          "unemployemtrate_au", "unemployemtrate_us")
 ```
 
-#### Augmented Dickey-Fuller test for log transformed variables except exchange rates and cash rates.
-
-From the plot we can observe all ACF plots have a high degree of persistence over time, indicating there is significant autocorrelation in the time series data.
 ```{r}
-#| echo: false
+#| echo: true
 #| message: false
 #| warning: false
+# Compute correlation matrix
+correlation_matrix <- cor(merged_data)
 
-par(mfrow = c(4, 4), mar=c(2,2,2,2))
-for (i in 1:13){
+# Find the row number corresponding to "erate"
+erate_row <- which(rownames(correlation_matrix) == "erate")
+
+# Extract correlations between erate and other variables
+correlations_erate <- correlation_matrix[erate_row, names(merged_data) != "erate"]
+
+# Print correlation values
+print(correlations_erate)
+
+```
+
+# Augmented Dickey-Fuller test for log transformed variables except exchange rate  and cash rate.
+```{r}
+par(mfcol = c(3, 2), mar=c(2,2,2,2))
+for (i in 1:6){
+acf = acf(merged_data[,i], plot = FALSE)[1:20]
+plot(acf, main = "")
+title(main = paste(colnames(merged_data)[i]), line = 0.5)
+}
+
+par(mfrow = c(3, 2), mar=c(2,2,2,2))
+for (i in 7:13){
 acf = acf(merged_data[,i], plot = FALSE)[1:20]
 plot(acf, main = "")
 title(main = paste(colnames(merged_data)[i]), line = 0.5)
 }
 ```
+
 ```{r}
-#| echo: false
-#| message: false
-#| warning: false
 adf_test <- list()
 for (i in 1:13) {
   adf_result = adf.test(merged_data[,i], k = 4)
   adf_test[[i]] <- adf_result
 }
+
+print(adf_test)
 ```
-Below is the p-value of each variable and only the cash rate for AUS has a p-value less than 0.05 which indicates that $crateau_{t}$ is stationary.
+
+
 ```{r}
-#| echo: false
-#| message: false
-#| warning: false
 adf_table <- data.frame(p_value = numeric(length(adf_test)))
 
 for (i in 1:length(adf_test)) {adf_table[i, "p_value"] = round(adf_test[[i]]$p.value,3)
 }
 
-rownames(adf_table)<- c("exchange rate",
+rownames(adf_table)<- c("exchange rate", 
                          "cpi_au",    "cpi_us", 
                          "cashrate_au",  "cashrate_us", 
                          "export_au", "export_us",
@@ -279,39 +263,30 @@ print(adf_table)
 #clear that all >0.05 and reject the null that is stationary
 ```
 
-It is clear that the all variables in the first differences are stationary as the null hypothesis of non-stationary can be rejected. 
 ```{r}
-#| echo: false
-#| message: false
-#| warning: false
 #take the first difference
-nonstationary_merged_data <- subset(merged_data, select = -c(cashrate_au))
-
-dff_merged_data <- na.omit(nonstationary_merged_data - lag(nonstationary_merged_data))
+dff_merged_data <- na.omit(merged_data - lag(merged_data))
 ```
 
 ```{r}
-#| echo: false
-#| message: false
-#| warning: false
 # ADF test
-dff_adf_test <- list()
-for (i in 1:12) {
+dff_adf_ <- list()
+for (i in 1:13) {
   dff_adf_result = adf.test(dff_merged_data[,i], k = 4)
-  dff_adf_test[[i]] <- dff_adf_result
+  dff_adf_[[i]] <- dff_adf_result
 }
 
 # View the ADF test results
-dff_adf_table <- data.frame(p_value = numeric(length(dff_adf_test)))
+dff_adf_table <- data.frame(p_value = numeric(length(dff_adf_)))
 
 # Fill in the data frame with the test results
-for (i in 1:length(dff_adf_test)) {
-  dff_adf_table[i, "p_value"] = round(dff_adf_test[[i]]$p.value,3)
+for (i in 1:length(dff_adf_)) {
+  dff_adf_table[i, "p_value"] = round(dff_adf_[[i]]$p.value,3)
 
 }
 rownames(dff_adf_table)<- c("exchange rate",
                          "cpi_au",    "cpi_us", 
-                           "cashrate_us", 
+                         "cashrate_au",  "cashrate_us", 
                          "export_au", "export_us",
                          "import_au",   "import_us",
                          "realgdp_au", "realgdp_us",
@@ -320,51 +295,133 @@ rownames(dff_adf_table)<- c("exchange rate",
 colnames(dff_adf_table)<- c("P-value")
 print(dff_adf_table)
 ```
-It can be concluded that all variables are integrated at 1 with $crateau_{t}$ being the only stationary so the first difference should be taken to keep the time series stationary.
 
-## Model and Hypotheses
-In this research, the VAR(p) model will be applied to forecast the AUD/USD exchange rate, below is the basic model that is used in this research.
+```{r}
+#take the second difference 
+dff_dff_data <- subset(dff_merged_data, select = -c(realgdp_us))
 
-#### The basic VAR(p) model
+# Create a new dataset with the remaining variables
+
+dff_dff_merged_data <- na.omit(dff_dff_data- lag(dff_dff_data)) 
+```
+
+```{r}
+dff_dff_adf_ <- list()
+for (i in 1:12) {
+  dff_dff_adf_result = adf.test(dff_dff_merged_data[,i], k = 4)
+  dff_dff_adf_[[i]] <- dff_dff_adf_result
+}
+
+# View the ADF test results
+dff_dff_adf_table <- data.frame(p_value = numeric(length(dff_dff_adf_)))
+
+# Fill in the data frame with the test results
+for (i in 1:length(dff_dff_adf_)) {
+  dff_dff_adf_table[i, "p_value"] = round(dff_dff_adf_[[i]]$p.value,3)
+
+}
+rownames(dff_dff_adf_table)<- c("exchange rate", 
+                         "cpi_au",    "cpi_us", 
+                         "cashrate_au",  "cashrate_us", 
+                         "export_au", "export_us",
+                         "import_au",   "import_us",
+                         "realgdp_au",
+                         "unemployemtrate_au", "unemployemtrate_us")
+
+colnames(dff_dff_adf_table)<- c("P-value")
+print(dff_dff_adf_table)
+```
+
+
+## Model specification
+
+The use of fiscal policy to stimulate or regulate the economy follows the Keynesian approach generally practiced around the world (but especially in developing countries) to navigate economies through downturns or potential episodes of overheating, particularly in the short-run. The proposed model aims to investigate the effectiveness of these fiscal measures in managing growth and unemployment.
+
+Estimation proceeds through the following reduced form model:
+
+$$
+\begin{align}
+Y &= XA + U\\
+U| X &\sim _{iid} MN_{T\times N}( 0, \Sigma, \Omega)\\
+\Sigma &= B_0^{-1}B_0^{-1'}
+\end{align}
+$$ where matrix $Y$ contains vectors of endogenous variables $y_t$:
+
+$$y_t=\begin{pmatrix} unemp_t &= \text{unemployment rate}
+\\ realgdp_t &= \text{real GDP}
+\\ totaltax_t  &= \text{tax revenue}
+\\ nontax_t  &= \text{non-tax revenue}
+\\ pubinv_t  &= \text{government gross fixed capital formation}
+\\ pubtrans_t  &= \text{social assitance and benefits payments}
+\\ pubcons_t  &= \text{government final consumption}
+\\ cashrate_t  &= \text{cash rate target}
+\\ M3_t  &= \text{M3 money supply}
+\end{pmatrix}$$
+
+and $B_0^{-1}=B$ is the matrix of contemporaneous effects between variables.
+
+## Estimation and identification
+
+### Basic model
+
+For the basic model, the column-wise covariance matrix is set as $\Omega=I_N$. The likelihood function is expressed as:
+
+$$P(Y,X|A,\Sigma) \propto det(\Sigma)^{-\frac{T}{2}} exp \left\{-\frac{1}{2} tr \left[ \Sigma^{-1}(Y-XA)'(Y-XA) \right] \right\}\\$$ $$=det(\Sigma)^{-\frac{T}{2}} exp \left\{-\frac{1}{2} tr \left[ \Sigma^{-1}(A-\hat{A})'X'X(A-\hat{A}) \right] \right\} exp \left\{-\frac{1}{2} tr \left[\Sigma^{-1}(Y-X \hat{A})'(Y-X \hat{A}) \right] \right\}$$
+
+where the maximum likelihood estimators are expressed as:
+
+$$\hat{A} = (X'X)^{-1}X'Y $$ $$\hat{\Sigma} = \frac{1}{T} (Y-X \hat{A})'(Y-X \hat{A})$$
+
+The prior for $A$ and $\Sigma$ is assumed to be a matrix-normal inverse Wishart distribution that follows the Minnesota specification of Doan, Litterman & Sims (1984):
+
+$$p(A,\Sigma) =MNIW(\underline{A},\underline{S},\underline{V},\underline{\nu})$$
+
+$$A|\Sigma\sim MN_{K\times N}(\underline{A},\Sigma,\underline{V})$$ $$\Sigma\sim IW_N(\underline{S},\underline{\nu})$$
+
+where:
+
+$$\underline{A} = [0_{N \times 1} \quad I_N \quad 0_{N \times (p-1)N}]'$$ $$\underline{V} = diag([\kappa_2 \quad \kappa_1 (p^{-2} \otimes I_N)])$$
+
+This leads to the following posterior distribution, from which the basic reduced form model will be estimated:
+
+$$P(A|Y,X,\Sigma)=MN_{K\times N}(\bar{A},\Sigma,\bar{V})$$ $$P(\Sigma|Y,X)=IW_N(\bar{S},\bar{\nu})\\$$
+
+$$\bar{V}=(X'X+\underline{V}^{-1})^{-1}$$ $$\bar{A}=\bar{V}(X'Y+\underline{V}^{-1}\underline{A})$$ $$\bar{\nu}=T+\underline{\nu}$$ $$\bar{S}=\underline{S}+Y'Y+\underline{A}'\underline{V}^{-1}\underline{A}-
+\bar{A}'\bar{V}^{-1}\bar{A}$$
+
+
+## Forecasting with Bayesian VARs
+ The Modelling Framework 
+
+## The Baseline Model
+
+The model used for the forecasting experiment is a VAR(p) model:
 
 ```{=tex}
 \begin{aligned}
- y_{t}=\mu_{0}+A_{1}y_{t-1}+\cdots+A_{p}y_{t-p}+\epsilon_{t} \\
-\epsilon_{t}|Y_{t-1}\sim iid(0_{10},\Sigma)
+& y_t  =\mu_0+A_1 y_{t-1}+\cdots+A_p y_{t-p}+\epsilon_t \\ & \epsilon_t \mid  Y_{t-1}  \sim i i d \mathcal{N}_N\left(\mathbf{0}_N, \Sigma\right)
 \end{aligned}
 ```
 
-Where N = 12 and $y_{t}$ is a vector of 12 variables.
+Where $N=11$ and $y_t$ is the vector of 11 variables:
+
+The model can also be written in matrix notation:
 
 ```{=tex}
 \begin{aligned}
-y_{t}=\begin{pmatrix}
-crateau_{t} \\
-rgdpau_{t}\\
-cpiau_{t} \\
-unemrau_{t}\\
-imporau_{t} \\
-exporau_{t} \\
-crateus_{t} \\
-rgdpus_{t} \\
-cpius_{t} \\
-unemrus_{t} \\
-imporus_{t}\\
-exporus_{t}\\
-
-\end{pmatrix}
-
+Y & =X A+E \\E \mid X & \sim \mathcal{M N} _{T \times N}\left(\mathbf{0}_{T \times N}, \Sigma, I_T\right)
 \end{aligned}
 ```
 
-#### The Matrix notation
+Where $Y$ is a $T\times11$ matrix, $X$ is a $T\times(1+(11\times p))$, $A$ is a $(1+(11\times p))\times 11$ matrix that contains the relationships between the variables and $E$ is a $T\times11$. $p$ is 1 and $T$ is 135.
+
 ```{=tex}
 \begin{align}
-Y =XA+E\\
-E|X\sim \mathcal{MN}_{T\times N}(0, \Sigma, I_T)\\
-Y|X,A,\Sigma\sim \mathcal{MN}_{T\times N} (XA, \Sigma, I_T)
+Y =\begin{pmatrix}
+ y_{crateau_,1}&  y_{rgdpau_,1}&  y_{cpiau_,1}&  y_{unemrau_,1}&  y_{imporau_,1}&  y_{exporau_,1}&  y_{crateus_,1}&  y_{rgdpus_,1}&  y_{cpius_,1}&  y_{unemrus_,1}&  y_{imporus_,1}&  y_{exporus_,1}\\
+ y_{crateau_,2}&  y_{rgdpau_,2}&  y_{cpiau_,2}&  y_{unemrau_,2}&  y_{imporau_,2}&  y_{exporau_,2}&  y_{crateus_,2}&  y_{rgdpus_,2}&  y_{cpius_,2}&  y_{unemrus_,2}&  y_{imporus_,2}&  y_{exporus_,2}\\ \ \vdots & \vdots & \vdots  & \vdots & \vdots & \vdots& \vdots& \vdots& \vdots& \vdots& \vdots & \vdots\\
+
+y_{crateau_,T}&  y_{rgdpau_,T}&  y_{cpiau_,T}&  y_{unemrau_,T}&  y_{imporau_,T}&  y_{exporau_,T}&  y_{crateus_,T}&  y_{rgdpus_,T}&  y_{cpius_,T}&  y_{unemrus_,T}&  y_{imporus_,T}&  y_{exporus_,T}
+\end{pmatrix}
 \end{align}
 ```
-Where $Y$ is a $T\times 12$ Matrix,$X$ is a $T\times(1+p\times12)$, $A$ is a $(1+p\times12)\times12$ matrix that contains $\mu_{0}$ and vectors of the autoregressive slope parameters and $E$ is a $T\times12$ matrix contains vetors of error terms.
-
-For further research, we may use the predictive density function like 1-period forecast and forecast with Bayesian VARS.
