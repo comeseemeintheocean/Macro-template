@@ -93,14 +93,12 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#objective-and-motivation" id="toc-objective-and-motivation" class="nav-link active" data-scroll-target="#objective-and-motivation">Objective and motivation</a>
-  <ul class="collapse">
+  <li><a href="#objective-and-motivation" id="toc-objective-and-motivation" class="nav-link active" data-scroll-target="#objective-and-motivation">Objective and motivation</a></li>
   <li><a href="#data-and-variables" id="toc-data-and-variables" class="nav-link" data-scroll-target="#data-and-variables">Data and variables</a>
   <ul class="collapse">
   <li><a href="#data-cleaning" id="toc-data-cleaning" class="nav-link" data-scroll-target="#data-cleaning">Data cleaning</a></li>
   </ul></li>
   <li><a href="#model-and-hypotheses" id="toc-model-and-hypotheses" class="nav-link" data-scroll-target="#model-and-hypotheses">Model and Hypotheses</a></li>
-  </ul></li>
   </ul>
 </nav>
     </div>
@@ -138,8 +136,9 @@ ul.task-list li input[type="checkbox"] {
 <p>The objective of this research is to use the Bayesian Vector Autoregressions (VARs) method to forecast the exchange rate of the US dollar exchange rate against the Australian dollar.</p>
 <p>The ability to accurately forecast the foreign exchange rate is crucial for Australia’s global trade and investment. Given the prominence of the US dollar as the world’s primary reserve currency, the monetary policies of the US Federal Reserve have a worldwide effect on the world economy, its significant influence on the Australia currency market should be important for domestic investors and policy maker as it can directly impact the AUD/USD exchange rate. Besides, America as one of the major trading partners for Australia, can impact bilateral trade flows and eventually affect the value of the AUD. Apart from the external from foreign countries, the domestic economic indicators can also be one of the determinants of the AUD/USD exchange rate.</p>
 <p>The research is aimed to address the question for example, how the AUD/USD exchange rate will be in 3 months or even longer 1 year?</p>
-<section id="data-and-variables" class="level2">
-<h2 class="anchored" data-anchor-id="data-and-variables">Data and variables</h2>
+</section>
+<section id="data-and-variables" class="level1">
+<h1>Data and variables</h1>
 <p>To better forecast the change in the exchange rate, the 12 variables are selected as follows which contain both domestic and US economic indicators that affect the exchange rate in different ways.</p>
 <p>Real GDP and interest rates have a significant effect on the exchange rate, a higher realGDP and interest rate in Australia may increase the demand for AUD, which will lead to an appreciation of AUD and a rise in the AUD/USD exchange rate. A higher CPI indicates a lower purchasing power relative to foreign currency which may lead to a depreciation of the domestic currency. The unemployment rate can in some way represent business activity and a country with a high unemployment rate will lower the attractiveness for foreign investors and weaken the domestic currency competitiveness in the currency market. The balance of trade, which is the difference between exports and imports, also can influence the demand for its currency, a trade surplus in AUD may increase the demand for AUD dollar.</p>
 <ul>
@@ -225,8 +224,8 @@ unemployemtrate_us   0.010</code></pre>
 </section>
 </section>
 </section>
-<section id="model-and-hypotheses" class="level2">
-<h2 class="anchored" data-anchor-id="model-and-hypotheses">Model and Hypotheses</h2>
+<section id="model-and-hypotheses" class="level1">
+<h1>Model and Hypotheses</h1>
 <p>In this research, the VAR(p) model will be applied to forecast the AUD/USD exchange rate, below is the basic model that is used in this research.</p>
 <section id="the-basic-varp-model" class="level4">
 <h4 class="anchored" data-anchor-id="the-basic-varp-model">The basic VAR(p) model</h4>
@@ -265,7 +264,6 @@ Y|X,A,\Sigma\sim \mathcal{MN}_{T\times N} (XA, \Sigma, I_T)
 <p>For further research, we may use the predictive density function like 1-period forecast and forecast with Bayesian VARS.</p>
 
 
-</section>
 </section>
 </section>
 
