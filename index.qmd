@@ -1,5 +1,5 @@
 ---
-title: "Exchange rate forecasting using Bayesian VARs model"
+title: "Exchange Rate Forecasting Using Bayesian VARs Model"
 author: "Qingqing Pang"
 
 execute:
@@ -11,7 +11,7 @@ bibliography: references.bib
 > **Abstract.** This research report explores how Bayesian VARs model predict AUD/USD exchange rate.
 > **Keywords.** Bayesian Vars, Exchange rate
 
-# Objective and motivation
+# Objective and Motivation
 
 The objective of this research is to use the Bayesian Vector Autoregressions (VARs) method to forecast the exchange rate of the US dollar exchange rate against the Australian dollar.
 
@@ -19,7 +19,7 @@ The ability to accurately forecast the foreign exchange rate is crucial for Aust
 
 The research is aimed to address the question for example, how the AUD/USD exchange rate will be in 3 months or even longer 1 year?
 
-# Data and variables
+# Data and Variables
 
 To better forecast the change in the exchange rate, the 12 variables are selected as follows which contain both domestic and US economic indicators that affect the exchange rate in different ways.
 
@@ -42,7 +42,7 @@ Real GDP and interest rates have a significant effect on the exchange rate, a hi
   +   $imporus_{t}$: The Imports of Goods and Services, United States
   +   $exporus_{t}$: The Exports of Goods and Services, United States
   
-### Data cleaning
+### Data Cleaning
 For the data cleaning part, most data for AUS is from Reserve Bank of Australia (RBA) and Australian Bureau of Statistics (ABS), and data for the US is from FRED, the dataset spans from 1990 Q1 to 2023 Q4, comprising 136 observations. To better fit the model, the data has been transformed to 'quarter' to ensure that seasonality effects are removed and logged transformations have been applied to most data except exchange rate and cash rate to reducing outlier effects.
 ```{r, warning=FALSE, message=FALSE}
 #| echo: false
@@ -126,7 +126,6 @@ crate_us <- read.csv(usdratelink)
 crate_us$DATE <- as.Date(crate_us$DATE)
 crate_us <- xts(crate_us$DFF, order.by = crate_us$DATE)
 crate_us <- apply.quarterly(crate_us,mean)
-#re-index
 crate_us<- xts(crate_us, seq(as.Date("1954-09-01"), by = "quarter", length.out = length(crate_us)))
 
 # cpi quartly

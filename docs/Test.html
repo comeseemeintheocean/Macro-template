@@ -95,6 +95,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -293,7 +295,7 @@ alternative hypothesis: stationary
     Augmented Dickey-Fuller Test
 
 data:  merged_data[, i]
-Dickey-Fuller = -2.4011, Lag order = 4, p-value = 0.4121
+Dickey-Fuller = -2.3971, Lag order = 4, p-value = 0.4137
 alternative hypothesis: stationary
 
 
@@ -311,7 +313,7 @@ alternative hypothesis: stationary
     Augmented Dickey-Fuller Test
 
 data:  merged_data[, i]
-Dickey-Fuller = -1.6517, Lag order = 4, p-value = 0.717
+Dickey-Fuller = -1.6656, Lag order = 4, p-value = 0.7113
 alternative hypothesis: stationary
 
 
@@ -383,9 +385,9 @@ cpi_au               0.587
 cpi_us               0.838
 cashrate_au          0.954
 cashrate_us          0.209
-export_au            0.412
+export_au            0.414
 export_us            0.234
-import_au            0.717
+import_au            0.711
 import_us            0.115
 realgdp_au           0.149
 realgdp_us           0.274
@@ -437,7 +439,7 @@ cpi_au               0.442
 cpi_us               0.279
 cashrate_au          0.038
 cashrate_us          0.019
-export_au            0.048
+export_au            0.052
 export_us            0.024
 import_au            0.010
 import_us            0.017
@@ -532,6 +534,14 @@ unemployemtrate_au    0.01
 unemployemtrate_us    0.01</code></pre>
 </div>
 </div>
+<span class="math display">\[\begin{align}
+Y =\begin{pmatrix}
+y_{crateau_,1}&amp;  y_{rgdpau_,1}&amp;  y_{cpiau_,1}&amp;  y_{unemrau_,1}&amp;  y_{imporau_,1}&amp;  y_{exporau_,1}&amp;  y_{crateus_,1}&amp;  y_{rgdpus_,1}&amp;  y_{cpius_,1}&amp;  y_{unemrus_,1}&amp;  y_{imporus_,1}&amp;  y_{exporus_,1}\\
+y_{crateau_,2}&amp;  y_{rgdpau_,2}&amp;  y_{cpiau_,2}&amp;  y_{unemrau_,2}&amp;  y_{imporau_,2}&amp;  y_{exporau_,2}&amp;  y_{crateus_,2}&amp;  y_{rgdpus_,2}&amp;  y_{cpius_,2}&amp;  y_{unemrus_,2}&amp;  y_{imporus_,2}&amp;  y_{exporus_,2}\\ \ \vdots &amp; \vdots &amp; \vdots  &amp; \vdots &amp; \vdots &amp; \vdots&amp; \vdots&amp; \vdots&amp; \vdots&amp; \vdots&amp; \vdots &amp; \vdots\\
+
+y_{crateau_,T}&amp;  y_{rgdpau_,T}&amp;  y_{cpiau_,T}&amp;  y_{unemrau_,T}&amp;  y_{imporau_,T}&amp;  y_{exporau_,T}&amp;  y_{crateus_,T}&amp;  y_{rgdpus_,T}&amp;  y_{cpius_,T}&amp;  y_{unemrus_,T}&amp;  y_{imporus_,T}&amp;  y_{exporus_,T}
+\end{pmatrix}
+\end{align}\]</span>
 
 
 </section>
