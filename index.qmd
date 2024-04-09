@@ -28,19 +28,19 @@ Real GDP and interest rates have a significant effect on the exchange rate, a hi
   -   $erate_{t}$: AUD/USD exchange rate
 
 * AUS economic indicators
-  +   $crateau_{t}$: The Cash Rate Target, Australia
-  +   $rgdpau_{t}$: The Real Gross Domestic Product, Australia
-  +   $cpiau_{t}$: The Consumer Price Index, Australia
-  +   $unemrau_{t}$: The Unemployment rate, Australia
-  +   $imporau_{t}$: The Imports of Goods and Services, Australia
-  +   $exporau_{t}$: The Exports of Goods and Services, Australia
+  +   $crate\_au_{t}$: The Cash Rate Target, Australia
+  +   $rgdp\_au_{t}$: The Real Gross Domestic Product, Australia
+  +   $cpi\_au_{t}$: The Consumer Price Index, Australia
+  +   $unemr\_au_{t}$: The Unemployment rate, Australia
+  +   $impor\_au_{t}$: The Imports of Goods and Services, Australia
+  +   $expor\_au_{t}$: The Exports of Goods and Services, Australia
 * US economic indicators
-  +   $crateus_{t}$: The Federal Funds Effective Rate, United States
-  +   $rgdpus_{t}$: The Real Gross Domestic Product, United States
-  +   $cpius_{t}$: The Consumer Price Index, United States
-  +   $unemrus_{t}$: The Unemployment rate, United States
-  +   $imporus_{t}$: The Imports of Goods and Services, United States
-  +   $exporus_{t}$: The Exports of Goods and Services, United States
+  +   $crate\_us_{t}$: The Federal Funds Effective Rate, United States
+  +   $rgdp\_us_{t}$: The Real Gross Domestic Product, United States
+  +   $cpi\_us_{t}$: The Consumer Price Index, United States
+  +   $unemr\_us_{t}$: The Unemployment rate, United States
+  +   $impor\_us_{t}$: The Imports of Goods and Services, United States
+  +   $expor\_us_{t}$: The Exports of Goods and Services, United States
   
 ### Data Cleaning
 For the data cleaning part, most data for AUS is from Reserve Bank of Australia (RBA) and Australian Bureau of Statistics (ABS), and data for the US is from FRED, the dataset spans from 1990 Q1 to 2023 Q4, comprising 136 observations. To better fit the model, the data has been transformed to 'quarter' to ensure that seasonality effects are removed and logged transformations have been applied to most data except exchange rate and cash rate to reducing outlier effects.
@@ -160,14 +160,12 @@ index(impor_us) <- seq(as.Date("1947-03-01"), by = "3 months", length.out = nrow
 #| warning: false
 
 # log transformation of data
-cpi_au <- log(cpi_au)
-cpi_us <- log(cpi_us)
-rgdp_au <- log(rgdp_au)
-rgdp_us <- log(rgdp_us)
-impor_au <- log(impor_au)
-impor_us<- log(impor_us)
-expor_au <- log(expor_au)
-expor_us<- log(expor_us)
+variables <- c("cpi_au", "cpi_us", "rgdp_au", "rgdp_us", "impor_au", "impor_us", "expor_au", "expor_us")
+
+for(var in variables) {
+  assign(var, log(get(var)))
+}
+
 #gprice <- log(gprice)
 ```
 
@@ -185,12 +183,15 @@ merged_data = na.omit(merge(erate,
                             impor_au, impor_us, 
                             rgdp_au, rgdp_us,
                             unemr_au, unemr_us))
-colnames(merged_data)   = c("exchange rate","cpi_au",    
-                            "cpi_us","cashrate_au",  
-                            "cashrate_us","export_au", "export_us",
-                         "import_au",   "import_us",
-                         "realgdp_au", "realgdp_us",
-                         "unemployemtrate_au", "unemployemtrate_us")
+
+# Defining your column name vector:
+variable_names <- c("exchange rate", "cpi_au", "cpi_us", 
+                    "cashrate_au", "cashrate_us", "export_au", "export_us",
+                    "import_au", "import_us", "realgdp_au", "realgdp_us",
+                    "unemployemtrate_au", "unemployemtrate_us")
+
+
+colnames(merged_data)   <- variable_names
 
 
 ```
@@ -209,25 +210,6 @@ for (i in 1:13) {
 
 ```
 Since most variables show a non-stationary pattern. To determine whether a unit root is present in a time series dataset, the ADF test will be conducted below.
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-x_varibales <-  na.omit(merge(
-                            cpi_au, cpi_us, 
-                            crate_au, crate_us, 
-                            expor_au, expor_us,  
-                            impor_au, impor_us, 
-                            rgdp_au, rgdp_us,
-                            unemr_au, unemr_us))
-colnames(x_varibales)   = c(
-                         "cpi_au",    "cpi_us", 
-                         "cashrate_au",  "cashrate_us", 
-                         "export_au", "export_us",
-                         "import_au",   "import_us",
-                         "realgdp_au", "realgdp_us",
-                         "unemployemtrate_au", "unemployemtrate_us")
-```
 
 #### Augmented Dickey-Fuller test for log transformed variables except exchange rates and cash rates.
 
@@ -264,13 +246,7 @@ adf_table <- data.frame(p_value = numeric(length(adf_test)))
 for (i in 1:length(adf_test)) {adf_table[i, "p_value"] = round(adf_test[[i]]$p.value,3)
 }
 
-rownames(adf_table)<- c("exchange rate",
-                         "cpi_au",    "cpi_us", 
-                         "cashrate_au",  "cashrate_us", 
-                         "export_au", "export_us",
-                         "import_au",   "import_us",
-                         "realgdp_au", "realgdp_us",
-                         "unemployemtrate_au", "unemployemtrate_us")
+rownames(adf_table) <- variable_names
 
 colnames(adf_table)<- c("P-value")
 print(adf_table)
@@ -306,13 +282,8 @@ for (i in 1:length(dff_adf_test)) {
   dff_adf_table[i, "p_value"] = round(dff_adf_test[[i]]$p.value,3)
 
 }
-rownames(dff_adf_table)<- c("exchange rate",
-                         "cpi_au",    "cpi_us", 
-                           "cashrate_us", 
-                         "export_au", "export_us",
-                         "import_au",   "import_us",
-                         "realgdp_au", "realgdp_us",
-                         "unemployemtrate_au", "unemployemtrate_us")
+rownames(dff_adf_table) <- variable_names[-4]
+
 
 colnames(dff_adf_table)<- c("P-value")
 print(dff_adf_table)
@@ -336,18 +307,18 @@ Where N = 12 and $y_{t}$ is a vector of 12 variables.
 ```{=tex}
 \begin{aligned}
 y_{t}=\begin{pmatrix}
-crateau_{t} \\
-rgdpau_{t}\\
-cpiau_{t} \\
-unemrau_{t}\\
-imporau_{t} \\
-exporau_{t} \\
-crateus_{t} \\
-rgdpus_{t} \\
-cpius_{t} \\
-unemrus_{t} \\
-imporus_{t}\\
-exporus_{t}\\
+crate\_au_{t} \\
+rgdp\_au_{t}\\
+cpi\_au_{t} \\
+unemr\_au_{t}\\
+impor\_au_{t} \\
+expor\_au_{t} \\
+crate\_us_{t} \\
+rgdp\_us_{t} \\
+cpi\_us_{t} \\
+unemr\_us_{t} \\
+impor\_us_{t}\\
+expor\_us_{t}\\
 
 \end{pmatrix}
 
