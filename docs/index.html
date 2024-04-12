@@ -139,7 +139,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="data-and-variables" class="level1">
 <h1>Data and Variables</h1>
-<p>To better forecast the change in the exchange rate, the 12 variables are selected as follows which contain both domestic and US economic indicators that affect the exchange rate in different ways.</p>
+<p>To better forecast the change in the exchange rate, the 13 variables are selected as follows which contain both domestic and US economic indicators that affect the exchange rate in different ways.</p>
 <p>Real GDP and interest rates have a significant effect on the exchange rate, a higher realGDP and interest rate in Australia may increase the demand for AUD, which will lead to an appreciation of AUD and a rise in the AUD/USD exchange rate. A higher CPI indicates a lower purchasing power relative to foreign currency which may lead to a depreciation of the domestic currency. The unemployment rate can in some way represent business activity and a country with a high unemployment rate will lower the attractiveness for foreign investors and weaken the domestic currency competitiveness in the currency market. The balance of trade, which is the difference between exports and imports, also can influence the demand for its currency, a trade surplus in AUD may increase the demand for AUD dollar.</p>
 <ul>
 <li><p><span class="math inline">\(erate_{t}\)</span>: AUD/USD exchange rate</p></li>
@@ -231,11 +231,20 @@ unemployemtrate_us   0.010</code></pre>
 <h4 class="anchored" data-anchor-id="the-basic-varp-model">The basic VAR(p) model</h4>
 <span class="math display">\[\begin{aligned}
 y_{t}=\mu_{0}+A_{1}y_{t-1}+\cdots+A_{p}y_{t-p}+\epsilon_{t} \\
-\epsilon_{t}|Y_{t-1}\sim iid(0_{12},\Sigma)
+\epsilon_{t}|Y_{t-1}\sim iid(0_{13},\Sigma)
 \end{aligned}\]</span>
-<p>Where N = 12 and <span class="math inline">\(y_{t}\)</span> is a vector of 12 variables.</p>
+<p>For time <span class="math inline">\(t\)</span> = 1,2,…..,<span class="math inline">\(T\)</span>：</p>
+<ul>
+<li><span class="math inline">\(y_t\)</span> is a <span class="math inline">\(N(13)\times 1\)</span> vector of observations at time <span class="math inline">\(t\)</span></li>
+<li><span class="math inline">\(\mu_0\)</span> is a <span class="math inline">\(N(13)\times 1\)</span> vector of constant terms</li>
+<li><span class="math inline">\(A_i\)</span> is a <span class="math inline">\(N(13)\times N(13)\)</span> matrix of autoregressive slope parameters</li>
+<li><span class="math inline">\(\epsilon_t\)</span> is a <span class="math inline">\(N(13)\times 1\)</span> vector of error terms and follows a multivariate white noise process</li>
+<li><span class="math inline">\(Y_{t-1}\)</span> is the information set collecting observations on y up to time <span class="math inline">\(t-1\)</span></li>
+<li><span class="math inline">\(\Sigma\)</span> is a <span class="math inline">\(N(13)\times N(13)\)</span> covariance matrix of the error term</li>
+</ul>
 <span class="math display">\[\begin{aligned}
 y_{t}=\begin{pmatrix}
+erate_{t}\\
 crate\_au_{t} \\
 rgdp\_au_{t}\\
 cpi\_au_{t} \\
@@ -260,7 +269,7 @@ Y =XA+E\\
 E|X\sim \mathcal{MN}_{T\times N}(0, \Sigma, I_T)\\
 Y|X,A,\Sigma\sim \mathcal{MN}_{T\times N} (XA, \Sigma, I_T)
 \end{align}\]</span>
-<p>Where <span class="math inline">\(Y\)</span> is a <span class="math inline">\(T\times 12\)</span> Matrix, <span class="math inline">\(X\)</span> is a <span class="math inline">\(T\times(1+p\times12)\)</span>, <span class="math inline">\(A\)</span> is a <span class="math inline">\((1+p\times12)\times12\)</span> matrix that contains <span class="math inline">\(\mu_{0}\)</span> and vectors of the autoregressive slope parameters and <span class="math inline">\(E\)</span> is a <span class="math inline">\(T\times12\)</span> matrix contains vetors of error terms.</p>
+<p>Where <span class="math inline">\(Y\)</span> is a <span class="math inline">\(T\times 13\)</span> Matrix, <span class="math inline">\(X\)</span> is a <span class="math inline">\(T\times(1+p\times13)\)</span>, <span class="math inline">\(A\)</span> is a <span class="math inline">\((1+p\times13)\times13\)</span> matrix that contains <span class="math inline">\(\mu_{0}\)</span> and vectors of the autoregressive slope parameters and <span class="math inline">\(E\)</span> is a <span class="math inline">\(T\times13\)</span> matrix contains vetors of error terms.</p>
 <p>For further research, we may use the predictive density function like 1-period forecast and forecast with Bayesian VARS.</p>
 
 
