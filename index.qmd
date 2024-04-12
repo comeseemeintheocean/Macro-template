@@ -21,7 +21,7 @@ The research is aimed to address the question for example, how the AUD/USD excha
 
 # Data and Variables
 
-To better forecast the change in the exchange rate, the 12 variables are selected as follows which contain both domestic and US economic indicators that affect the exchange rate in different ways.
+To better forecast the change in the exchange rate, the 13 variables are selected as follows which contain both domestic and US economic indicators that affect the exchange rate in different ways.
 
 Real GDP and interest rates have a significant effect on the exchange rate, a higher realGDP and interest rate in Australia may increase the demand for AUD, which will lead to an appreciation of AUD and a rise in the AUD/USD exchange rate. A higher CPI indicates a lower purchasing power relative to foreign currency which may lead to a depreciation of the domestic currency. The unemployment rate can in some way represent business activity and a country with a high unemployment rate will lower the attractiveness for foreign investors and weaken the domestic currency competitiveness in the currency market. The balance of trade, which is the difference between exports and imports, also can influence the demand for its currency, a trade surplus in AUD may increase the demand for AUD dollar. 
 
@@ -298,15 +298,23 @@ In this research, the VAR(p) model will be applied to forecast the AUD/USD excha
 ```{=tex}
 \begin{aligned}
  y_{t}=\mu_{0}+A_{1}y_{t-1}+\cdots+A_{p}y_{t-p}+\epsilon_{t} \\
-\epsilon_{t}|Y_{t-1}\sim iid(0_{12},\Sigma)
+\epsilon_{t}|Y_{t-1}\sim iid(0_{13},\Sigma)
 \end{aligned}
 ```
 
-Where N = 12 and $y_{t}$ is a vector of 12 variables.
+For time $t$ = 1,2,.....,$T$：
+
+-   $y_t$ is a $N(13)\times 1$ vector of observations at time $t$
+-   $\mu_0$ is a $N(13)\times 1$ vector of constant terms
+-   $A_i$ is a $N(13)\times N(13)$ matrix of autoregressive slope parameters
+-   $\epsilon_t$ is a $N(13)\times 1$ vector of error terms and follows a multivariate white noise process
+-   $Y_{t-1}$ is the information set collecting observations on y up to time $t-1$
+-   $\Sigma$ is a $N(13)\times N(13)$ covariance matrix of the error term
 
 ```{=tex}
 \begin{aligned}
 y_{t}=\begin{pmatrix}
+erate_{t}\\
 crate\_au_{t} \\
 rgdp\_au_{t}\\
 cpi\_au_{t} \\
@@ -333,6 +341,6 @@ E|X\sim \mathcal{MN}_{T\times N}(0, \Sigma, I_T)\\
 Y|X,A,\Sigma\sim \mathcal{MN}_{T\times N} (XA, \Sigma, I_T)
 \end{align}
 ```
-Where $Y$ is a $T\times 12$ Matrix, $X$ is a $T\times(1+p\times12)$, $A$ is a $(1+p\times12)\times12$ matrix that contains $\mu_{0}$ and vectors of the autoregressive slope parameters and $E$ is a $T\times12$ matrix contains vetors of error terms.
+Where $Y$ is a $T\times 13$ Matrix, $X$ is a $T\times(1+p\times13)$, $A$ is a $(1+p\times13)\times13$ matrix that contains $\mu_{0}$ and vectors of the autoregressive slope parameters and $E$ is a $T\times13$ matrix contains vetors of error terms.
 
 For further research, we may use the predictive density function like 1-period forecast and forecast with Bayesian VARS.
