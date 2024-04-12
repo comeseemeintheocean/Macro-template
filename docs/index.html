@@ -145,21 +145,21 @@ ul.task-list li input[type="checkbox"] {
 <li><p><span class="math inline">\(erate_{t}\)</span>: AUD/USD exchange rate</p></li>
 <li><p>AUS economic indicators</p>
 <ul>
-<li><span class="math inline">\(crateau_{t}\)</span>: The Cash Rate Target, Australia</li>
-<li><span class="math inline">\(rgdpau_{t}\)</span>: The Real Gross Domestic Product, Australia</li>
-<li><span class="math inline">\(cpiau_{t}\)</span>: The Consumer Price Index, Australia</li>
-<li><span class="math inline">\(unemrau_{t}\)</span>: The Unemployment rate, Australia</li>
-<li><span class="math inline">\(imporau_{t}\)</span>: The Imports of Goods and Services, Australia</li>
-<li><span class="math inline">\(exporau_{t}\)</span>: The Exports of Goods and Services, Australia</li>
+<li><span class="math inline">\(crate\_au_{t}\)</span>: The Cash Rate Target, Australia</li>
+<li><span class="math inline">\(rgdp\_au_{t}\)</span>: The Real Gross Domestic Product, Australia</li>
+<li><span class="math inline">\(cpi\_au_{t}\)</span>: The Consumer Price Index, Australia</li>
+<li><span class="math inline">\(unemr\_au_{t}\)</span>: The Unemployment rate, Australia</li>
+<li><span class="math inline">\(impor\_au_{t}\)</span>: The Imports of Goods and Services, Australia</li>
+<li><span class="math inline">\(expor\_au_{t}\)</span>: The Exports of Goods and Services, Australia</li>
 </ul></li>
 <li><p>US economic indicators</p>
 <ul>
-<li><span class="math inline">\(crateus_{t}\)</span>: The Federal Funds Effective Rate, United States</li>
-<li><span class="math inline">\(rgdpus_{t}\)</span>: The Real Gross Domestic Product, United States</li>
-<li><span class="math inline">\(cpius_{t}\)</span>: The Consumer Price Index, United States</li>
-<li><span class="math inline">\(unemrus_{t}\)</span>: The Unemployment rate, United States</li>
-<li><span class="math inline">\(imporus_{t}\)</span>: The Imports of Goods and Services, United States</li>
-<li><span class="math inline">\(exporus_{t}\)</span>: The Exports of Goods and Services, United States</li>
+<li><span class="math inline">\(crate\_us_{t}\)</span>: The Federal Funds Effective Rate, United States</li>
+<li><span class="math inline">\(rgdp\_us_{t}\)</span>: The Real Gross Domestic Product, United States</li>
+<li><span class="math inline">\(cpi\_us_{t}\)</span>: The Consumer Price Index, United States</li>
+<li><span class="math inline">\(unemr\_us_{t}\)</span>: The Unemployment rate, United States</li>
+<li><span class="math inline">\(impor\_us_{t}\)</span>: The Imports of Goods and Services, United States</li>
+<li><span class="math inline">\(expor\_us_{t}\)</span>: The Exports of Goods and Services, United States</li>
 </ul></li>
 </ul>
 <section id="data-cleaning" class="level3">
@@ -180,7 +180,7 @@ ul.task-list li input[type="checkbox"] {
 <p>From the plot we can observe all ACF plots have a high degree of persistence over time, indicating there is significant autocorrelation in the time series data.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Below is the p-value of each variable and only the cash rate for AUS has a p-value less than 0.05 which indicates that <span class="math inline">\(crateau_{t}\)</span> is stationary.</p>
@@ -236,18 +236,18 @@ y_{t}=\mu_{0}+A_{1}y_{t-1}+\cdots+A_{p}y_{t-p}+\epsilon_{t} \\
 <p>Where N = 12 and <span class="math inline">\(y_{t}\)</span> is a vector of 12 variables.</p>
 <span class="math display">\[\begin{aligned}
 y_{t}=\begin{pmatrix}
-crateau_{t} \\
-rgdpau_{t}\\
-cpiau_{t} \\
-unemrau_{t}\\
-imporau_{t} \\
-exporau_{t} \\
-crateus_{t} \\
-rgdpus_{t} \\
-cpius_{t} \\
-unemrus_{t} \\
-imporus_{t}\\
-exporus_{t}\\
+crate\_au_{t} \\
+rgdp\_au_{t}\\
+cpi\_au_{t} \\
+unemr\_au_{t}\\
+impor\_au_{t} \\
+expor\_au_{t} \\
+crate\_us_{t} \\
+rgdp\_us_{t} \\
+cpi\_us_{t} \\
+unemr\_us_{t} \\
+impor\_us_{t}\\
+expor\_us_{t}\\
 
 \end{pmatrix}
 
