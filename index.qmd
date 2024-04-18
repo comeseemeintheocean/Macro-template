@@ -298,7 +298,7 @@ In this research, the VAR(p) model will be applied to forecast the AUD/USD excha
 ```{=tex}
 \begin{aligned}
  y_{t}=\mu_{0}+A_{1}y_{t-1}+\cdots+A_{p}y_{t-p}+\epsilon_{t} \\
-\epsilon_{t}|Y_{t-1}\sim iid(0_{13},\Sigma)
+\epsilon_{t}|Y_{t-1}\sim iid\mathcal{N}(0_{13},\Sigma)
 \end{aligned}
 ```
 
