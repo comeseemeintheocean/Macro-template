@@ -129,7 +129,7 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 <blockquote class="blockquote">
-<p><strong>Abstract.</strong> This research report explores how Bayesian VARs model predict AUD/USD exchange rate. <strong>Keywords.</strong> Bayesian Vars, Exchange rate</p>
+<p><strong>Abstract.</strong> This research report explores how Bayesian VARs model predict AUD/USD exchange rate. <strong>Keywords.</strong> Bayesian Vars, Exchange rate, Forecasting, Minnesota Prior</p>
 </blockquote>
 <section id="objective-and-motivation" class="level1">
 <h1>Objective and Motivation</h1>
@@ -198,7 +198,7 @@ import_au            0.184
 import_us            0.603
 realgdp_au           0.961
 realgdp_us           0.633
-unemployemtrate_au   0.354
+unemployemtrate_au   0.352
 unemployemtrate_us   0.358</code></pre>
 </div>
 </div>
@@ -269,6 +269,7 @@ Y =XA+E\\
 E|X\sim \mathcal{MN}_{T\times N}(0, \Sigma, I_T)\\
 Y|X,A,\Sigma\sim \mathcal{MN}_{T\times N} (XA, \Sigma, I_T)
 \end{align}\]</span>
+<p>Where <span class="math inline">\(Y\)</span> is a <span class="math inline">\(T\times 13\)</span> Matrix, <span class="math inline">\(X\)</span> is a <span class="math inline">\(T\times(1+p\times13)\)</span>, <span class="math inline">\(A\)</span> is a <span class="math inline">\((1+p\times13)\times13\)</span> matrix that contains <span class="math inline">\(\mu_{0}\)</span> and vectors of the autoregressive slope parameters and <span class="math inline">\(E\)</span> is a <span class="math inline">\(T\times13\)</span> matrix contains vetors of error terms.</p>
 <p>Where <span class="math inline">\(Y\)</span> is a <span class="math inline">\(T\times 13\)</span> Matrix, <span class="math inline">\(X\)</span> is a <span class="math inline">\(T\times(1+p\times13)\)</span>, <span class="math inline">\(A\)</span> is a <span class="math inline">\((1+p\times13)\times13\)</span> matrix that contains <span class="math inline">\(\mu_{0}\)</span> and vectors of the autoregressive slope parameters and <span class="math inline">\(E\)</span> is a <span class="math inline">\(T\times13\)</span> matrix contains vetors of error terms.</p>
 <p>For further research, we may use the predictive density function like 1-period forecast and forecast with Bayesian VARS.</p>
 
