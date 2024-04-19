@@ -342,6 +342,3 @@ Y|X,A,\Sigma\sim \mathcal{MN}_{T\times N} (XA, \Sigma, I_T)
 \end{align}
 ```
 Where $Y$ is a $T\times 13$ Matrix, $X$ is a $T\times(1+p\times13)$, $A$ is a $(1+p\times13)\times13$ matrix that contains $\mu_{0}$ and vectors of the autoregressive slope parameters and $E$ is a $T\times13$ matrix contains vetors of error terms.
-
-Where $Y$ is a $T\times 13$ Matrix, $X$ is a $T\times(1+p\times13)$, $A$ is a $(1+p\times13)\times13$ matrix that contains $\mu_{0}$ and vectors of the autoregressive slope parameters and $E$ is a $T\times13$ matrix contains vetors of error terms.
-
