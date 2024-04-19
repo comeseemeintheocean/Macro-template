@@ -220,7 +220,7 @@ unemployemtrate_au   0.010
 unemployemtrate_us   0.010</code></pre>
 </div>
 </div>
-<p>It can be concluded that all variables are integrated at 1 at the 5% significance level of the ADF test, with the conclusion folding for <span class="math inline">\(crate\_au_{t}\)</span> only at 1% significance level. Appropriate prior distributions will be used to accommodate this fact for the VAR model.</p>
+<p>It can be concluded that all variables are integrated at 1 with <span class="math inline">\(crateau_{t}\)</span> being the only stationary so the first difference should be taken to keep the time series stationary.</p>
 </section>
 </section>
 </section>
@@ -231,7 +231,7 @@ unemployemtrate_us   0.010</code></pre>
 <h4 class="anchored" data-anchor-id="the-basic-varp-model">The basic VAR(p) model</h4>
 <span class="math display">\[\begin{aligned}
 y_{t}=\mu_{0}+A_{1}y_{t-1}+\cdots+A_{p}y_{t-p}+\epsilon_{t} \\
-\epsilon_{t}|Y_{t-1}\sim iid\mathcal{N}(0_{13},\Sigma)
+\epsilon_{t}|Y_{t-1}\sim iid(0_{13},\Sigma)
 \end{aligned}\]</span>
 <p>For time <span class="math inline">\(t\)</span> = 1,2,…..,<span class="math inline">\(T\)</span>：</p>
 <ul>
@@ -270,7 +270,8 @@ E|X\sim \mathcal{MN}_{T\times N}(0, \Sigma, I_T)\\
 Y|X,A,\Sigma\sim \mathcal{MN}_{T\times N} (XA, \Sigma, I_T)
 \end{align}\]</span>
 <p>Where <span class="math inline">\(Y\)</span> is a <span class="math inline">\(T\times 13\)</span> Matrix, <span class="math inline">\(X\)</span> is a <span class="math inline">\(T\times(1+p\times13)\)</span>, <span class="math inline">\(A\)</span> is a <span class="math inline">\((1+p\times13)\times13\)</span> matrix that contains <span class="math inline">\(\mu_{0}\)</span> and vectors of the autoregressive slope parameters and <span class="math inline">\(E\)</span> is a <span class="math inline">\(T\times13\)</span> matrix contains vetors of error terms.</p>
-<p>For further research, we may use the predictive density function like 2-year-ahead forecast and forecast with Bayesian VARS.</p>
+<p>Where <span class="math inline">\(Y\)</span> is a <span class="math inline">\(T\times 13\)</span> Matrix, <span class="math inline">\(X\)</span> is a <span class="math inline">\(T\times(1+p\times13)\)</span>, <span class="math inline">\(A\)</span> is a <span class="math inline">\((1+p\times13)\times13\)</span> matrix that contains <span class="math inline">\(\mu_{0}\)</span> and vectors of the autoregressive slope parameters and <span class="math inline">\(E\)</span> is a <span class="math inline">\(T\times13\)</span> matrix contains vetors of error terms.</p>
+<p>For further research, we may use the predictive density function like 1-period forecast and forecast with Bayesian VARS.</p>
 
 
 </section>
