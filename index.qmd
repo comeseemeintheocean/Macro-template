@@ -9,7 +9,7 @@ bibliography: references.bib
 ---
 
 > **Abstract.** This research report explores how Bayesian VARs model predict AUD/USD exchange rate.
-> **Keywords.** Bayesian Vars, Exchange rate
+> **Keywords.** Bayesian Vars, Exchange rate, Forecasting, Minnesota Prior
 
 # Objective and Motivation
 
@@ -288,7 +288,7 @@ rownames(dff_adf_table) <- variable_names[-4]
 colnames(dff_adf_table)<- c("P-value")
 print(dff_adf_table)
 ```
-It can be concluded that all variables are integrated at 1 at the 5% significance level of the ADF test, with the conclusion folding for $crateau_{t}$ only at 1% significance level. Appropriate prior distributions will be used to accommodate this fact for the VAR model.
+It can be concluded that all variables are integrated at 1 at the 5% significance level of the ADF test, with the conclusion folding for $crate\_au_{t}$ only at 1% significance level. Appropriate prior distributions will be used to accommodate this fact for the VAR model.
 
 # Model and Hypotheses
 In this research, the VAR(p) model will be applied to forecast the AUD/USD exchange rate, below is the basic model that is used in this research.
