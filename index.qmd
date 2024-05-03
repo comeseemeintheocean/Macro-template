@@ -9,7 +9,7 @@ bibliography: references.bib
 ---
 
 > **Abstract.** This research report explores how Bayesian VARs model predict AUD/USD exchange rate.
-> **Keywords.** Bayesian Vars, Exchange rate, Forecasting, Minnesota Prior
+> **Keywords.** Bayesian Vars, Exchange rate, Forecasting, Minnesota Prior, Laplace distribution
 
 # Objective and Motivation
 
@@ -297,8 +297,8 @@ In this research, the VAR(p) model will be applied to forecast the AUD/USD excha
 
 ```{=tex}
 \begin{aligned}
- y_{t}=\mu_{0}+A_{1}y_{t-1}+\cdots+A_{p}y_{t-p}+\epsilon_{t} \\
-\epsilon_{t}|Y_{t-1}\sim iid\mathcal{N}(0_{13},\Sigma)
+ y_{t}&=\mu_{0}+A_{1}y_{t-1}+\cdots+A_{p}y_{t-p}+\epsilon_{t} \\
+\epsilon_{t}|Y_{t-1} &\sim iid\mathcal{N}(0_{13},\Sigma)
 \end{aligned}
 ```
 
@@ -333,14 +333,409 @@ expor\_us_{t}\\
 \end{aligned}
 ```
 
-#### The Matrix notation
+For further research, we may use the predictive density function like 2-year-ahead forecast and forecast with Bayesian VARS.
+
+# Modelling Framework
+
+## The basic model
 ```{=tex}
 \begin{align}
-Y =XA+E\\
-E|X\sim \mathcal{MN}_{T\times N}(0, \Sigma, I_T)\\
-Y|X,A,\Sigma\sim \mathcal{MN}_{T\times N} (XA, \Sigma, I_T)
+Y &=XA+E\\
+E|X&\sim \mathcal{MN}_{T\times N}(0, \Sigma, I_T)\\
+Y|X,A,\Sigma&\sim \mathcal{MN}_{T\times N} (XA, \Sigma, I_T)
 \end{align}
 ```
+
 Where $Y$ is a $T\times 13$ Matrix, $X$ is a $T\times(1+p\times13)$, $A$ is a $(1+p\times13)\times13$ matrix that contains $\mu_{0}$ and vectors of the autoregressive slope parameters and $E$ is a $T\times13$ matrix contains vetors of error terms.
 
-For further research, we may use the predictive density function like 2-year-ahead forecast and forecast with Bayesian VARS.
+The kernel of the likelihood function:
+
+```{=tex}
+\begin{align}
+L(A,\Sigma|Y,X) \propto det(\Sigma)^{-\frac{T}{2}}exp\{-\frac{1}{2}tr[\Sigma^{-1}(Y-XA)'(Y-XA)]\}
+\end{align}
+```
+
+The basic model is based on **Natural-conjugate prior distribution**, where the $A$ follows a Matrix-variate Normal distribution and $\Sigma$ follows an Inverse Wishart distribution.
+```{=tex}
+\begin{align}
+p(A,\Sigma) &= p(A|\Sigma)p(\Sigma) \\
+A|\Sigma &\sim \mathcal{MN}_{K \times N}(\underline{A},\Sigma,\underline{V}) \\
+\Sigma &\sim \mathcal{IW}_N(\underline{S},\underline{\nu})
+\end{align}
+```
+
+The **Minnesota prior** is typically a good choice for specifying priors in BVAR model especially when the model involves many macroeconomic variables. It assumes the variables follow a random walk and it is suitable for unit root non-stationary variables such as in our case, most variables are integrated at 1 at the 5% significance level of the ADF test, where: 
+
+```{=tex}
+\begin{align}
+\underline{A} &= \begin{bmatrix}0_{N \times 1} & I_{N} & 0_{N \times (p-1)N}\end{bmatrix}'\\
+
+\underline{V} &= diag( \begin{bmatrix} \kappa_2 & \kappa_1(p^{-2}\otimes I_N') \end{bmatrix})
+
+\end{align}
+```
+The prior mean $\underline{A}$ for the first lag of each variable (the identity matrix portion) is one, while all other coefficients including intercepts, are zeroes. For the column-specific prior covariance $\underline{V}$, two shrinkage hyper-parameters $\kappa_1$ and $\kappa_2$ represent the overall shrinkage level for slopes and constant terms respectively. 
+
+For **posterior distribution**, the kernel of the posterior distribution takes the form of the product of the likelihood and the prior distributions.
+```{=tex}
+\begin{align*}
+p(A,\Sigma|Y,X) &\propto L(A,\Sigma|Y,X)p(A,\Sigma) \\
+&= L(A,\Sigma|Y,X)p(A|\Sigma)p(\Sigma)
+\end{align*}
+```
+
+```{=tex}
+\begin{align}
+p(A,\Sigma|Y,X) &\propto \det(\Sigma)^{-\frac{T}{2}} \\
+&\times exp\{-\frac{1}{2}tr[\Sigma^{-1}(Y-XA)'(Y-XA)]\} \\
+&\times \det(\Sigma)^{-\frac{N+K+\underline{v}+1}{2}} \\
+&\times exp\{-\frac{1}{2}tr[\Sigma^{-1}(A-\underline{A}) \underline{V}^{-1}(A-\underline{A})]\} \\
+&\times exp\{-\frac{1}{2}tr[\Sigma^{-1}\underline{S}]\}
+\end{align}
+```
+
+The kernel can be represent as the normal-inverse Wishart distribution and we can get the following **full conditional joint posterior distribution: **
+
+```{=tex}
+\begin{align}
+p(A|Y,X,\Sigma) &= \mathcal{MN}_{K \times N}(\bar{A}, \Sigma, \bar{V}) \\
+p(\Sigma|Y,X) &= \mathcal{IW}_N(\bar{S},\bar{\nu}) \\
+\\
+\bar{V} &= (X'X + \underline{V}^{-1})^{-1} \\
+\bar{A} &= \bar{V}(X'Y + \underline{V}^{-1}\underline{A}) \\
+\bar{\nu} &= T + \underline{\nu} \\
+\bar{S} &= \underline{S} + Y'Y + \underline{A}'\underline{V}^{-1}\underline{A} - \bar{A}'\bar{V}^{-1}\bar{A} \\
+
+\end{align}
+```
+
+## The extended model
+The extended model will be built based on the the change in distribution of the error to **Laplace distribution** instead of the normally distributed errors assumption. The Laplace distribution is suitable for describing financial anomalies due to its sharp peaks and thick tails and the use of this distribution improves the robustness of the model to anomalies and is particularly suitable for financial time series. As our variables are most financial time series data, a Laplace distribution is more suitable to apply to our error term.
+
+Following [Eltoft,Kim, and Lee 2006b](https://ieeexplore.ieee.org/document/1618702), for covariance with a general Kronecker structure, if each ${\lambda_t}$ has an independent exponential distribution with mean ${\alpha}$, then marginally ${U_t}$ has a multivariate Laplace distribution with mean vector 0 and covariance matrix ${\alpha\Sigma}$.
+
+```{=tex}
+\begin{align}
+U_t &\sim \text{Laplace}(0, \alpha\Sigma) \\
+U_t | \lambda_t &\sim \mathcal{MN}(0, \Sigma, \lambda_t I_T) \\
+\lambda_t &\sim \text{Exponential}(\frac{1}{\alpha})
+\end{align}
+```
+
+The kernel of the likelihood function:
+
+```{=tex}
+\begin{align}
+L(A,\Sigma,\lambda_t|Y,X) &\propto \det(\Sigma)^{-\frac{T}{2}} \det(\lambda_t I_T)^{-\frac{N}{2}} exp\{-\frac{1}{2} tr[\Sigma^{-1} (Y-XA)' (\lambda_t I_T)^{-1} (Y-XA) ]\}
+\end{align}
+```
+
+For posteriors distribution, $A$, $\Sigma$ and $\lambda_t$ can then be derived using the likelihood and the prior distributions as follows:
+
+```{=tex}
+\begin{align}
+p(A,\Sigma|Y,X) &\propto L(A,\Sigma,\lambda_t|Y,X)p(A,\Sigma) \\
+\\
+&= \det(\Sigma)^{-\frac{T}{2}} \det(\lambda_t I_T)^{-\frac{N}{2}} exp\{-\frac{1}{2} tr[\Sigma^{-1} (Y-XA)' (\lambda_t I_T)^{-1} (Y-XA) ]\} \\
+&\times \det(\Sigma)^{-\frac{N+k+\underline{\nu}+1}{2}} exp\{-\frac{1}{2}tr[\Sigma^{-1}(A-\underline{A})'(\underline{V})^{-1}(A-\underline{A})]\} \\
+&\times exp\{-\frac{1}{2}tr[\Sigma^{-1}\underline{S}]\} \\
+&= \det(\Sigma)^{-\frac{T+N+K+\underline{\nu}+1}{2}} \det(\lambda_t I_T)^{-\frac{N}{2}} \\
+&\times exp\{-\frac{1}{2} tr[\Sigma^{-1}(Y'(\lambda_t I_T)^{-1}Y - 2A'X'(\lambda_t I_T)^{-1}Y + A'X'(\lambda_t I_T)^{-1}XA \\
+&+ A'\underline{V}^{-1}A -2A'\underline{V}^{-1}\underline{A} + \underline{A}'\underline{V}^{-1}\underline{A} + \underline{S})]\}
+
+\end{align}
+```
+
+The kernel can be rearranged in the form of the **Matrix-variate normal-inverse Wishart distribution**.
+
+```{=tex}
+\begin{align}
+p(A,\Sigma|Y,X) &\sim MNIW(\bar{A},\bar{V},\bar{S},\bar{\nu}) \\
+&\\
+\bar{V} &= (X'(\lambda_t I_T)^{-1}X + \underline{V}^{-1})^{-1} \\
+\bar{A} &= \bar{V}(X'(\lambda_t I_T)^{-1}Y + \underline{V}^{-1}\underline{A}) \\
+\bar{\nu} &= T + \underline{\nu}\\
+\bar{S} &= Y'(\lambda_t I_T)^{-1}Y + \underline{A}'\underline{V}^{-1}\underline{A} + \underline{S} - \bar{A}'\bar{V}^{-1}\bar{A}
+\end{align}
+```
+
+The kernel of the fully conditional posterior distribution of $\lambda_t$ is then derived as follows:
+
+```{=tex}
+\begin{align}
+p(\lambda_t|Y,X,A,\Sigma) &\propto L(A,\Sigma,\lambda_t|Y,X)p(\lambda_t) \\
+\\
+&\propto \det(\lambda_t I_T)^{-\frac{N}{2}} exp\{-\frac{1}{2} tr[\Sigma^{-1} (Y-XA)' (\lambda_t I_T)^{-1} (Y-XA) ]\} \\
+&\times \frac{1}{\alpha}exp\{ -\frac{1}{\alpha}\lambda_t \}\\
+
+&= \lambda_t^{-\frac{TN}{2}} exp\{-\frac{1}{2}\frac{1}{\lambda_t} tr[\Sigma^{-1}(Y-XA)'(Y-XA)]\}\\
+&\times exp\{-\frac{1}{\alpha}\lambda_t \}\\
+
+&= \lambda_t^{-\frac{TN}{2}+1-1} exp\{-\frac{1}{2}[\frac{[tr[\Sigma^{-1}(Y-XA)'(Y-XA)]}{\lambda_t} +\frac{2}{\alpha}\lambda_t]\} 
+\end{align}
+```
+
+The above expression can be rearranged in the form of a Generalized inverse Gaussian distribution kernel as follows:
+
+```{=tex}
+\begin{align}
+\lambda_t|Y,A,\Sigma &\sim GIG(a,b,p) \\
+\\
+a &=\frac{2}{\alpha} \\
+b &= tr[\Sigma^{-1}(Y-XA)'(Y-XA)] \\
+p &= -\frac{TN}{2}+1
+\end{align}
+```
+
+## Proof of model validity 
+### Proof of basic model validity 
+To test the model validity, we simulated 1000 observations from a bi-variate Gaussian random walk process with the covariance matrix equal to the identity matrix of order 2 to see how the autoregressive and the covariance matrices and the posterior mean of the constant term behave.
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+set.seed(123)
+n <- 1000  # Number of observations
+mu <- 0    # Mean
+sigma <- 1 # Standard deviation
+
+# Simulate two independent random walks
+simulation_data <- data.frame(RW1 = cumsum(rnorm(n, mu, sigma)),RW2 = cumsum(rnorm(n, mu, sigma)))
+
+plot(simulation_data$RW1, type = 'l', ylim = range(simulation_data), col = 'red', ylab = 'Value', xlab = 'Time', main = 'Bivariate Random Walk')
+lines(simulation_data$RW2,col = 'blue')
+legend("topright",legend = c("RW1", "RW2"), col = c("red", "blue"), lty = 1, cex = 0.6)
+```
+
+```{r static data setup}
+#| echo: false
+#| message: false
+#| warning: false
+## Present data X, Y
+y             = ts(merged_data[,1:ncol(merged_data )])
+Y             = ts(y[5:nrow(y),], frequency=4)
+X             = matrix(1,nrow(Y),1)
+for (i in 1:frequency(Y)){
+  X           = cbind(X,y[5:nrow(y)-i,])
+}
+ 
+## Pre-setup 
+N             = ncol(Y)
+p             = frequency(Y)
+A.hat         = solve(t(X)%*%X)%*%t(X)%*%Y
+Sigma.hat     = t(Y-X%*%A.hat)%*%(Y-X%*%A.hat)/nrow(Y)
+
+# Minnesota prior 
+kappa.1       = 0.02^2                                    
+kappa.2       = 100                                   
+A.prior       = matrix(0,nrow(A.hat),ncol(A.hat))
+A.prior[2:(N+1),] = diag(N) 
+V.prior       = diag(c(kappa.2,kappa.1*((1:p)^(-2))%x%rep(1,N)))
+S.prior       = diag(diag(Sigma.hat))
+nu.prior      = N+1
+```
+
+```{r function based on basic model}
+#| echo: true
+#| message: false
+#| warning: false
+
+## Posterior sample draw
+
+    posterior.draws       = function (S, Y, X){
+  
+    # normal-inverse Wishard posterior parameters
+    V.bar.inv         = t(X)%*%X + diag(1/diag(V.prior))
+    V.bar             = solve(V.bar.inv)
+    A.bar             = V.bar%*%(t(X)%*%Y + diag(1/diag(V.prior))%*%A.prior)
+    nu.bar            = nrow(Y) + nu.prior
+    S.bar             = S.prior + t(Y)%*%Y + t(A.prior)%*%diag(1/diag(V.prior))%*%A.prior - t(A.bar)%*%V.bar.inv%*%A.bar
+    S.bar.inv         = solve(S.bar)
+  
+    # posterior draws 
+    Sigma.posterior   = rWishart(S, df=nu.bar, Sigma=S.bar.inv)
+    Sigma.posterior   = apply(Sigma.posterior,3,solve)
+    Sigma.posterior   = array(Sigma.posterior,c(N,N,S))
+    A.posterior       = array(rnorm(prod(c(dim(A.bar),S))),c(dim(A.bar),S))
+    L                 = t(chol(V.bar))
+    for (s in 1:S){
+      A.posterior[,,s]= A.bar + L%*%A.posterior[,,s]%*%chol(Sigma.posterior[,,s])
+    }
+ 
+    output            = list(A.posterior=A.posterior, Sigma.posterior=Sigma.posterior)
+    return(output)
+}
+```
+
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+# simulation data generating process
+p=1
+N=2
+
+Y_simulation = (simulation_data[(p+1):nrow(simulation_data),c(1,2)]) #contains the obs of the two variables and moves first obs
+X_simulation = matrix(1,nrow(Y_simulation),1) #initializes the X matrix with a column of ones(intercept) in the VAR model.                                      
+# adds the lagged values of the two variables to the X matrix, in this case, it adds one lagged value for each of the two variables.
+for (i in 1:p){
+  X_simulation     = cbind(X_simulation, (simulation_data[(p+1):nrow(simulation_data)-i,c(1,2)]))
+}
+
+Y_simulation = as.matrix(Y_simulation)
+X_simulation = as.matrix(X_simulation)
+
+N           = ncol(Y_simulation)                          
+p           = frequency(Y_simulation)
+A.hat       = solve(t(X_simulation)%*%X_simulation)%*%t(X_simulation)%*%Y_simulation
+Sigma.hat   = t(Y_simulation-X_simulation%*%A.hat)%*%(Y_simulation-X_simulation%*%A.hat)/nrow(Y_simulation)
+
+# Minnesota prior
+kappa.1             = 0.02^2                                    
+kappa.2             = 100                                  
+A.prior             = matrix(0,nrow(A.hat),ncol(A.hat))
+A.prior[2:(N + 1),] = diag(N)
+V.prior             = diag(c(kappa.2,kappa.1*((1:p)^(-2))%x%rep(1,N)))
+S.prior             = diag(diag(Sigma.hat))
+nu.prior            = N+1
+
+posterior.sample.draws = posterior.draws(S=1000, Y=Y_simulation, X=X_simulation) 
+```
+
+```{r}
+Sigma_posterior_mean <- apply(posterior.sample.draws$Sigma.posterior, 1:2, mean)
+
+print("Posterior mean of the covariance matrix Sigma:")
+print(Sigma_posterior_mean)
+```
+
+```{r}
+# Calculate posterior mean of autoregressive coefficients (including the constant term)
+A_posterior_means <- apply(posterior.sample.draws$A.posterior, 1:2, mean)
+
+# Print the posterior mean matrix for autoregressive coefficients A
+print("Posterior mean of the autoregressive coefficient matrix A:")
+print(A_posterior_means)
+```
+The diagonal entries of the covariance matrix are close to 1, which indicates that each variable has a strong autoregressive relationship with itself and similarly, the diagonal elements of the autoregressive coefficient matrix are close to one, suggesting that each variable is heavily influenced by its past value. Besides, the posterior means for the constant terms is close to 0, the above can indicate that the estimated parameter constant term and means are consistent with what we expect given a Minnesota prior.
+
+### Proof of extended model
+The Gibbs sampler method will be applied to generate random draws from the full conditional posterior distribution:
+
+1. Draw $\Sigma^{(s)}$ from the $IW(\bar{S},\bar{\nu})$ distribution.
+2. Draw $A^{(s)}$ from the $MN(\bar{A},\Sigma^{(s)}, \bar{V})$ distribution.
+3. Draw $\lambda_t^{(s)}$ from $GIG(a,b,p)$.
+
+Repeat steps 1, step 2 and 3 for $S_1$+$S_2$times.
+
+Discard the first draws that allowed the algorithm to converge to the stationary posterior distribution.
+
+Output is $\left\{ {A^{(s)}, \Sigma^{(s)}}, \lambda_t^{(s)}\right\}^{S_1+S_2}_{s=S_1+1}$.
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+# setup 
+S1                = 5000                             # will be discard
+S2                = 45000                            
+total_S           = S1+S2
+A.posterior       = array(NA, dim = c((1+N*p),N,S1+S2))
+Sigma.posterior   = array(NA, dim = c(N,N,S1+S2))
+lambda.posterior  = matrix(NA, S1+S2, 1)
+
+# set the initial value of lambda
+lambda.posterior[1] = 5                               
+
+# parameter alpha
+lambda.priors = list(alpha = 1)
+```
+
+```{r}
+posterior.draws.extended = function (total_S, Y, X){
+for (s in 1:total_S){
+
+    V.bar.inv              = t(X)%*%X + diag(1/diag(lambda.posterior[s]* V.prior)) 
+    V.bar                  = solve(V.bar.inv)
+    A.bar                  = V.bar%*%(t(X)%*%Y + diag(1/diag(lambda.posterior[s]* V.prior))%*%A.prior)
+    nu.bar                 = nrow(Y) + nu.prior
+    S.bar                  = S.prior + t(Y)%*%Y + t(A.prior)%*%diag(1/diag(lambda.posterior[s]* V.prior))%*%A.prior - t(A.bar)%*%V.bar.inv%*%A.bar
+    S.bar.inv              = solve(S.bar)
+  
+    Sigma.posterior.IW     = rWishart(1, df=nu.bar, Sigma=S.bar.inv)
+    Sigma.posterior.draw   = apply(Sigma.posterior.IW,3,solve)
+    Sigma.posterior[,,s]   = Sigma.posterior.draw
+    A.posterior[,,s]       = array(rnorm(prod(c(dim(A.bar),1))),c(dim(A.bar),1))
+    L                      = t(chol(V.bar))
+    A.posterior[,,s]       = A.bar + L%*%A.posterior[,,s]%*%chol(Sigma.posterior[,,s])
+    
+    a                             = 2 / lambda.priors$alpha
+    deviation_matrix              = A.posterior[,,s] - A.prior
+    weighted_deviation_squared    = t(deviation_matrix) %*% solve(V.prior) %*% deviation_matrix
+    b                             = sum(diag(solve(Sigma.posterior[,,s] %*% weighted_deviation_squared)))
+    p                             = - (T * N) / 2 + 1            
+    
+    if (s!=total_S){
+      lambda.posterior[s+1] = GIGrvg::rgig(n=1, lambda = p, chi = b, psi = a)
+    }
+}
+    output  = list (A.posterior.exten = A.posterior, 
+                    Sigma.posterior.exten = Sigma.posterior, 
+                    lambda.posterior.exten = lambda.posterior)
+    return(output)
+}
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+# simulation data generating process
+p=1
+N=2
+
+Y_simulation = (simulation_data[(p+1):nrow(simulation_data),c(1,2)]) 
+X_simulation = matrix(1,nrow(Y_simulation),1)                                             
+for (i in 1:p){
+  X_simulation     = cbind(X_simulation, (simulation_data[(p+1):nrow(simulation_data)-i,c(1,2)]))
+}
+
+Y_simulation = as.matrix(Y_simulation)
+X_simulation = as.matrix(X_simulation)
+
+
+## Test on basic model
+N           = ncol(Y_simulation)                          
+p           = frequency(Y_simulation)
+A.hat       = solve(t(X_simulation)%*%X_simulation)%*%t(X_simulation)%*%Y_simulation
+Sigma.hat   = t(Y_simulation-X_simulation%*%A.hat)%*%(Y_simulation-X_simulation%*%A.hat)/nrow(Y_simulation)
+
+# Prior distribution (with Minnesota prior)
+kappa.1             = 0.02^2                                     
+kappa.2             = 100                                   
+A.prior             = matrix(0,nrow(A.hat),ncol(A.hat))
+A.prior[2:(N + 1),] = diag(N)
+V.prior             = diag(c(kappa.2,kappa.1*((1:p)^(-2))%x%rep(1,N)))
+S.prior             = diag(diag(Sigma.hat))
+nu.prior            = N+1
+
+# conduct simulation
+posterior.extended = posterior.draws.extended(total_S = total_S, Y=Y_simulation, X=X_simulation)
+```
+
+```{r}
+Sigma_posterior_mean <- apply(posterior.extended$Sigma.posterior, 1:2, mean)
+
+print("Posterior mean of the covariance matrix Sigma:")
+print(Sigma_posterior_mean)
+```
+
+```{r}
+A_posterior_means <- apply(posterior.extended$A.posterior, 1:2, mean)
+
+print("Posterior mean of the autoregressive coefficient matrix A:")
+print(A_posterior_means)
+```
+Similarly, the posterior mean of the autoregressive and the covariance matrices are close to an identity matrix and the posterior mean of the constant term is close to zero, so we can conclude that the extended model is also valid.
