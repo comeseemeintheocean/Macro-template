@@ -614,10 +614,10 @@ print(Sigma_posterior_mean)
 ```{r}
 # Calculate posterior mean of autoregressive coefficients (including the constant term)
 A_posterior_means <- apply(posterior.sample.draws$A.posterior, 1:2, mean)
-
-# Print the posterior mean matrix for autoregressive coefficients A
-print("Posterior mean of the autoregressive coefficient matrix A:")
-print(A_posterior_means)
+A_df <- as.data.frame(A_posterior_means)
+colnames(A_df) <- c("Simulation_Y1", "Simulation_Y2")
+rownames(A_df) <- c("Constant", "Y1-Lag", "Y2-Lag")
+knitr::kable(A_df, caption = "Posterior Mean of A")
 ```
 The diagonal entries of the covariance matrix are close to 1, which indicates that each variable has a strong autoregressive relationship with itself and similarly, the diagonal elements of the autoregressive coefficient matrix are close to one, suggesting that each variable is heavily influenced by its past value. Besides, the posterior means for the constant terms is close to 0, the above can indicate that the estimated parameter constant term and means are consistent with what we expect given a Minnesota prior.
 
