@@ -56,8 +56,37 @@ library(readabs)
 library(xts)
 library(tseries)
 library(fUnitRoots) 
+library(plot3D)
+library(MASS)
+library(HDInterval)
+library(plotly)       
+library(mgcv)
+library(mvtnorm)
 fredr_set_key("75b470c4883ecfd5a7b4185f30437bd0")
 ```
+
+
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| results: hide
+
+# Define colors
+mcxs1  = "#05386B"
+mcxs2  = "#379683"
+mcxs3  = "#5CDB95"
+mcxs4  = "#8EE4AF"
+mcxs5  = "#EDF5E1"
+
+mcxs1.rgb   = col2rgb(mcxs1)
+mcxs1.shade1= rgb(mcxs1.rgb[1],mcxs1.rgb[2],mcxs1.rgb[3], alpha=120, maxColorValue=255)
+mcxs2.rgb   = col2rgb(mcxs2)
+mcxs2.shade1= rgb(mcxs2.rgb[1],mcxs2.rgb[2],mcxs2.rgb[3], alpha=120, maxColorValue=255)
+
+```
+
 
 ```{r, warning=FALSE, message=FALSE}
 #| echo: false
@@ -333,7 +362,7 @@ expor\_us_{t}\\
 \end{aligned}
 ```
 
-For further research, we may use the predictive density function like 2-year-ahead forecast and forecast with Bayesian VARS.
+For further research, we may use the predictive density function like 3-year-ahead forecast and forecast with Bayesian VARS.
 
 # Modelling Framework
 
@@ -739,3 +768,408 @@ print("Posterior mean of the autoregressive coefficient matrix A:")
 print(A_posterior_means)
 ```
 Similarly, the posterior mean of the autoregressive and the covariance matrices are close to an identity matrix and the posterior mean of the constant term is close to zero, so we can conclude that the extended model is also valid.
+
+# Forecasting
+The forecast will focus on two models with the sample period from 1990 Q1 to 2023Q4, and forecast how the exchange rate changes for the future up to 2026Q4.
+## Forecasting with basic model
+```{r forecasting static data}
+#| echo: false
+#| message: false
+#| warning: false
+## Present data X, Y
+y             = ts(merged_data[,1:ncol(merged_data)])
+Y             = ts(y[5:nrow(y),], frequency=4)
+X             = matrix(1,nrow(Y),1)
+for (i in 1:frequency(Y)){
+  X           = cbind(X,y[5:nrow(y)-i,])
+}
+ 
+## Pre-setup 
+N             = ncol(Y)
+p             = frequency(Y)
+A.hat         = solve(t(X)%*%X)%*%t(X)%*%Y
+Sigma.hat     = t(Y-X%*%A.hat)%*%(Y-X%*%A.hat)/nrow(Y)
+
+# Prior distribution specification - Minnesota prior 
+kappa.1       = 0.02^2                                   
+kappa.2       = 100                                   
+A.prior       = matrix(0,nrow(A.hat),ncol(A.hat))
+A.prior[2,1]  = 1
+V.prior       = diag(c(kappa.2,kappa.1*((1:p)^(-2))%x%rep(1,N)))
+S.prior       = diag(diag(Sigma.hat))
+nu.prior      = N+1
+
+h                      = 12
+S                      = 50000
+Y.h                    = array(NA,c(h,N,S))
+
+## Applying function 
+posterior.sample.draws = posterior.draws(S=50000, Y=Y, X=X)
+A.posterior.simu       = posterior.sample.draws$A.posterior
+Sigma.posterior.simu   = posterior.sample.draws$Sigma.posterior
+```
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+# sampling predictive density
+for (s in 1:S){
+  A.posterior.draw     = A.posterior.simu[,,s]
+  Sigma.posterior.draw = Sigma.posterior.simu[,,s]
+    x.Ti               = Y[(nrow(Y)-p+1):nrow(Y),]
+    x.Ti               = x.Ti[p:1,]
+  for (i in 1:h){
+    x.T               = c(1,as.vector(t(x.Ti)))
+    Y.f               = rmvnorm(1, mean = x.T%*%A.posterior.draw, sigma=Sigma.posterior.draw)
+      x.Ti            = rbind(Y.f,x.Ti[1:(p-1),])
+    Y.h[i,,s]         = Y.f[1:N]
+  }
+}
+```
+
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+################################### may not use
+# plots of forecasts
+ex_rate.point.f    = apply(Y.h[,1,],1,mean) 
+ex_rate.interval.f = apply(Y.h[,1,],1,hdi,credMass=0.90)
+ex_rate.range      = range(y[,1],ex_rate.interval.f)
+
+
+par(mfrow=c(1,1), mar=rep(3,4),cex.axis=1)
+plot(1:(length(y[,1])+h),c(y[,1],ex_rate.point.f), type="l", ylim=ex_rate.range, axes=FALSE, xlab="", ylab="", lwd=2, col=mcxs1)
+axis(1,c(1,21,41,61,81,101, nrow(y),nrow(y)+h),c("1992","1997","2002","2007","2012","2017","",""), col="black")
+# Assuming ex_rate.range is already set correctly as per your code
+axis(2, at=seq(from=ex_rate.range[1], to=ex_rate.range[2], length.out=5), 
+     labels=round(seq(from=ex_rate.range[1], to=ex_rate.range[2], length.out=5), 2),
+     col="black")
+
+end_y_value <- ex_rate.point.f[12]  # Set this to your actual true y-value
+abline(h=end_y_value, col="red", lty=2, lwd=1)
+
+
+text(x=nrow(y), y=9.65, srt=90, "2025-12")
+abline(v=nrow(y), col=mcxs4)
+text(x=nrow(y)+h, y=9.65, srt=90, "2026-12")
+abline(v=nrow(y)+h, col=mcxs2)
+
+
+polygon(c(length(y[,1]):(length(y[,1])+h),(length(y[,1]):(length(y[,1])+h))[13:1]),
+        c(y[136,1],ex_rate.interval.f[1,],ex_rate.interval.f[2,12:1],y[136,1]),
+        col=mcxs1.shade1, border=mcxs1.shade1)
+```
+
+```{r}
+ex_rate.point.f    = apply(Y.h[,1,],1,mean) 
+ex_rate.interval.f = apply(Y.h[,1,],1,hdi,credMass=0.90)
+ex_rate.range      = range(y[,1],ex_rate.interval.f)
+
+true_y_value <- ex_rate.point.f[12]  # Set this to your actual true y-value
+
+# Define the range and labels for the y-axis
+y_min <- min(ex_rate.range[1], true_y_value)  # Adjust as necessary to include true_y_value
+y_max <- max(ex_rate.range[2], true_y_value)
+num_labels <- 4  # You can adjust the number of labels
+
+# Generate a sequence of y-values for the axis that includes true_y_value
+y_values <- pretty(c(y_min, y_max), num_labels)
+if(!true_y_value %in% y_values) {
+  y_values <- sort(c(y_values))
+}
+
+# Generate labels for the y-axis, ensuring true_y_value is included and highlighted
+y_labels <- sprintf("%.2f", y_values)
+y_labels[y_values == true_y_value] <- paste(y_labels[y_values == true_y_value], "(True Value)", sep=" ")
+
+# Plot adjustments
+plot(1:(length(y[,1])+h), c(y[,1], ex_rate.point.f), type="l", ylim=c(min(y_values), max(y_values)), axes=FALSE, xlab="", ylab="", lwd=2, col=mcxs1)
+axis(1, c(1, 21, 41, 61, 81, 101, nrow(y), nrow(y)+h), c("1992", "1997", "2002", "2007", "2012", "2017", "", ""), col="black")
+axis(2, at=y_values, labels=y_labels, col="black")
+
+# Red dashed line for the true y-value
+abline(h=true_y_value, col="red", lty=2, lwd=1)
+
+
+text(x=nrow(y), y=9.65, srt=90, "2025-12")
+abline(v=nrow(y), col=mcxs4)
+text(x=nrow(y)+h, y=9.65, srt=90, "2026-12")
+abline(v=nrow(y)+h, col=mcxs2)
+legend(136, 1.2, legend=c("Y2023Q4", "Y2026Q4"), col=c(mcxs4, mcxs2), lty=1, cex=0.45)
+
+polygon(c(length(y[,1]):(length(y[,1])+h),(length(y[,1]):(length(y[,1])+h))[13:1]),
+        c(y[136,1],ex_rate.interval.f[1,],ex_rate.interval.f[2,12:1],y[136,1]),
+        col=mcxs1.shade1, border=mcxs1.shade1)
+
+```
+
+```{r}
+limits.1    = range(Y.h[,1,])
+point.f     = apply(Y.h[,1,],1,mean)
+interval.f  = apply(Y.h[,1,],1,hdi,credMass=0.90)
+
+x           = seq(from=limits.1[1], to=limits.1[2], length.out=100)
+z           = matrix(NA,h,99)
+for (i in 1:h){
+  z[i,]     = hist(Y.h[i,1,], breaks=x, plot=FALSE)$density
+}
+x           = hist(Y.h[i,1,], breaks=x, plot=FALSE)$mids
+yy          = 1:h
+z           = t(z)
+
+theta = 180
+phi   = 15.5
+f4    = persp3D(x=x, y=yy, z=z, phi=phi, theta=theta, xlab="\nerate[t+h|t]", ylab="h", zlab="\npredictive densities of erate", shade=NA, border=NA, ticktype="detailed", nticks=3,cex.lab=1, col=NA,plot=FALSE)
+perspbox (x=x, y=yy, z=z, bty="f", col.axis="black", phi=phi, theta=theta, xlab="\nerate[t+h|t]", ylab="h", zlab="\npredictive densities of erate", ticktype="detailed", nticks=3,cex.lab=1, col = NULL, plot = TRUE)
+polygon3D(x=c(interval.f[1,],interval.f[2,h:1]), y=c(1:h,h:1), z=rep(0,2*h), col = mcxs1.shade1, NAcol = "white", border = NA, add = TRUE, plot = TRUE)
+for (i in 1:h){
+  f4.l = trans3d(x=x, y=yy[i], z=z[,i], pmat=f4)
+  lines(f4.l, lwd=0.5, col="black")
+}
+f4.l1 = trans3d(x=point.f, y=yy, z=0, pmat=f4)
+lines(f4.l1, lwd=2, col=mcxs1)
+```
+
+### Forecasting on extended model
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+# setup 
+S1                = 5000                             # will be discard
+S2                = 45000                            
+total_S           = S1+S2
+A.posterior       = array(NA, dim = c((1+N*p),N,S1+S2))
+Sigma.posterior   = array(NA, dim = c(N,N,S1+S2))
+lambda.posterior  = matrix(NA, S1+S2, 1)
+
+# set the initial value of lambda
+lambda.posterior[1] = 5                               
+
+# parameter alpha
+lambda.priors = list(alpha = 1)
+
+posterior.draws.extended = function (total_S, Y, X){
+for (s in 1:total_S){
+
+    V.bar.inv              = t(X)%*%X + diag(1/diag(lambda.posterior[s]* V.prior)) 
+    V.bar                  = solve(V.bar.inv)
+    A.bar                  = V.bar%*%(t(X)%*%Y + diag(1/diag(lambda.posterior[s]* V.prior))%*%A.prior)
+    nu.bar                 = nrow(Y) + nu.prior
+    S.bar                  = S.prior + t(Y)%*%Y + t(A.prior)%*%diag(1/diag(lambda.posterior[s]* V.prior))%*%A.prior - t(A.bar)%*%V.bar.inv%*%A.bar
+    S.bar.inv              = solve(S.bar)
+  
+    Sigma.posterior.IW     = rWishart(1, df=nu.bar, Sigma=S.bar.inv)
+    Sigma.posterior.draw   = apply(Sigma.posterior.IW,3,solve)
+    Sigma.posterior[,,s]   = Sigma.posterior.draw
+    A.posterior[,,s]       = array(rnorm(prod(c(dim(A.bar),1))),c(dim(A.bar),1))
+    L                      = t(chol(V.bar))
+    A.posterior[,,s]       = A.bar + L%*%A.posterior[,,s]%*%chol(Sigma.posterior[,,s])
+    
+    a                             = 2 / lambda.priors$alpha
+    deviation_matrix              = A.posterior[,,s] - A.prior
+    weighted_deviation_squared    = t(deviation_matrix) %*% solve(V.prior) %*% deviation_matrix
+    b                             = sum(diag(solve(Sigma.posterior[,,s] %*% weighted_deviation_squared)))
+    p                             = - (T * N) / 2 + 1            
+    
+    if (s!=total_S){
+      lambda.posterior[s+1] = GIGrvg::rgig(n=1, lambda = p, chi = b, psi = a)
+    }
+}
+    output  = list (A.posterior.exten = A.posterior, 
+                    Sigma.posterior.exten = Sigma.posterior, 
+                    lambda.posterior.exten = lambda.posterior)
+    return(output)
+}
+
+S1                         = 5000                              # determine the
+S2                         = 45000                             # number of draws 
+total_S                    = S1+S2
+posterior.ext              = posterior.draws.extended(total_S = total_S, Y=Y, X=X)
+A.posterior.ext.simu       = posterior.ext$A.posterior.exten[,,(S1+1):total_S]
+Sigma.posterior.ext.simu   = posterior.ext$Sigma.posterior.exten[,,(S1+1):total_S]
+
+## Three-year ahead forecasting h=12
+# set up
+h                          = 12
+S                          = 45000
+Y.h.ext                    = array(NA,c(h,N,S))
+```
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+# sampling predictive density
+for (s in 1:S){
+  A.posterior.draw         = A.posterior.ext.simu[,,s]
+  Sigma.posterior.draw     = Sigma.posterior.ext.simu[,,s]
+    x.Ti                   = Y[(nrow(Y)-p+1):nrow(Y),]
+    x.Ti                   = x.Ti[p:1,]
+  for (i in 1:h){
+    x.T                    = c(1,as.vector(t(x.Ti)))
+    Y.f                    = rmvnorm(1, mean = x.T%*%A.posterior.draw, sigma=Sigma.posterior.draw)
+      x.Ti                 = rbind(Y.f,x.Ti[1:(p-1),])
+    Y.h.ext[i,,s]          = Y.f[1:N]
+  }
+}
+```
+
+```{r}
+##################### may not use
+# plots of forecasts
+ex_rate.point.f    = apply(Y.h.ext[,1,],1,mean) 
+ex_rate.interval.f = apply(Y.h.ext[,1,],1,hdi,credMass=0.90)
+ex_rate.range      = range(y[,1],ex_rate.interval.f)
+
+
+par(mfrow=c(1,1), mar=rep(3,4),cex.axis=1)
+plot(1:(length(y[,1])+h),c(y[,1],ex_rate.point.f), type="l", ylim=ex_rate.range, axes=FALSE, xlab="", ylab="", lwd=2, col=mcxs1)
+axis(1,c(1,21,41,61,81,101, nrow(y),nrow(y)+h),c("1992","1997","2002","2007","2012","2017","",""), col="black")
+axis(2,c(ex_rate.range[1],mean(ex_rate.range),ex_rate.range[2]),c("","ex_rate",""), col="black")
+abline(v=nrow(y), col=mcxs1)
+
+text(x=nrow(y), y=9.65, srt=90, "2025-12")
+abline(v=nrow(y), col=mcxs4)
+text(x=nrow(y)+h, y=9.65, srt=90, "2026-12")
+abline(v=nrow(y)+h, col=mcxs2)
+
+
+polygon(c(length(y[,1]):(length(y[,1])+h),(length(y[,1]):(length(y[,1])+h))[13:1]),
+        c(y[136,1],ex_rate.interval.f[1,],ex_rate.interval.f[2,12:1],y[136,1]),
+        col=mcxs1.shade1, border=mcxs1.shade1)
+
+```
+
+```{r}
+ex_rate.point.f    = apply(Y.h.ext[,1,],1,mean) 
+ex_rate.interval.f = apply(Y.h.ext[,1,],1,hdi,credMass=0.90)
+ex_rate.range      = range(y[,1],ex_rate.interval.f)
+
+true_y_value <- ex_rate.point.f[12]  # Set this to your actual true y-value
+
+# Define the range and labels for the y-axis
+y_min <- min(ex_rate.range[1], true_y_value)  # Adjust as necessary to include true_y_value
+y_max <- max(ex_rate.range[2], true_y_value)
+num_labels <- 4  # You can adjust the number of labels
+
+# Generate a sequence of y-values for the axis that includes true_y_value
+y_values <- pretty(c(y_min, y_max), num_labels)
+if(!true_y_value %in% y_values) {
+  y_values <- sort(c(y_values))
+}
+
+# Generate labels for the y-axis, ensuring true_y_value is included and highlighted
+y_labels <- sprintf("%.2f", y_values)
+y_labels[y_values == true_y_value] <- paste(y_labels[y_values == true_y_value], "(True Value)", sep=" ")
+
+# Plot adjustments
+plot(1:(length(y[,1])+h), c(y[,1], ex_rate.point.f), type="l", ylim=c(min(y_values), max(y_values)), axes=FALSE, xlab="", ylab="", lwd=2, col=mcxs1)
+axis(1, c(1, 21, 41, 61, 81, 101, nrow(y), nrow(y)+h), c("1992", "1997", "2002", "2007", "2012", "2017", "", ""), col="black")
+axis(2, at=y_values, labels=y_labels, col="black")
+
+# Red dashed line for the true y-value
+abline(h=true_y_value, col="red", lty=2, lwd=1)
+
+text(x=nrow(y), y=9.65, srt=90, "")
+abline(v=nrow(y), col=mcxs4)
+text(x=nrow(y)+h, y=9.65, srt=90, "")
+abline(v=nrow(y)+h, col=mcxs2)
+legend(136, 1.2, legend=c("Y2023Q4", "Y2026Q4"), col=c(mcxs4, mcxs2), lty=1, cex=0.45)
+
+polygon(c(length(y[,1]):(length(y[,1])+h),(length(y[,1]):(length(y[,1])+h))[13:1]),
+        c(y[136,1],ex_rate.interval.f[1,],ex_rate.interval.f[2,12:1],y[136,1]),
+        col=mcxs1.shade1, border=mcxs1.shade1)
+
+```
+
+
+```{r}
+
+limits.1    = range(Y.h.ext[,1,])
+point.f     = apply(Y.h.ext[,1,],1,mean)
+interval.f  = apply(Y.h.ext[,1,],1,hdi,credMass=0.90)
+
+x           = seq(from=limits.1[1], to=limits.1[2], length.out=100)
+z           = matrix(NA,h,99)
+for (i in 1:h){
+  z[i,]     = hist(Y.h.ext[i,1,], breaks=x, plot=FALSE)$density
+}
+x           = hist(Y.h.ext[i,1,], breaks=x, plot=FALSE)$mids
+yy          = 1:h
+z           = t(z)
+
+theta = 180
+phi   = 15.5
+f4    = persp3D(x=x, y=yy, z=z, phi=phi, theta=theta, xlab="\nerate[t+h|t]", ylab="h", zlab="\npredictive densities of erate", shade=NA, border=NA, ticktype="detailed", nticks=3,cex.lab=1, col=NA,plot=FALSE)
+perspbox (x=x, y=yy, z=z, bty="f", col.axis="black", phi=phi, theta=theta, xlab="\nerate[t+h|t]", ylab="h", zlab="\npredictive densities of erate", ticktype="detailed", nticks=3,cex.lab=1, col = NULL, plot = TRUE)
+polygon3D(x=c(interval.f[1,],interval.f[2,h:1]), y=c(1:h,h:1), z=rep(0,2*h), col = mcxs1.shade1, NAcol = "white", border = NA, add = TRUE, plot = TRUE)
+for (i in 1:h){
+  f4.l = trans3d(x=x, y=yy[i], z=z[,i], pmat=f4)
+  lines(f4.l, lwd=0.5, col="black")
+}
+f4.l1 = trans3d(x=point.f, y=yy, z=0, pmat=f4)
+lines(f4.l1, lwd=2, col=mcxs2)
+```
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+par(mfrow=c(1,2), mar=c(2,2,1,1))
+
+# Forecasting on Extended model
+limits.1        = range(Y.h[,1,])
+point.f         = apply(Y.h[,1,],1,mean)
+interval.f      = apply(Y.h[,1,],1,hdi,credMass=0.90)
+theta = 180
+phi   = 15.5
+
+x.erate           = seq(from=limits.1[1], to=limits.1[2], length.out=10)
+z.erate           = matrix(NA,h,9)
+for (i in 1:h){
+  z.erate[i,]     = hist(Y.h[i,1,], breaks=x.erate, plot=FALSE)$density
+}
+x.erate           = hist(Y.h[i,1,], breaks=x.erate, plot=FALSE)$mids
+yy.erate          = 1:h
+
+# plot using plot_ly
+par(mfrow=c(1,1))
+plot_ly(y = yy.erate, x = x.erate, z=z.erate) %>%
+  
+  layout(scene=list(xaxis=list(title="AUD/USD"),
+                    yaxis=list(title="h-step forecast"),
+                    zaxis=list(title="density")),
+         title = "AUD/USD forecast densities") %>%
+  add_surface(colors = c(mcxs1,mcxs4,mcxs5))
+
+
+# Forecasting on Extended model
+limits.1        = range(Y.h.ext[,1,])
+point.f         = apply(Y.h.ext[,1,],1,mean)
+interval.f      = apply(Y.h.ext[,1,],1,hdi,credMass=0.90)
+theta = 180
+phi   = 15.5
+
+x.erate           = seq(from=limits.1[1], to=limits.1[2], length.out=10)
+z.erate           = matrix(NA,h,9)
+for (i in 1:h){
+  z.erate[i,]     = hist(Y.h.ext[i,1,], breaks=x.erate, plot=FALSE)$density
+}
+x.erate           = hist(Y.h.ext[i,1,], breaks=x.erate, plot=FALSE)$mids
+yy.erate          = 1:h
+
+# plot using plot_ly
+par(mfrow=c(1,1))
+plot_ly(y = yy.erate, x = x.erate, z=z.erate) %>%
+  
+  layout(scene=list(xaxis=list(title="AUD/USD"),
+                    yaxis=list(title="h-step forecast"),
+                    zaxis=list(title="density")),
+         title = "AUD/USD forecast densities") %>%
+  add_surface(colors = c(mcxs1,"magenta2",mcxs5))
+
+```
+
