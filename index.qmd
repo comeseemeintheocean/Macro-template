@@ -449,16 +449,16 @@ p(A,\Sigma|Y,X) &\propto L(A,\Sigma,\lambda_t|Y,X)p(A,\Sigma) \\
 
 The kernel can be rearranged in the form of the **Matrix-variate normal-inverse Wishart distribution**.
 
-```{=tex}
+$$
 \begin{align}
-p(A,\Sigma|Y,X) &\sim MNIW(\bar{A},\bar{V},\bar{S},\bar{\nu}) \\
+p(A,\Sigma|Y,X) &\sim \mathcal{MNIW}(\bar{A},\bar{V},\bar{S},\bar{\nu}) \\
 &\\
 \bar{V} &= (X'(\lambda_t I_T)^{-1}X + \underline{V}^{-1})^{-1} \\
 \bar{A} &= \bar{V}(X'(\lambda_t I_T)^{-1}Y + \underline{V}^{-1}\underline{A}) \\
 \bar{\nu} &= T + \underline{\nu}\\
 \bar{S} &= Y'(\lambda_t I_T)^{-1}Y + \underline{A}'\underline{V}^{-1}\underline{A} + \underline{S} - \bar{A}'\bar{V}^{-1}\bar{A}
 \end{align}
-```
+$$
 
 The kernel of the fully conditional posterior distribution of $\lambda_t$ is then derived as follows:
 
