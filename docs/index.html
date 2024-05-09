@@ -386,16 +386,14 @@ p(A,\Sigma|Y,X) &amp;\propto L(A,\Sigma,\lambda_t|Y,X)p(A,\Sigma) \\
 
 \end{align}\]</span>
 <p>The kernel can be rearranged in the form of the <strong>Matrix-variate normal-inverse Wishart distribution</strong>.</p>
-<p><span class="math display">\[
-\begin{align}
-p(A,\Sigma|Y,X) &amp;\sim \mathcal{MNIW}(\bar{A},\bar{V},\bar{S},\bar{\nu}) \\
+<span class="math display">\[\begin{align}
+p(A,\Sigma|Y,X) &amp;\sim MNIW(\bar{A},\bar{V},\bar{S},\bar{\nu}) \\
 &amp;\\
 \bar{V} &amp;= (X'(\lambda_t I_T)^{-1}X + \underline{V}^{-1})^{-1} \\
 \bar{A} &amp;= \bar{V}(X'(\lambda_t I_T)^{-1}Y + \underline{V}^{-1}\underline{A}) \\
 \bar{\nu} &amp;= T + \underline{\nu}\\
 \bar{S} &amp;= Y'(\lambda_t I_T)^{-1}Y + \underline{A}'\underline{V}^{-1}\underline{A} + \underline{S} - \bar{A}'\bar{V}^{-1}\bar{A}
-\end{align}
-\]</span></p>
+\end{align}\]</span>
 <p>The kernel of the fully conditional posterior distribution of <span class="math inline">\(\lambda_t\)</span> is then derived as follows:</p>
 <span class="math display">\[\begin{align}
 p(\lambda_t|Y,X,A,\Sigma) &amp;\propto L(A,\Sigma,\lambda_t|Y,X)p(\lambda_t) \\
@@ -465,34 +463,14 @@ p &amp;= -\frac{TN}{2}+1
 </div>
 </div>
 <div class="cell">
-<div class="cell-output-display">
-<table class="table table-sm table-striped small">
-<caption>Posterior Mean of A</caption>
-<thead>
-<tr class="header">
-<th style="text-align: left;"></th>
-<th style="text-align: right;">Simulation_Y1</th>
-<th style="text-align: right;">Simulation_Y2</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Constant</td>
-<td style="text-align: right;">0.0609321</td>
-<td style="text-align: right;">0.0765025</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Y1-Lag</td>
-<td style="text-align: right;">0.9894527</td>
-<td style="text-align: right;">0.0048336</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Y2-Lag</td>
-<td style="text-align: right;">0.0023207</td>
-<td style="text-align: right;">0.9959293</td>
-</tr>
-</tbody>
-</table>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Posterior mean of the autoregressive coefficient matrix A:"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            [,1]        [,2]
+[1,] 0.060932051 0.076502499
+[2,] 0.989452714 0.004833626
+[3,] 0.002320694 0.995929267</code></pre>
 </div>
 </div>
 <p>The diagonal entries of the covariance matrix are close to 1, which indicates that each variable has a strong autoregressive relationship with itself and similarly, the diagonal elements of the autoregressive coefficient matrix are close to one, suggesting that each variable is heavily influenced by its past value. Besides, the posterior means for the constant terms is close to 0, the above can indicate that the estimated parameter constant term and means are consistent with what we expect given a Minnesota prior.</p>
@@ -509,19 +487,19 @@ p &amp;= -\frac{TN}{2}+1
 <p>Discard the first draws that allowed the algorithm to converge to the stationary posterior distribution.</p>
 <p>Output is <span class="math inline">\(\left\{ {A^{(s)}, \Sigma^{(s)}}, \lambda_t^{(s)}\right\}^{S_1+S_2}_{s=S_1+1}\)</span>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># setup </span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>S1                <span class="ot">=</span> <span class="dv">5000</span>                             <span class="co"># will be discard</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>S2                <span class="ot">=</span> <span class="dv">45000</span>                            </span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>total_S           <span class="ot">=</span> S1<span class="sc">+</span>S2</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>A.posterior       <span class="ot">=</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="at">dim =</span> <span class="fu">c</span>((<span class="dv">1</span><span class="sc">+</span>N<span class="sc">*</span>p),N,S1<span class="sc">+</span>S2))</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>Sigma.posterior   <span class="ot">=</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="at">dim =</span> <span class="fu">c</span>(N,N,S1<span class="sc">+</span>S2))</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>lambda.posterior  <span class="ot">=</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, S1<span class="sc">+</span>S2, <span class="dv">1</span>)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># set the initial value of lambda</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>lambda.posterior[<span class="dv">1</span>] <span class="ot">=</span> <span class="dv">5</span>                               </span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co"># parameter alpha</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>lambda.priors <span class="ot">=</span> <span class="fu">list</span>(<span class="at">alpha =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># setup </span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>S1                <span class="ot">=</span> <span class="dv">5000</span>                             <span class="co"># will be discard</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>S2                <span class="ot">=</span> <span class="dv">45000</span>                            </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>total_S           <span class="ot">=</span> S1<span class="sc">+</span>S2</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>A.posterior       <span class="ot">=</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="at">dim =</span> <span class="fu">c</span>((<span class="dv">1</span><span class="sc">+</span>N<span class="sc">*</span>p),N,S1<span class="sc">+</span>S2))</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>Sigma.posterior   <span class="ot">=</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="at">dim =</span> <span class="fu">c</span>(N,N,S1<span class="sc">+</span>S2))</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>lambda.posterior  <span class="ot">=</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, S1<span class="sc">+</span>S2, <span class="dv">1</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># set the initial value of lambda</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>lambda.posterior[<span class="dv">1</span>] <span class="ot">=</span> <span class="dv">5</span>                               </span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># parameter alpha</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>lambda.priors <span class="ot">=</span> <span class="fu">list</span>(<span class="at">alpha =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
