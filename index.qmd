@@ -65,7 +65,11 @@ library(mvtnorm)
 fredr_set_key("75b470c4883ecfd5a7b4185f30437bd0")
 ```
 
-
+```{r global options}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+```
 
 ```{r}
 #| echo: false
@@ -278,8 +282,7 @@ for (i in 1:length(adf_test)) {adf_table[i, "p_value"] = round(adf_test[[i]]$p.v
 rownames(adf_table) <- variable_names
 
 colnames(adf_table)<- c("P-value")
-print(adf_table)
-
+knitr::kable(adf_table)
 ```
 Below is the ADF test result for all non-stationary data taking the first difference. All variables in the first differences are stationary as the null hypothesis of non-stationary can be rejected.
 ```{r}
@@ -315,7 +318,7 @@ rownames(dff_adf_table) <- variable_names[-4]
 
 
 colnames(dff_adf_table)<- c("P-value")
-print(dff_adf_table)
+knitr::kable(dff_adf_table)
 ```
 It can be concluded that all variables are integrated at 1 at the 5% significance level of the ADF test, with the conclusion folding for $crate\_au_{t}$ only at 1% significance level. Appropriate prior distributions will be used to accommodate this fact for the VAR model.
 
@@ -566,7 +569,7 @@ nu.prior      = N+1
 ```
 
 ```{r function based on basic model}
-#| echo: true
+#| echo: false
 #| message: false
 #| warning: false
 
@@ -636,17 +639,20 @@ posterior.sample.draws = posterior.draws(S=1000, Y=Y_simulation, X=X_simulation)
 ```{r}
 Sigma_posterior_mean <- apply(posterior.sample.draws$Sigma.posterior, 1:2, mean)
 
-print("Posterior mean of the covariance matrix Sigma:")
-print(Sigma_posterior_mean)
+Sigma_df <- as.data.frame(Sigma_posterior_mean)
+colnames(Sigma_df) <- c("Simulation_Y1", "Simulation_Y2")
+rownames(Sigma_df) <- c("Y1-Lag", "Y2-Lag")
+knitr::kable(Sigma_df, caption = "Posterior mean of the covariance matrix Sigma")
 ```
 
 ```{r}
 # Calculate posterior mean of autoregressive coefficients (including the constant term)
 A_posterior_means <- apply(posterior.sample.draws$A.posterior, 1:2, mean)
 
-# Print the posterior mean matrix for autoregressive coefficients A
-print("Posterior mean of the autoregressive coefficient matrix A:")
-print(A_posterior_means)
+A_df <- as.data.frame(A_posterior_means)
+colnames(A_df) <- c("Simulation_Y1", "Simulation_Y2")
+rownames(A_df) <- c("Constant", "Y1-Lag", "Y2-Lag")
+knitr::kable(A_df, caption = "Posterior mean of the autoregressive coefficient matrix A")
 ```
 The diagonal entries of the covariance matrix are close to 1, which indicates that each variable has a strong autoregressive relationship with itself and similarly, the diagonal elements of the autoregressive coefficient matrix are close to one, suggesting that each variable is heavily influenced by its past value. Besides, the posterior means for the constant terms is close to 0, the above can indicate that the estimated parameter constant term and means are consistent with what we expect given a Minnesota prior.
 
@@ -664,7 +670,7 @@ Discard the first draws that allowed the algorithm to converge to the stationary
 Output is $\left\{ {A^{(s)}, \Sigma^{(s)}}, \lambda_t^{(s)}\right\}^{S_1+S_2}_{s=S_1+1}$.
 
 ```{r}
-#| echo: true
+#| echo: false
 #| message: false
 #| warning: false
 # setup 
@@ -679,10 +685,13 @@ lambda.posterior  = matrix(NA, S1+S2, 1)
 lambda.posterior[1] = 5                               
 
 # parameter alpha
-lambda.priors = list(alpha = 1)
+lambda.priors = list(alpha = 2)
 ```
 
 ```{r}
+#| echo: false
+#| message: false
+#| warning: false
 posterior.draws.extended = function (total_S, Y, X){
 for (s in 1:total_S){
 
@@ -721,20 +730,6 @@ for (s in 1:total_S){
 #| echo: false
 #| message: false
 #| warning: false
-# simulation data generating process
-p=1
-N=2
-
-Y_simulation = (simulation_data[(p+1):nrow(simulation_data),c(1,2)]) 
-X_simulation = matrix(1,nrow(Y_simulation),1)                                             
-for (i in 1:p){
-  X_simulation     = cbind(X_simulation, (simulation_data[(p+1):nrow(simulation_data)-i,c(1,2)]))
-}
-
-Y_simulation = as.matrix(Y_simulation)
-X_simulation = as.matrix(X_simulation)
-
-
 ## Test on basic model
 N           = ncol(Y_simulation)                          
 p           = frequency(Y_simulation)
@@ -757,20 +752,25 @@ posterior.extended = posterior.draws.extended(total_S = total_S, Y=Y_simulation,
 ```{r}
 Sigma_posterior_mean <- apply(posterior.extended$Sigma.posterior, 1:2, mean)
 
-print("Posterior mean of the covariance matrix Sigma:")
-print(Sigma_posterior_mean)
+Sigma_df <- as.data.frame(Sigma_posterior_mean)
+colnames(Sigma_df) <- c("Simulation_Y1", "Simulation_Y2")
+rownames(Sigma_df) <- c("Y1-Lag", "Y2-Lag")
+knitr::kable(Sigma_df, caption = "Posterior mean of the covariance matrix Sigma")
 ```
 
 ```{r}
 A_posterior_means <- apply(posterior.extended$A.posterior, 1:2, mean)
 
-print("Posterior mean of the autoregressive coefficient matrix A:")
-print(A_posterior_means)
+A_df <- as.data.frame(A_posterior_means)
+colnames(A_df) <- c("Simulation_Y1", "Simulation_Y2")
+rownames(A_df) <- c("Constant", "Y1-Lag", "Y2-Lag")
+knitr::kable(A_df, caption = "Posterior mean of the autoregressive coefficient matrix A")
 ```
 Similarly, the posterior mean of the autoregressive and the covariance matrices are close to an identity matrix and the posterior mean of the constant term is close to zero, so we can conclude that the extended model is also valid.
 
 # Forecasting
 The forecast will focus on two models with the sample period from 1990 Q1 to 2023Q4, and forecast how the exchange rate changes for the future up to 2026Q4.
+
 ## Forecasting with basic model
 ```{r forecasting static data}
 #| echo: false
@@ -810,7 +810,7 @@ Sigma.posterior.simu   = posterior.sample.draws$Sigma.posterior
 ```
 
 ```{r}
-#| echo: true
+#| echo: false
 #| message: false
 #| warning: false
 # sampling predictive density
@@ -830,40 +830,10 @@ for (s in 1:S){
 
 
 ```{r}
-#| echo: true
+#| echo: false
 #| message: false
 #| warning: false
-################################### may not use
-# plots of forecasts
-ex_rate.point.f    = apply(Y.h[,1,],1,mean) 
-ex_rate.interval.f = apply(Y.h[,1,],1,hdi,credMass=0.90)
-ex_rate.range      = range(y[,1],ex_rate.interval.f)
 
-
-par(mfrow=c(1,1), mar=rep(3,4),cex.axis=1)
-plot(1:(length(y[,1])+h),c(y[,1],ex_rate.point.f), type="l", ylim=ex_rate.range, axes=FALSE, xlab="", ylab="", lwd=2, col=mcxs1)
-axis(1,c(1,21,41,61,81,101, nrow(y),nrow(y)+h),c("1992","1997","2002","2007","2012","2017","",""), col="black")
-# Assuming ex_rate.range is already set correctly as per your code
-axis(2, at=seq(from=ex_rate.range[1], to=ex_rate.range[2], length.out=5), 
-     labels=round(seq(from=ex_rate.range[1], to=ex_rate.range[2], length.out=5), 2),
-     col="black")
-
-end_y_value <- ex_rate.point.f[12]  # Set this to your actual true y-value
-abline(h=end_y_value, col="red", lty=2, lwd=1)
-
-
-text(x=nrow(y), y=9.65, srt=90, "2025-12")
-abline(v=nrow(y), col=mcxs4)
-text(x=nrow(y)+h, y=9.65, srt=90, "2026-12")
-abline(v=nrow(y)+h, col=mcxs2)
-
-
-polygon(c(length(y[,1]):(length(y[,1])+h),(length(y[,1]):(length(y[,1])+h))[13:1]),
-        c(y[136,1],ex_rate.interval.f[1,],ex_rate.interval.f[2,12:1],y[136,1]),
-        col=mcxs1.shade1, border=mcxs1.shade1)
-```
-
-```{r}
 ex_rate.point.f    = apply(Y.h[,1,],1,mean) 
 ex_rate.interval.f = apply(Y.h[,1,],1,hdi,credMass=0.90)
 ex_rate.range      = range(y[,1],ex_rate.interval.f)
@@ -903,10 +873,14 @@ legend(136, 1.2, legend=c("Y2023Q4", "Y2026Q4"), col=c(mcxs4, mcxs2), lty=1, cex
 polygon(c(length(y[,1]):(length(y[,1])+h),(length(y[,1]):(length(y[,1])+h))[13:1]),
         c(y[136,1],ex_rate.interval.f[1,],ex_rate.interval.f[2,12:1],y[136,1]),
         col=mcxs1.shade1, border=mcxs1.shade1)
-
 ```
+The above presents the historical and forecasting data the AUD/USD exchange rate. The exchange rate shows several peaks and troughs, indicating the volatility in the exchange rate over the years. For the three years forecasting, it shows a clear downward trend and reaching the lowest above 0.6 in 2026. 
 
+Regard to the 3D with density intervals below, we could notice that the for each different predictive density at specific horizons, with the back wall we have the one period ahead predictive density and with the front we have the 12 period ahead density which is 3 years. We could see the distribution becomes lower and more dispersed with the increases of the horizon, as the data is more informative about the nearest developments in the future. Hence, one period predictive density is highly concentrated relative to others with smaller variance and taller peak. Similarly, the interval become more wider and dispersed resulting a more uncertainty for the future period forecasting.
 ```{r}
+#| echo: false
+#| message: false
+#| warning: false
 limits.1    = range(Y.h[,1,])
 point.f     = apply(Y.h[,1,],1,mean)
 interval.f  = apply(Y.h[,1,],1,hdi,credMass=0.90)
@@ -935,9 +909,10 @@ lines(f4.l1, lwd=2, col=mcxs1)
 
 ### Forecasting on extended model
 ```{r}
-#| echo: true
+#| echo: false
 #| message: false
 #| warning: false
+
 # setup 
 S1                = 5000                             # will be discard
 S2                = 45000                            
@@ -950,40 +925,8 @@ lambda.posterior  = matrix(NA, S1+S2, 1)
 lambda.posterior[1] = 5                               
 
 # parameter alpha
-lambda.priors = list(alpha = 1)
+lambda.priors = list(alpha = 2)
 
-posterior.draws.extended = function (total_S, Y, X){
-for (s in 1:total_S){
-
-    V.bar.inv              = t(X)%*%X + diag(1/diag(lambda.posterior[s]* V.prior)) 
-    V.bar                  = solve(V.bar.inv)
-    A.bar                  = V.bar%*%(t(X)%*%Y + diag(1/diag(lambda.posterior[s]* V.prior))%*%A.prior)
-    nu.bar                 = nrow(Y) + nu.prior
-    S.bar                  = S.prior + t(Y)%*%Y + t(A.prior)%*%diag(1/diag(lambda.posterior[s]* V.prior))%*%A.prior - t(A.bar)%*%V.bar.inv%*%A.bar
-    S.bar.inv              = solve(S.bar)
-  
-    Sigma.posterior.IW     = rWishart(1, df=nu.bar, Sigma=S.bar.inv)
-    Sigma.posterior.draw   = apply(Sigma.posterior.IW,3,solve)
-    Sigma.posterior[,,s]   = Sigma.posterior.draw
-    A.posterior[,,s]       = array(rnorm(prod(c(dim(A.bar),1))),c(dim(A.bar),1))
-    L                      = t(chol(V.bar))
-    A.posterior[,,s]       = A.bar + L%*%A.posterior[,,s]%*%chol(Sigma.posterior[,,s])
-    
-    a                             = 2 / lambda.priors$alpha
-    deviation_matrix              = A.posterior[,,s] - A.prior
-    weighted_deviation_squared    = t(deviation_matrix) %*% solve(V.prior) %*% deviation_matrix
-    b                             = sum(diag(solve(Sigma.posterior[,,s] %*% weighted_deviation_squared)))
-    p                             = - (T * N) / 2 + 1            
-    
-    if (s!=total_S){
-      lambda.posterior[s+1] = GIGrvg::rgig(n=1, lambda = p, chi = b, psi = a)
-    }
-}
-    output  = list (A.posterior.exten = A.posterior, 
-                    Sigma.posterior.exten = Sigma.posterior, 
-                    lambda.posterior.exten = lambda.posterior)
-    return(output)
-}
 
 S1                         = 5000                              # determine the
 S2                         = 45000                             # number of draws 
@@ -1000,7 +943,7 @@ Y.h.ext                    = array(NA,c(h,N,S))
 ```
 
 ```{r}
-#| echo: true
+#| echo: false
 #| message: false
 #| warning: false
 # sampling predictive density
@@ -1019,35 +962,13 @@ for (s in 1:S){
 ```
 
 ```{r}
-##################### may not use
-# plots of forecasts
+#| echo: false
+#| message: false
+#| warning: false
 ex_rate.point.f    = apply(Y.h.ext[,1,],1,mean) 
 ex_rate.interval.f = apply(Y.h.ext[,1,],1,hdi,credMass=0.90)
-ex_rate.range      = range(y[,1],ex_rate.interval.f)
-
-
-par(mfrow=c(1,1), mar=rep(3,4),cex.axis=1)
-plot(1:(length(y[,1])+h),c(y[,1],ex_rate.point.f), type="l", ylim=ex_rate.range, axes=FALSE, xlab="", ylab="", lwd=2, col=mcxs1)
-axis(1,c(1,21,41,61,81,101, nrow(y),nrow(y)+h),c("1992","1997","2002","2007","2012","2017","",""), col="black")
-axis(2,c(ex_rate.range[1],mean(ex_rate.range),ex_rate.range[2]),c("","ex_rate",""), col="black")
-abline(v=nrow(y), col=mcxs1)
-
-text(x=nrow(y), y=9.65, srt=90, "2025-12")
-abline(v=nrow(y), col=mcxs4)
-text(x=nrow(y)+h, y=9.65, srt=90, "2026-12")
-abline(v=nrow(y)+h, col=mcxs2)
-
-
-polygon(c(length(y[,1]):(length(y[,1])+h),(length(y[,1]):(length(y[,1])+h))[13:1]),
-        c(y[136,1],ex_rate.interval.f[1,],ex_rate.interval.f[2,12:1],y[136,1]),
-        col=mcxs1.shade1, border=mcxs1.shade1)
-
-```
-
-```{r}
-ex_rate.point.f    = apply(Y.h.ext[,1,],1,mean) 
-ex_rate.interval.f = apply(Y.h.ext[,1,],1,hdi,credMass=0.90)
-ex_rate.range      = range(y[,1],ex_rate.interval.f)
+ex_rate.range      = range(y[,1],ex_rate.interval.f)         
+#0.88722-0.334598=0.552622
 
 true_y_value <- ex_rate.point.f[12]  # Set this to your actual true y-value
 
@@ -1085,10 +1006,13 @@ polygon(c(length(y[,1]):(length(y[,1])+h),(length(y[,1]):(length(y[,1])+h))[13:1
         col=mcxs1.shade1, border=mcxs1.shade1)
 
 ```
+The above presents the historical and forecasting data the AUD/USD exchange rate for the extended model. For the three years forecasting, it also shows a clear downward trend for the first half forecasting period and reaching below 0.06 in around 2025 and slightly increase back to 0.61 fo the following period. 
 
-
+With regard to the 3D with density intervals below, we could notice that the confidence interval widened a little.
 ```{r}
-
+#| echo: false
+#| message: false
+#| warning: false
 limits.1    = range(Y.h.ext[,1,])
 point.f     = apply(Y.h.ext[,1,],1,mean)
 interval.f  = apply(Y.h.ext[,1,],1,hdi,credMass=0.90)
@@ -1114,6 +1038,7 @@ for (i in 1:h){
 f4.l1 = trans3d(x=point.f, y=yy, z=0, pmat=f4)
 lines(f4.l1, lwd=2, col=mcxs2)
 ```
+Interactive versions of the above 3D plots are provided below.
 ```{r}
 #| echo: false
 #| message: false
@@ -1142,7 +1067,7 @@ plot_ly(y = yy.erate, x = x.erate, z=z.erate) %>%
   layout(scene=list(xaxis=list(title="AUD/USD"),
                     yaxis=list(title="h-step forecast"),
                     zaxis=list(title="density")),
-         title = "AUD/USD forecast densities") %>%
+         title = "AUD/USD forecast densities for basic model") %>%
   add_surface(colors = c(mcxs1,mcxs4,mcxs5))
 
 
@@ -1168,8 +1093,9 @@ plot_ly(y = yy.erate, x = x.erate, z=z.erate) %>%
   layout(scene=list(xaxis=list(title="AUD/USD"),
                     yaxis=list(title="h-step forecast"),
                     zaxis=list(title="density")),
-         title = "AUD/USD forecast densities") %>%
+         title = "AUD/USD forecast densities for extended model") %>%
   add_surface(colors = c(mcxs1,"magenta2",mcxs5))
 
+#[which indicates the extended model can be more informative in forecasting as it has a higher certainty from a more concentrated distribution.]
 ```
-
+The 3D plots above allow us to access to alternative vantage points. We could notice that for the first few forecasting periods, the extended model has very sharp and concentrated densities around the point estimated, and it shows clearly heavy tails, which may increase the possibility of capturing extreme values that deviate significantly from the central forecast.
