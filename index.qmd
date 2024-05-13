@@ -670,9 +670,6 @@ Discard the first draws that allowed the algorithm to converge to the stationary
 Output is $\left\{ {A^{(s)}, \Sigma^{(s)}}, \lambda_t^{(s)}\right\}^{S_1+S_2}_{s=S_1+1}$.
 
 ```{r}
-#| echo: false
-#| message: false
-#| warning: false
 # setup 
 S1                = 5000                             # will be discard
 S2                = 45000                            
@@ -682,10 +679,10 @@ Sigma.posterior   = array(NA, dim = c(N,N,S1+S2))
 lambda.posterior  = matrix(NA, S1+S2, 1)
 
 # set the initial value of lambda
-lambda.posterior[1] = 5                               
+lambda.posterior[1] = 1.5                             
 
 # parameter alpha
-lambda.priors = list(alpha = 2)
+lambda.priors = list(alpha = 1.5)
 ```
 
 ```{r}
@@ -922,10 +919,10 @@ Sigma.posterior   = array(NA, dim = c(N,N,S1+S2))
 lambda.posterior  = matrix(NA, S1+S2, 1)
 
 # set the initial value of lambda
-lambda.posterior[1] = 5                               
+lambda.posterior[1] = 1.5                             
 
 # parameter alpha
-lambda.priors = list(alpha = 2)
+lambda.priors = list(alpha = 1.5)
 
 
 S1                         = 5000                              # determine the
