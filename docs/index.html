@@ -60,12 +60,13 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script src="site_libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
-<script src="site_libs/plotly-binding-4.10.1/plotly.js"></script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="site_libs/plotly-binding-4.10.4/plotly.js"></script>
 <script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
 <script src="site_libs/jquery-3.5.1/jquery.min.js"></script>
-<link href="site_libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet">
-<script src="site_libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet">
+<script src="site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
 <link href="site_libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet">
 <script src="site_libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
 
@@ -119,10 +120,7 @@ ul.task-list li input[type="checkbox"] {
   </ul></li>
   <li><a href="#forecasting" id="toc-forecasting" class="nav-link" data-scroll-target="#forecasting">Forecasting</a>
   <ul class="collapse">
-  <li><a href="#forecasting-with-basic-model" id="toc-forecasting-with-basic-model" class="nav-link" data-scroll-target="#forecasting-with-basic-model">Forecasting with basic model</a>
-  <ul class="collapse">
-  <li><a href="#forecasting-on-extended-model" id="toc-forecasting-on-extended-model" class="nav-link" data-scroll-target="#forecasting-on-extended-model">Forecasting on extended model</a></li>
-  </ul></li>
+  <li><a href="#forecasting-with-basic-model-and-extended-model" id="toc-forecasting-with-basic-model-and-extended-model" class="nav-link" data-scroll-target="#forecasting-with-basic-model-and-extended-model">Forecasting with basic model and extended model</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -265,7 +263,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td style="text-align: left;">unemployemtrate_au</td>
-<td style="text-align: right;">0.352</td>
+<td style="text-align: right;">0.360</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">unemployemtrate_us</td>
@@ -387,11 +385,11 @@ expor\_us_{t}\\
 <section id="the-basic-model" class="level2">
 <h2 class="anchored" data-anchor-id="the-basic-model">The basic model</h2>
 <span class="math display">\[\begin{align}
-Y &amp;=XA+E\\
-E|X&amp;\sim \mathcal{MN}_{T\times N}(0, \Sigma, I_T)\\
+Y &amp;=XA+U\\
+U|X&amp;\sim \mathcal{MN}_{T\times N}(0, \Sigma, I_T)\\
 Y|X,A,\Sigma&amp;\sim \mathcal{MN}_{T\times N} (XA, \Sigma, I_T)
 \end{align}\]</span>
-<p>Where <span class="math inline">\(Y\)</span> is a <span class="math inline">\(T\times 13\)</span> Matrix, <span class="math inline">\(X\)</span> is a <span class="math inline">\(T\times(1+p\times13)\)</span>, <span class="math inline">\(A\)</span> is a <span class="math inline">\((1+p\times13)\times13\)</span> matrix that contains <span class="math inline">\(\mu_{0}\)</span> and vectors of the autoregressive slope parameters and <span class="math inline">\(E\)</span> is a <span class="math inline">\(T\times13\)</span> matrix contains vetors of error terms.</p>
+<p>Where <span class="math inline">\(Y\)</span> is a <span class="math inline">\(T\times 13\)</span> Matrix, <span class="math inline">\(X\)</span> is a <span class="math inline">\(T\times(1+p\times13)\)</span>, <span class="math inline">\(A\)</span> is a <span class="math inline">\((1+p\times13)\times13\)</span> matrix that contains <span class="math inline">\(\mu_{0}\)</span> and vectors of the autoregressive slope parameters and <span class="math inline">\(U\)</span> is a <span class="math inline">\(T\times13\)</span> matrix contains vetors of error terms.</p>
 <p>The kernel of the likelihood function:</p>
 <span class="math display">\[\begin{align}
 L(A,\Sigma|Y,X) \propto det(\Sigma)^{-\frac{T}{2}}exp\{-\frac{1}{2}tr[\Sigma^{-1}(Y-XA)'(Y-XA)]\}
@@ -402,7 +400,7 @@ p(A,\Sigma) &amp;= p(A|\Sigma)p(\Sigma) \\
 A|\Sigma &amp;\sim \mathcal{MN}_{K \times N}(\underline{A},\Sigma,\underline{V}) \\
 \Sigma &amp;\sim \mathcal{IW}_N(\underline{S},\underline{\nu})
 \end{align}\]</span>
-<p>The <strong>Minnesota prior</strong> is typically a good choice for specifying priors in BVAR model especially when the model involves many macroeconomic variables. It assumes the variables follow a random walk and it is suitable for unit root non-stationary variables such as in our case, most variables are integrated at 1 at the 5% significance level of the ADF test, where:</p>
+<p>The <strong>Minnesota prior</strong> is typically a good choice for specifying priors in BVAR model especially when the model involves many macroeconomic variables. It assumes the variables follow a random walk and it is suitable for unit root non-stationary variables such as in our case, variables are integrated at 1 at the 5% significance level of the ADF test, where:</p>
 <span class="math display">\[\begin{align}
 \underline{A} &amp;= \begin{bmatrix}0_{N \times 1} &amp; I_{N} &amp; 0_{N \times (p-1)N}\end{bmatrix}'\\
 
@@ -422,7 +420,7 @@ p(A,\Sigma|Y,X) &amp;\propto \det(\Sigma)^{-\frac{T}{2}} \\
 &amp;\times exp\{-\frac{1}{2}tr[\Sigma^{-1}(A-\underline{A}) \underline{V}^{-1}(A-\underline{A})]\} \\
 &amp;\times exp\{-\frac{1}{2}tr[\Sigma^{-1}\underline{S}]\}
 \end{align}\]</span>
-<p>The kernel can be represent as the normal-inverse Wishart distribution and we can get the following <strong>full conditional joint posterior distribution: </strong></p>
+<p>The kernel can be represent as the normal-inverse Wishart distribution and we can get the following <strong>full conditional joint posterior distribution:</strong></p>
 <span class="math display">\[\begin{align}
 p(A|Y,X,\Sigma) &amp;= \mathcal{MN}_{K \times N}(\bar{A}, \Sigma, \bar{V}) \\
 p(\Sigma|Y,X) &amp;= \mathcal{IW}_N(\bar{S},\bar{\nu}) \\
@@ -439,23 +437,35 @@ p(\Sigma|Y,X) &amp;= \mathcal{IW}_N(\bar{S},\bar{\nu}) \\
 <p>The extended model will be built based on the the change in distribution of the error to <strong>Laplace distribution</strong> instead of the normally distributed errors assumption. The Laplace distribution is suitable for describing financial anomalies due to its sharp peaks and thick tails and the use of this distribution improves the robustness of the model to anomalies and is particularly suitable for financial time series. As our variables are most financial time series data, a Laplace distribution is more suitable to apply to our error term.</p>
 <p>Following <a href="https://ieeexplore.ieee.org/document/1618702">Eltoft,Kim, and Lee 2006b</a>, for covariance with a general Kronecker structure, if each <span class="math inline">\({\lambda_t}\)</span> has an independent exponential distribution with mean <span class="math inline">\({\alpha}\)</span>, then marginally <span class="math inline">\({U_t}\)</span> has a multivariate Laplace distribution with mean vector 0 and covariance matrix <span class="math inline">\({\alpha\Sigma}\)</span>.</p>
 <span class="math display">\[\begin{align}
+
+vec(U)&amp;\sim N(0,\Sigma\otimes \Omega)\\
+
 U_t &amp;\sim \text{Laplace}(0, \alpha\Sigma) \\
-U_t | \lambda_t &amp;\sim \mathcal{MN}(0, \Sigma, \lambda_t I_T) \\
+
+U_t | \lambda_t &amp;\sim \mathcal{MN}(0, \Sigma, \Omega) \\
+
 \lambda_t &amp;\sim \text{Exponential}(\frac{1}{\alpha})
 \end{align}\]</span>
-<p>The kernel of the likelihood function:</p>
+<p>The model is where <span class="math display">\[\Omega=diag(\lambda_1,\lambda_2,...,\lambda_t)\]</span>, each lambda independently drawn from an exponential distribution.</p>
+<p>The kernel of the likelihood function now is :</p>
 <span class="math display">\[\begin{align}
-L(A,\Sigma,\lambda_t|Y,X) &amp;\propto \det(\Sigma)^{-\frac{T}{2}} \det(\lambda_t I_T)^{-\frac{N}{2}} exp\{-\frac{1}{2} tr[\Sigma^{-1} (Y-XA)' (\lambda_t I_T)^{-1} (Y-XA) ]\}
+L(A,\Sigma,\Omega |Y,X) &amp;\propto \det(\Sigma)^{-\frac{T}{2}} \det(\Omega)^{-\frac{N}{2}} exp\{-\frac{1}{2} tr[\Sigma^{-1} (Y-XA)' \Omega^{-1} (Y-XA) ]\}\\
+&amp;=\det(\Sigma)^{-\frac{T}{2}}\prod^{T}_{t = 1} \lambda_t^{-\frac{N}{2}} exp({-\frac{1}{2}}\sum^{T}_{t =1}{\frac{1}{\lambda_t}} \epsilon_t' \Sigma^{-1}\epsilon_t)\\
+&amp;=\det(\Sigma)^{-\frac{T}{2}}\prod^{T}_{t = 1}( \lambda_t^{-\frac{N}{2}} exp({-\frac{1}{2}}{\frac{1}{\lambda_t}} \epsilon_t' \Sigma^{-1}\epsilon_t))
+\end{align}\]</span>
+<p>Thence, for each time t, we have the likelihood like:</p>
+<span class="math display">\[\begin{align}
+&amp;=\lambda_t^{-\frac{N}{2}} exp({-\frac{1}{2}}{\frac{1}{\lambda_t}} \epsilon_t' \Sigma^{-1}\epsilon_t)
 \end{align}\]</span>
 <p>For posteriors distribution, <span class="math inline">\(A\)</span>, <span class="math inline">\(\Sigma\)</span> and <span class="math inline">\(\lambda_t\)</span> can then be derived using the likelihood and the prior distributions as follows:</p>
 <span class="math display">\[\begin{align}
 p(A,\Sigma|Y,X) &amp;\propto L(A,\Sigma,\lambda_t|Y,X)p(A,\Sigma) \\
 \\
-&amp;= \det(\Sigma)^{-\frac{T}{2}} \det(\lambda_t I_T)^{-\frac{N}{2}} exp\{-\frac{1}{2} tr[\Sigma^{-1} (Y-XA)' (\lambda_t I_T)^{-1} (Y-XA) ]\} \\
+&amp;= \det(\Sigma)^{-\frac{T}{2}} \det(\Omega)^{-\frac{N}{2}} exp\{-\frac{1}{2} tr[\Sigma^{-1} (Y-XA)' \Omega^{-1} (Y-XA) ]\} \\
 &amp;\times \det(\Sigma)^{-\frac{N+k+\underline{\nu}+1}{2}} exp\{-\frac{1}{2}tr[\Sigma^{-1}(A-\underline{A})'(\underline{V})^{-1}(A-\underline{A})]\} \\
 &amp;\times exp\{-\frac{1}{2}tr[\Sigma^{-1}\underline{S}]\} \\
-&amp;= \det(\Sigma)^{-\frac{T+N+K+\underline{\nu}+1}{2}} \det(\lambda_t I_T)^{-\frac{N}{2}} \\
-&amp;\times exp\{-\frac{1}{2} tr[\Sigma^{-1}(Y'(\lambda_t I_T)^{-1}Y - 2A'X'(\lambda_t I_T)^{-1}Y + A'X'(\lambda_t I_T)^{-1}XA \\
+&amp;= \det(\Sigma)^{-\frac{T+N+K+\underline{\nu}+1}{2}} \det(\Omega)^{-\frac{N}{2}} \\
+&amp;\times exp\{-\frac{1}{2} tr[\Sigma^{-1}(Y'\Omega^{-1}Y - 2A'X'\Omega)^{-1}Y + A'X'\Omega^{-1}XA \\
 &amp;+ A'\underline{V}^{-1}A -2A'\underline{V}^{-1}\underline{A} + \underline{A}'\underline{V}^{-1}\underline{A} + \underline{S})]\}
 
 \end{align}\]</span>
@@ -463,30 +473,34 @@ p(A,\Sigma|Y,X) &amp;\propto L(A,\Sigma,\lambda_t|Y,X)p(A,\Sigma) \\
 <span class="math display">\[\begin{align}
 p(A,\Sigma|Y,X) &amp;\sim MNIW(\bar{A},\bar{V},\bar{S},\bar{\nu}) \\
 &amp;\\
-\bar{V} &amp;= (X'(\lambda_t I_T)^{-1}X + \underline{V}^{-1})^{-1} \\
-\bar{A} &amp;= \bar{V}(X'(\lambda_t I_T)^{-1}Y + \underline{V}^{-1}\underline{A}) \\
+\bar{V} &amp;= (X'\Omega^{-1}X + \underline{V}^{-1})^{-1} \\
+\bar{A} &amp;= \bar{V}(X'\Omega^{-1}Y + \underline{V}^{-1}\underline{A}) \\
 \bar{\nu} &amp;= T + \underline{\nu}\\
-\bar{S} &amp;= Y'(\lambda_t I_T)^{-1}Y + \underline{A}'\underline{V}^{-1}\underline{A} + \underline{S} - \bar{A}'\bar{V}^{-1}\bar{A}
+\bar{S} &amp;= Y'\Omega^{-1}Y + \underline{A}'\underline{V}^{-1}\underline{A} + \underline{S} - \bar{A}'\bar{V}^{-1}\bar{A}
 \end{align}\]</span>
+<p>The prior distribution of <span class="math display">\[\lambda_t \sim \text{Exponential}(\frac{1}{\alpha})\]</span> define as:</p>
+<span class="math display">\[\begin{align}
+p(\lambda_t|\alpha) &amp;= \frac{1}{\alpha}exp\{ -\frac{1}{\alpha}\lambda_t \}\\
+
+\end{align} \]</span>
 <p>The kernel of the fully conditional posterior distribution of <span class="math inline">\(\lambda_t\)</span> is then derived as follows:</p>
 <span class="math display">\[\begin{align}
 p(\lambda_t|Y,X,A,\Sigma) &amp;\propto L(A,\Sigma,\lambda_t|Y,X)p(\lambda_t) \\
 \\
-&amp;\propto \det(\lambda_t I_T)^{-\frac{N}{2}} exp\{-\frac{1}{2} tr[\Sigma^{-1} (Y-XA)' (\lambda_t I_T)^{-1} (Y-XA) ]\} \\
+&amp;\propto \lambda_t^{-\frac{N}{2}}exp({-\frac{1}{2}}{\frac{1}{\lambda_t}}\epsilon_t' \Sigma^{-1}\epsilon_t) \\
 &amp;\times \frac{1}{\alpha}exp\{ -\frac{1}{\alpha}\lambda_t \}\\
 
-&amp;= \lambda_t^{-\frac{TN}{2}} exp\{-\frac{1}{2}\frac{1}{\lambda_t} tr[\Sigma^{-1}(Y-XA)'(Y-XA)]\}\\
-&amp;\times exp\{-\frac{1}{\alpha}\lambda_t \}\\
 
-&amp;= \lambda_t^{-\frac{TN}{2}+1-1} exp\{-\frac{1}{2}[\frac{[tr[\Sigma^{-1}(Y-XA)'(Y-XA)]}{\lambda_t} +\frac{2}{\alpha}\lambda_t]\}
+&amp;= \lambda_t^{-\frac{N}{2}+1-1} exp\{-\frac{1}{2}[\frac{
+\epsilon_t' \Sigma^{-1}\epsilon_t} {\lambda_t} +\frac{2}{\alpha}\lambda_t]\}
 \end{align}\]</span>
 <p>The above expression can be rearranged in the form of a Generalized inverse Gaussian distribution kernel as follows:</p>
 <span class="math display">\[\begin{align}
 \lambda_t|Y,A,\Sigma &amp;\sim GIG(a,b,p) \\
 \\
 a &amp;=\frac{2}{\alpha} \\
-b &amp;= tr[\Sigma^{-1}(Y-XA)'(Y-XA)] \\
-p &amp;= -\frac{TN}{2}+1
+b &amp;= \epsilon_t' \Sigma^{-1}\epsilon_t \\
+p &amp;= -\frac{N}{2}+1
 \end{align}\]</span>
 </section>
 <section id="proof-of-model-validity" class="level2">
@@ -583,13 +597,13 @@ p &amp;= -\frac{TN}{2}+1
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Y1-Lag</td>
-<td style="text-align: right;">0.9788129</td>
-<td style="text-align: right;">0.0878723</td>
+<td style="text-align: right;">0.8807142</td>
+<td style="text-align: right;">0.0401071</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Y2-Lag</td>
-<td style="text-align: right;">0.0878723</td>
-<td style="text-align: right;">1.0174290</td>
+<td style="text-align: right;">0.0401071</td>
+<td style="text-align: right;">0.9144334</td>
 </tr>
 </tbody>
 </table>
@@ -609,67 +623,55 @@ p &amp;= -\frac{TN}{2}+1
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Constant</td>
-<td style="text-align: right;">0.0609175</td>
-<td style="text-align: right;">0.0811382</td>
+<td style="text-align: right;">0.0534449</td>
+<td style="text-align: right;">0.1156099</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Y1-Lag</td>
-<td style="text-align: right;">0.9887131</td>
-<td style="text-align: right;">0.0050850</td>
+<td style="text-align: right;">0.9910194</td>
+<td style="text-align: right;">0.0093511</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Y2-Lag</td>
-<td style="text-align: right;">0.0025897</td>
-<td style="text-align: right;">0.9955687</td>
+<td style="text-align: right;">0.0026859</td>
+<td style="text-align: right;">0.9932683</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-<p>Similarly, the posterior mean of the autoregressive and the covariance matrices are close to an identity matrix and the posterior mean of the constant term is close to zero, so we can conclude that the extended model is also valid.</p>
 </section>
 </section>
 </section>
 <section id="forecasting" class="level1">
 <h1>Forecasting</h1>
 <p>The forecast will focus on two models with the sample period from 1990 Q1 to 2023Q4, and forecast how the exchange rate changes for the future up to 2026Q4.</p>
-<section id="forecasting-with-basic-model" class="level2">
-<h2 class="anchored" data-anchor-id="forecasting-with-basic-model">Forecasting with basic model</h2>
+<section id="forecasting-with-basic-model-and-extended-model" class="level2">
+<h2 class="anchored" data-anchor-id="forecasting-with-basic-model-and-extended-model">Forecasting with basic model and extended model</h2>
+<section id="and-68-highest-density-intervals-respectively" class="level4">
+<h4 class="anchored" data-anchor-id="and-68-highest-density-intervals-respectively">90% and 68% highest density intervals respectively</h4>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>The above presents the historical and forecasting data the AUD/USD exchange rate. The exchange rate shows several peaks and troughs, indicating the volatility in the exchange rate over the years. For the three years forecasting, it shows a clear downward trend and reaching the lowest above 0.6 in 2026.</p>
-<p>Regard to the 3D with density intervals below, we could notice that the for each different predictive density at specific horizons, with the back wall we have the one period ahead predictive density and with the front we have the 12 period ahead density which is 3 years. We could see the distribution becomes lower and more dispersed with the increases of the horizon, as the data is more informative about the nearest developments in the future. Hence, one period predictive density is highly concentrated relative to others with smaller variance and taller peak. Similarly, the interval become more wider and dispersed resulting a more uncertainty for the future period forecasting.</p>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<section id="forecasting-on-extended-model" class="level3">
-<h3 class="anchored" data-anchor-id="forecasting-on-extended-model">Forecasting on extended model</h3>
+<p>The above presents the historical and forecasting data the AUD/USD exchange rate for basic and extended model.</p>
+<p>For the point forecast, for basic model, the exchange rate shows several peaks and troughs, indicating the volatility in the exchange rate over the years. For the three years forecasting, it shows a clear downward trend and reaching the lowest above 0.6 in 2026. And for extended model, it also shows a clear downward trend for the first half forecasting period and reaching below 0.06 in around 2025 and slightly increase back to 0.61 fo the following period. For conduct 90% and 68% confident interval in the extended model in which we can notice the extended model has an obvious wider confident interval for both significant level, it probably given by the nature of the Laplace distribution applied in the extended model in which the the fatter fail of Laplace distribution will capture more outliers which resulting a larger variance and then leading to a wider confident interval.</p>
+<p>Regard to the 3D with density intervals below for both model forecasting, we could notice that the for each different predictive density at specific horizons, with the back wall we have the one period ahead predictive density and with the front we have the 12 period ahead density which is 3 years. We could see the distribution becomes lower and more dispersed with the increases of the horizon, as the data is more informative about the nearest developments in the future. Hence, one period predictive density is highly concentrated relative to others with smaller variance and taller peak. Similarly, the interval become more wider and dispersed resulting a more uncertainty for the future period forecasting.</p>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>The above presents the historical and forecasting data the AUD/USD exchange rate for the extended model. For the three years forecasting, it also shows a clear downward trend for the first half forecasting period and reaching below 0.06 in around 2025 and slightly increase back to 0.61 fo the following period.</p>
-<p>With regard to the 3D with density intervals below, we could notice that the confidence interval widened a little.</p>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
 <p>Interactive versions of the above 3D plots are provided below.</p>
 <div class="cell">
 <div class="cell-output-display">
-<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-03359eee4737d81a7af1" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-03359eee4737d81a7af1">{"x":{"visdat":{"183df65e7c3fb":["function () ","plotlyVisDat"]},"cur_data":"183df65e7c3fb","attrs":{"183df65e7c3fb":{"y":[1,2,3,4,5,6,7,8,9,10,11,12],"x":[0.0748893688009553,0.202692718589129,0.330496068377303,0.458299418165477,0.58610276795365,0.713906117741824,0.841709467529998,0.969512817318172,1.09731616710635],"z":[[0,0,0,0.00359927968055941,4.13870216138063,3.6812806611078,0.000938942525363323,0,0],[0,0,0,0.0741764595037025,4.11679350245549,3.59536742003706,0.0381836626981085,0,0],[0,0,0.000625961683575549,0.218460627567867,3.98049034585691,3.48003397983826,0.144440658485058,0.000469471262681662,0],[0,0,0.00312980841787774,0.389661148025779,3.81210665297509,3.35891039406639,0.259148137000277,0.00156490420893887,0],[0,0,0.0117367815670415,0.565712871531402,3.62979531263371,3.22871036388268,0.38246258866466,0.0061031264148616,0],[0,0.000312980841787774,0.0289507278653691,0.712813867171656,3.48848446256653,3.07128100046343,0.506246511591725,0.0164314941938582,0],[0,0.000312980841787774,0.0533632335248155,0.846143705773248,3.32573442483689,2.95782544531536,0.611564564853311,0.0292637087071569,0.000312980841787774],[0,0.00234735631340831,0.0854437698080624,0.957408395028802,3.19850771265016,2.8365453691226,0.699512181395676,0.0441302986920762,0.000625961683575548],[0,0.00516418388949828,0.113455555148068,1.05677981229642,3.08583460960656,2.73028837333565,0.768367966588986,0.062439677936661,0.00219086589251442],[0.000156490420893887,0.00845048272826991,0.155238497526736,1.13455555148068,2.97175309277492,2.64218426637239,0.817192977907879,0.0899819920139851,0.00500769346860439],[0.000156490420893887,0.0142406283013437,0.192483217699481,1.19386542099947,2.87441605097892,2.56080924750757,0.863044671229788,0.11674185398684,0.00876346357005768],[0.000469471262681662,0.0195613026117359,0.238804382284072,1.24785461620786,2.77347972950236,2.4756784585413,0.909365835814378,0.146631524377572,0.0126757240924049]],"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"surface","colors":["#05386B","#8EE4AF","#EDF5E1"],"inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":"AUD/USD"},"yaxis":{"title":"h-step forecast"},"zaxis":{"title":"density"}},"title":"AUD/USD forecast densities for basic model","hovermode":"closest","showlegend":false,"legend":{"yanchor":"top","y":0.5}},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"colorbar":{"title":"","ticklen":2,"len":0.5,"lenmode":"fraction","y":1,"yanchor":"top"},"colorscale":[["0","rgba(5,56,107,1)"],["0.0416666666666667","rgba(28,69,113,1)"],["0.0833333333333333","rgba(42,81,119,1)"],["0.125","rgba(54,95,125,1)"],["0.166666666666667","rgba(65,109,130,1)"],["0.208333333333333","rgba(76,123,136,1)"],["0.25","rgba(86,137,142,1)"],["0.291666666666667","rgba(95,151,148,1)"],["0.333333333333333","rgba(105,166,153,1)"],["0.375","rgba(114,181,159,1)"],["0.416666666666667","rgba(124,197,164,1)"],["0.458333333333333","rgba(133,212,170,1)"],["0.5","rgba(142,228,175,1)"],["0.541666666666667","rgba(151,230,179,1)"],["0.583333333333333","rgba(159,231,183,1)"],["0.625","rgba(168,233,187,1)"],["0.666666666666667","rgba(176,234,191,1)"],["0.708333333333333","rgba(184,236,196,1)"],["0.75","rgba(192,237,200,1)"],["0.791666666666667","rgba(199,238,204,1)"],["0.833333333333333","rgba(207,240,208,1)"],["0.875","rgba(215,241,212,1)"],["0.916666666666667","rgba(222,242,217,1)"],["0.958333333333333","rgba(230,244,221,1)"],["1","rgba(237,245,225,1)"]],"showscale":true,"y":[1,2,3,4,5,6,7,8,9,10,11,12],"x":[0.0748893688009553,0.202692718589129,0.330496068377303,0.458299418165477,0.58610276795365,0.713906117741824,0.841709467529998,0.969512817318172,1.09731616710635],"z":[[0,0,0,0.00359927968055941,4.13870216138063,3.6812806611078,0.000938942525363323,0,0],[0,0,0,0.0741764595037025,4.11679350245549,3.59536742003706,0.0381836626981085,0,0],[0,0,0.000625961683575549,0.218460627567867,3.98049034585691,3.48003397983826,0.144440658485058,0.000469471262681662,0],[0,0,0.00312980841787774,0.389661148025779,3.81210665297509,3.35891039406639,0.259148137000277,0.00156490420893887,0],[0,0,0.0117367815670415,0.565712871531402,3.62979531263371,3.22871036388268,0.38246258866466,0.0061031264148616,0],[0,0.000312980841787774,0.0289507278653691,0.712813867171656,3.48848446256653,3.07128100046343,0.506246511591725,0.0164314941938582,0],[0,0.000312980841787774,0.0533632335248155,0.846143705773248,3.32573442483689,2.95782544531536,0.611564564853311,0.0292637087071569,0.000312980841787774],[0,0.00234735631340831,0.0854437698080624,0.957408395028802,3.19850771265016,2.8365453691226,0.699512181395676,0.0441302986920762,0.000625961683575548],[0,0.00516418388949828,0.113455555148068,1.05677981229642,3.08583460960656,2.73028837333565,0.768367966588986,0.062439677936661,0.00219086589251442],[0.000156490420893887,0.00845048272826991,0.155238497526736,1.13455555148068,2.97175309277492,2.64218426637239,0.817192977907879,0.0899819920139851,0.00500769346860439],[0.000156490420893887,0.0142406283013437,0.192483217699481,1.19386542099947,2.87441605097892,2.56080924750757,0.863044671229788,0.11674185398684,0.00876346357005768],[0.000469471262681662,0.0195613026117359,0.238804382284072,1.24785461620786,2.77347972950236,2.4756784585413,0.909365835814378,0.146631524377572,0.0126757240924049]],"type":"surface","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-9d43406124dc93cd8ff7" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-9d43406124dc93cd8ff7">{"x":{"visdat":{"10f57725feb96":["function () ","plotlyVisDat"]},"cur_data":"10f57725feb96","attrs":{"10f57725feb96":{"y":[1,2,3,4,5,6,7,8,9,10,11,12],"x":[0.16761027787267432,0.27885558106325814,0.39010088425384204,0.50134618744442583,0.61259149063500973,0.72383679382559363,0.83508209701617742,0.94632740020676132,1.0575727033973452],"z":[[0,0,0,0.056631604385193039,6.3733027792225245,2.559209169597533,0,0,0],[0,0,0.0017978287106410495,0.40990494602615912,5.6532723806107832,2.8819194231576013,0.042248974700064647,0,0],[0,0,0.0044945717766026235,0.7802576604182152,5.0330214754396208,3.0572077224451033,0.1141621231257066,0,0],[0,0,0.028765259370256792,1.0876863699378345,4.6114306427942946,2.991586974506705,0.26787647788551627,0.0017978287106410506,0],[0,0,0.070115319715000929,1.3519671904020687,4.2087170116106991,2.9367531988321534,0.41080386038147965,0.010786972263846303,0],[0,0.003595657421282099,0.15461326911513026,1.4571401699745701,3.9794938510039657,2.825287818772408,0.55013558545616092,0.018877201461731032,0],[0,0.008989143553205247,0.19596332945987441,1.6171469252216233,3.6900434285907564,2.7605659851893303,0.67598359520103435,0.040451145989423641,0],[0.00089891435532052496,0.01707937275108997,0.28585476499192686,1.6566991568557263,3.5192497010798567,2.6544940912615087,0.78834788961609992,0.06112617616179572,0.0053934861319231515],[0.00089891435532052496,0.031462002436218363,0.35597008470692781,1.7097351038196373,3.3628386032540853,2.5798841997699049,0.8332936073821261,0.11236429441506567,0.0026967430659615758],[0.00089891435532052496,0.044046803410705715,0.44406369152833924,1.7735580230473946,3.1650774450835697,2.4872960211718911,0.91779155678225544,0.14921978298320721,0.0071913148425642023],[0.0026967430659615749,0.071014234070321453,0.49260506671564758,1.7600743077175867,3.0742870951961967,2.4504405326037495,0.93756767259930696,0.18787310026198978,0.012584800974487354],[0.0053934861319231498,0.092588178598014048,0.58519324531366157,1.7519840785197021,2.9259662265683097,2.3857186990206718,0.99330036262917942,0.22203184576416976,0.026967430659615758]],"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"surface","colors":["#05386B","#8EE4AF","#EDF5E1"],"inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":"AUD/USD"},"yaxis":{"title":"h-step forecast"},"zaxis":{"title":"density"}},"title":"AUD/USD forecast densities for basic model","hovermode":"closest","showlegend":false,"legend":{"yanchor":"top","y":0.5}},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"colorbar":{"title":"","ticklen":2,"len":0.5,"lenmode":"fraction","y":1,"yanchor":"top"},"colorscale":[["0","rgba(5,56,107,1)"],["0.0416666666666667","rgba(28,69,113,1)"],["0.0833333333333333","rgba(42,81,119,1)"],["0.125","rgba(54,95,125,1)"],["0.166666666666667","rgba(65,109,130,1)"],["0.208333333333333","rgba(76,123,136,1)"],["0.25","rgba(86,137,142,1)"],["0.291666666666667","rgba(95,151,148,1)"],["0.333333333333333","rgba(105,166,153,1)"],["0.375","rgba(114,181,159,1)"],["0.416666666666667","rgba(124,197,164,1)"],["0.458333333333333","rgba(133,212,170,1)"],["0.5","rgba(142,228,175,1)"],["0.541666666666667","rgba(151,230,179,1)"],["0.583333333333333","rgba(159,231,183,1)"],["0.625","rgba(168,233,187,1)"],["0.666666666666667","rgba(176,234,191,1)"],["0.708333333333333","rgba(184,236,196,1)"],["0.75","rgba(192,237,200,1)"],["0.791666666666667","rgba(199,238,204,1)"],["0.833333333333333","rgba(207,240,208,1)"],["0.875","rgba(215,241,212,1)"],["0.916666666666667","rgba(222,242,217,1)"],["0.958333333333333","rgba(230,244,221,1)"],["1","rgba(237,245,225,1)"]],"showscale":true,"y":[1,2,3,4,5,6,7,8,9,10,11,12],"x":[0.16761027787267432,0.27885558106325814,0.39010088425384204,0.50134618744442583,0.61259149063500973,0.72383679382559363,0.83508209701617742,0.94632740020676132,1.0575727033973452],"z":[[0,0,0,0.056631604385193039,6.3733027792225245,2.559209169597533,0,0,0],[0,0,0.0017978287106410495,0.40990494602615912,5.6532723806107832,2.8819194231576013,0.042248974700064647,0,0],[0,0,0.0044945717766026235,0.7802576604182152,5.0330214754396208,3.0572077224451033,0.1141621231257066,0,0],[0,0,0.028765259370256792,1.0876863699378345,4.6114306427942946,2.991586974506705,0.26787647788551627,0.0017978287106410506,0],[0,0,0.070115319715000929,1.3519671904020687,4.2087170116106991,2.9367531988321534,0.41080386038147965,0.010786972263846303,0],[0,0.003595657421282099,0.15461326911513026,1.4571401699745701,3.9794938510039657,2.825287818772408,0.55013558545616092,0.018877201461731032,0],[0,0.008989143553205247,0.19596332945987441,1.6171469252216233,3.6900434285907564,2.7605659851893303,0.67598359520103435,0.040451145989423641,0],[0.00089891435532052496,0.01707937275108997,0.28585476499192686,1.6566991568557263,3.5192497010798567,2.6544940912615087,0.78834788961609992,0.06112617616179572,0.0053934861319231515],[0.00089891435532052496,0.031462002436218363,0.35597008470692781,1.7097351038196373,3.3628386032540853,2.5798841997699049,0.8332936073821261,0.11236429441506567,0.0026967430659615758],[0.00089891435532052496,0.044046803410705715,0.44406369152833924,1.7735580230473946,3.1650774450835697,2.4872960211718911,0.91779155678225544,0.14921978298320721,0.0071913148425642023],[0.0026967430659615749,0.071014234070321453,0.49260506671564758,1.7600743077175867,3.0742870951961967,2.4504405326037495,0.93756767259930696,0.18787310026198978,0.012584800974487354],[0.0053934861319231498,0.092588178598014048,0.58519324531366157,1.7519840785197021,2.9259662265683097,2.3857186990206718,0.99330036262917942,0.22203184576416976,0.026967430659615758]],"type":"surface","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 <div class="cell-output-display">
-<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-04f9c57a012d8ac6bba3" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-04f9c57a012d8ac6bba3">{"x":{"visdat":{"183df52f3c801":["function () ","plotlyVisDat"]},"cur_data":"183df52f3c801","attrs":{"183df52f3c801":{"y":[1,2,3,4,5,6,7,8,9,10,11,12],"x":[-0.105603237513345,0.0586114596049928,0.22282615672333,0.387040853841667,0.551255550960005,0.715470248078342,0.879684945196679,1.04389964231502,1.20811433943335],"z":[[0,0,0,0,2.96508850703071,3.12450041252485,0,0,0],[0,0,0,0.0138030682176593,3.63440199138897,2.43732413400256,0.00405972594637038,0,0],[0,0,0,0.129099285094578,3.78718301117071,2.15557915332446,0.0177274699658173,0,0],[0,0,0.00162389037854815,0.357797180073443,3.65916631966183,2.01511263558004,0.0558888938616989,0,0],[0,0,0.00906672128022717,0.590284152602253,3.43682866199895,1.95083364142918,0.102305093848534,0.000270648396424692,0],[0,0,0.0297713236067161,0.759304076169473,3.2148969769307,1.91997972423676,0.163471631440514,0.00216518717139753,0],[0,0.000676620991061729,0.0607605649973433,0.875547562433878,2.99296529186245,1.92403945018313,0.228968543375289,0.00663088571240495,0],[0,0.0032477807570963,0.0910731853969088,0.953629624802402,2.80310544177053,1.91862648225464,0.306915281545601,0.0128557988301729,0.000135324198212346],[0.000135324198212346,0.00717218250525433,0.128422664103516,0.994226884266106,2.64951247679952,1.91118365135296,0.376742567823171,0.0216518717139754,0.000541296792849383],[0.000676620991061729,0.0128557988301729,0.168884599369008,1.0127662994212,2.50498623310874,1.91199559654223,0.440886237775823,0.0354549399316346,0.00108259358569877],[0.0014885661803358,0.0198926571372148,0.189318553299072,1.02656936763886,2.39429103897104,1.89832785252279,0.505165231926688,0.0516938437171161,0.00284180816245926],[0.00243583556782223,0.0258469218585581,0.218819228509363,1.02859923061204,2.28860284016719,1.89102034581932,0.561324774184811,0.0682033958990224,0.0047363469374321]],"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"surface","colors":["#05386B","magenta2","#EDF5E1"],"inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":"AUD/USD"},"yaxis":{"title":"h-step forecast"},"zaxis":{"title":"density"}},"title":"AUD/USD forecast densities for extended model","hovermode":"closest","showlegend":false,"legend":{"yanchor":"top","y":0.5}},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"colorbar":{"title":"","ticklen":2,"len":0.5,"lenmode":"fraction","y":1,"yanchor":"top"},"colorscale":[["0","rgba(5,56,107,1)"],["0.0416666666666667","rgba(40,58,117,1)"],["0.0833333333333333","rgba(62,60,127,1)"],["0.125","rgba(81,61,138,1)"],["0.166666666666667","rgba(99,62,148,1)"],["0.208333333333333","rgba(116,61,159,1)"],["0.25","rgba(134,60,170,1)"],["0.291666666666667","rgba(151,58,181,1)"],["0.333333333333333","rgba(168,55,192,1)"],["0.375","rgba(185,49,203,1)"],["0.416666666666667","rgba(203,42,215,1)"],["0.458333333333333","rgba(220,29,226,1)"],["0.5","rgba(238,0,238,1)"],["0.541666666666667","rgba(240,59,237,1)"],["0.583333333333333","rgba(242,85,237,1)"],["0.625","rgba(243,106,236,1)"],["0.666666666666667","rgba(244,125,235,1)"],["0.708333333333333","rgba(245,142,234,1)"],["0.75","rgba(245,158,233,1)"],["0.791666666666667","rgba(245,173,232,1)"],["0.833333333333333","rgba(245,188,231,1)"],["0.875","rgba(243,203,230,1)"],["0.916666666666667","rgba(242,217,228,1)"],["0.958333333333333","rgba(240,231,227,1)"],["1","rgba(237,245,225,1)"]],"showscale":true,"y":[1,2,3,4,5,6,7,8,9,10,11,12],"x":[-0.105603237513345,0.0586114596049928,0.22282615672333,0.387040853841667,0.551255550960005,0.715470248078342,0.879684945196679,1.04389964231502,1.20811433943335],"z":[[0,0,0,0,2.96508850703071,3.12450041252485,0,0,0],[0,0,0,0.0138030682176593,3.63440199138897,2.43732413400256,0.00405972594637038,0,0],[0,0,0,0.129099285094578,3.78718301117071,2.15557915332446,0.0177274699658173,0,0],[0,0,0.00162389037854815,0.357797180073443,3.65916631966183,2.01511263558004,0.0558888938616989,0,0],[0,0,0.00906672128022717,0.590284152602253,3.43682866199895,1.95083364142918,0.102305093848534,0.000270648396424692,0],[0,0,0.0297713236067161,0.759304076169473,3.2148969769307,1.91997972423676,0.163471631440514,0.00216518717139753,0],[0,0.000676620991061729,0.0607605649973433,0.875547562433878,2.99296529186245,1.92403945018313,0.228968543375289,0.00663088571240495,0],[0,0.0032477807570963,0.0910731853969088,0.953629624802402,2.80310544177053,1.91862648225464,0.306915281545601,0.0128557988301729,0.000135324198212346],[0.000135324198212346,0.00717218250525433,0.128422664103516,0.994226884266106,2.64951247679952,1.91118365135296,0.376742567823171,0.0216518717139754,0.000541296792849383],[0.000676620991061729,0.0128557988301729,0.168884599369008,1.0127662994212,2.50498623310874,1.91199559654223,0.440886237775823,0.0354549399316346,0.00108259358569877],[0.0014885661803358,0.0198926571372148,0.189318553299072,1.02656936763886,2.39429103897104,1.89832785252279,0.505165231926688,0.0516938437171161,0.00284180816245926],[0.00243583556782223,0.0258469218585581,0.218819228509363,1.02859923061204,2.28860284016719,1.89102034581932,0.561324774184811,0.0682033958990224,0.0047363469374321]],"type":"surface","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-be284d728379236719ec" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-be284d728379236719ec">{"x":{"visdat":{"10f577763ff83":["function () ","plotlyVisDat"]},"cur_data":"10f577763ff83","attrs":{"10f577763ff83":{"y":[1,2,3,4,5,6,7,8,9,10,11,12],"x":[-0.65045252282675325,-0.32837012297523716,-0.0062877231237210562,0.31579467672779504,0.63787707657931114,0.95995947643082724,1.2820418762823433,1.6041242761338594,1.9262066759853755],"z":[[0,0,0,0.18628773266611504,2.6459757584242634,0.27253205334487191,0,0,0],[0,0,0,0.40017364794943228,2.2147541550304788,0.48986774145533934,0,0,0],[0,0,0.0068995456543005564,0.49676728710964008,1.9663705114756587,0.60371024475129853,0.031047955444352529,0,0],[0,0,0.031047955444352505,0.65545683715855285,1.7007380037850872,0.66580615564000345,0.051746592407254217,0,0],[0,0,0.055196365234404451,0.70030388391150655,1.5454982265633248,0.74170115783730961,0.058646138061554776,0.0034497728271502765,0],[0,0,0.086244320678756953,0.6761554741214546,1.4316557232673655,0.7899979774174134,0.11729227612310955,0.0034497728271502765,0],[0,0.0068995456543005564,0.10694295764165863,0.78309843176311322,1.2246693536383488,0.8382947969975173,0.13454114025886096,0.010349318481450829,0],[0,0.013799091308601113,0.16558909570321337,0.69340433825720593,1.2108702623297478,0.82104593286176597,0.18283795983896489,0.013799091308601106,0.0034497728271502812],[0.0034497728271502782,0.013799091308601113,0.17593841418466419,0.70030388391150655,1.2074204895025975,0.74860070349161012,0.2345845522462191,0.017248864135751382,0.0034497728271502812],[0.0068995456543005564,0.027598182617202226,0.21388591528331727,0.70030388391150655,1.11427662316954,0.73480161218300899,0.26908228051772193,0.031047955444352487,0.0068995456543005625],[0.0068995456543005564,0.044847046752953618,0.23113477941906865,0.63820797302280152,1.1453245786138924,0.6899545654300554,0.29668046313492419,0.04484704675295359,0.0068995456543005625],[0.0068995456543005564,0.044847046752953618,0.26563250769057145,0.62440888171420039,1.0832286677251874,0.69685411108435591,0.27598182617202249,0.093143866333057462,0.013799091308601125]],"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"surface","colors":["#05386B","magenta2","#EDF5E1"],"inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":"AUD/USD"},"yaxis":{"title":"h-step forecast"},"zaxis":{"title":"density"}},"title":"AUD/USD forecast densities for extended model","hovermode":"closest","showlegend":false,"legend":{"yanchor":"top","y":0.5}},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"colorbar":{"title":"","ticklen":2,"len":0.5,"lenmode":"fraction","y":1,"yanchor":"top"},"colorscale":[["0","rgba(5,56,107,1)"],["0.0416666666666667","rgba(40,58,117,1)"],["0.0833333333333333","rgba(62,60,127,1)"],["0.125","rgba(81,61,138,1)"],["0.166666666666667","rgba(99,62,148,1)"],["0.208333333333333","rgba(116,61,159,1)"],["0.25","rgba(134,60,170,1)"],["0.291666666666667","rgba(151,58,181,1)"],["0.333333333333333","rgba(168,55,192,1)"],["0.375","rgba(185,49,203,1)"],["0.416666666666667","rgba(203,42,215,1)"],["0.458333333333333","rgba(220,29,226,1)"],["0.5","rgba(238,0,238,1)"],["0.541666666666667","rgba(240,59,237,1)"],["0.583333333333333","rgba(242,85,237,1)"],["0.625","rgba(243,106,236,1)"],["0.666666666666667","rgba(244,125,235,1)"],["0.708333333333333","rgba(245,142,234,1)"],["0.75","rgba(245,158,233,1)"],["0.791666666666667","rgba(245,173,232,1)"],["0.833333333333333","rgba(245,188,231,1)"],["0.875","rgba(243,203,230,1)"],["0.916666666666667","rgba(242,217,228,1)"],["0.958333333333333","rgba(240,231,227,1)"],["1","rgba(237,245,225,1)"]],"showscale":true,"y":[1,2,3,4,5,6,7,8,9,10,11,12],"x":[-0.65045252282675325,-0.32837012297523716,-0.0062877231237210562,0.31579467672779504,0.63787707657931114,0.95995947643082724,1.2820418762823433,1.6041242761338594,1.9262066759853755],"z":[[0,0,0,0.18628773266611504,2.6459757584242634,0.27253205334487191,0,0,0],[0,0,0,0.40017364794943228,2.2147541550304788,0.48986774145533934,0,0,0],[0,0,0.0068995456543005564,0.49676728710964008,1.9663705114756587,0.60371024475129853,0.031047955444352529,0,0],[0,0,0.031047955444352505,0.65545683715855285,1.7007380037850872,0.66580615564000345,0.051746592407254217,0,0],[0,0,0.055196365234404451,0.70030388391150655,1.5454982265633248,0.74170115783730961,0.058646138061554776,0.0034497728271502765,0],[0,0,0.086244320678756953,0.6761554741214546,1.4316557232673655,0.7899979774174134,0.11729227612310955,0.0034497728271502765,0],[0,0.0068995456543005564,0.10694295764165863,0.78309843176311322,1.2246693536383488,0.8382947969975173,0.13454114025886096,0.010349318481450829,0],[0,0.013799091308601113,0.16558909570321337,0.69340433825720593,1.2108702623297478,0.82104593286176597,0.18283795983896489,0.013799091308601106,0.0034497728271502812],[0.0034497728271502782,0.013799091308601113,0.17593841418466419,0.70030388391150655,1.2074204895025975,0.74860070349161012,0.2345845522462191,0.017248864135751382,0.0034497728271502812],[0.0068995456543005564,0.027598182617202226,0.21388591528331727,0.70030388391150655,1.11427662316954,0.73480161218300899,0.26908228051772193,0.031047955444352487,0.0068995456543005625],[0.0068995456543005564,0.044847046752953618,0.23113477941906865,0.63820797302280152,1.1453245786138924,0.6899545654300554,0.29668046313492419,0.04484704675295359,0.0068995456543005625],[0.0068995456543005564,0.044847046752953618,0.26563250769057145,0.62440888171420039,1.0832286677251874,0.69685411108435591,0.27598182617202249,0.093143866333057462,0.013799091308601125]],"type":"surface","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>The 3D plots above allow us to access to alternative vantage points. We could notice that for the first few forecasting periods, the extended model has very sharp and concentrated densities around the point estimated, and it shows clearly heavy tails, which may increase the possibility of capturing extreme values that deviate significantly from the central forecast.</p>
