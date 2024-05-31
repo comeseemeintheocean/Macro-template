@@ -1,91 +1,49 @@
 ---
 title: "Exchange Rate Forecasting Using Bayesian VARs Model"
 author: "Qingqing Pang"
+
 execute:
-  
   echo: false
+  
 bibliography: references.bib
-editor: 
-  markdown: 
-    wrap: 72
 ---
 
-> **Abstract.** This research report explores how Bayesian VARs model
-> predict AUD/USD exchange rate. **Keywords.** Bayesian Vars, Exchange
-> rate, Forecasting, Minnesota Prior, Laplace distribution
+> **Abstract.** This research report explores how Bayesian VARs model predict AUD/USD exchange rate.
+> **Keywords.** Bayesian Vars, Exchange rate, Forecasting, Minnesota Prior, Laplace distribution
 
 # Objective and Motivation
 
-The objective of this research is to use the Bayesian Vector
-Autoregressions (VARs) method to forecast the exchange rate of the US
-dollar exchange rate against the Australian dollar.
+The objective of this research is to use the Bayesian Vector Autoregressions (VARs) method to forecast the exchange rate of the US dollar exchange rate against the Australian dollar.
 
-The ability to accurately forecast the foreign exchange rate is crucial
-for Australia’s global trade and investment. Given the prominence of the
-US dollar as the world's primary reserve currency, the monetary policies
-of the US Federal Reserve have a worldwide effect on the world economy,
-its significant influence on the Australia currency market should be
-important for domestic investors and policy maker as it can directly
-impact the AUD/USD exchange rate. Besides, America as one of the major
-trading partners for Australia, can impact bilateral trade flows and
-eventually affect the value of the AUD. Apart from the external from
-foreign countries, the domestic economic indicators can also be one of
-the determinants of the AUD/USD exchange rate.
+The ability to accurately forecast the foreign exchange rate is crucial for Australia’s global trade and investment. Given the prominence of the US dollar as the world's primary reserve currency, the monetary policies of the US Federal Reserve have a worldwide effect on the world economy, its significant influence on the Australia currency market should be important for domestic investors and policy maker as it can directly impact the AUD/USD exchange rate. Besides, America as one of the major trading partners for Australia, can impact bilateral trade flows and eventually affect the value of the AUD. Apart from the external from foreign countries, the domestic economic indicators can also be one of the determinants of the AUD/USD exchange rate.
 
-The research is aimed to address the question for example, how the
-AUD/USD exchange rate will be in 3 months or even longer 1 year?
+The research is aimed to address the question for example, how the AUD/USD exchange rate will be in 3 months or even longer 1 year?
 
 # Data and Variables
 
-To better forecast the change in the exchange rate, the 13 variables are
-selected as follows which contain both domestic and US economic
-indicators that affect the exchange rate in different ways.
+To better forecast the change in the exchange rate, the 13 variables are selected as follows which contain both domestic and US economic indicators that affect the exchange rate in different ways.
 
-Real GDP and interest rates have a significant effect on the exchange
-rate, a higher realGDP and interest rate in Australia may increase the
-demand for AUD, which will lead to an appreciation of AUD and a rise in
-the AUD/USD exchange rate. A higher CPI indicates a lower purchasing
-power relative to foreign currency which may lead to a depreciation of
-the domestic currency. The unemployment rate can in some way represent
-business activity and a country with a high unemployment rate will lower
-the attractiveness for foreign investors and weaken the domestic
-currency competitiveness in the currency market. The balance of trade,
-which is the difference between exports and imports, also can influence
-the demand for its currency, a trade surplus in AUD may increase the
-demand for AUD dollar.
+Real GDP and interest rates have a significant effect on the exchange rate, a higher realGDP and interest rate in Australia may increase the demand for AUD, which will lead to an appreciation of AUD and a rise in the AUD/USD exchange rate. A higher CPI indicates a lower purchasing power relative to foreign currency which may lead to a depreciation of the domestic currency. The unemployment rate can in some way represent business activity and a country with a high unemployment rate will lower the attractiveness for foreign investors and weaken the domestic currency competitiveness in the currency market. The balance of trade, which is the difference between exports and imports, also can influence the demand for its currency, a trade surplus in AUD may increase the demand for AUD dollar. 
 
--   $erate_{t}$: AUD/USD exchange rate
+  -   $erate_{t}$: AUD/USD exchange rate
 
--   AUS economic indicators
-
-    -   $crate\_au_{t}$: The Cash Rate Target, Australia
-    -   $rgdp\_au_{t}$: The Real Gross Domestic Product, Australia
-    -   $cpi\_au_{t}$: The Consumer Price Index, Australia
-    -   $unemr\_au_{t}$: The Unemployment rate, Australia
-    -   $impor\_au_{t}$: The Imports of Goods and Services, Australia
-    -   $expor\_au_{t}$: The Exports of Goods and Services, Australia
-
--   US economic indicators
-
-    -   $crate\_us_{t}$: The Federal Funds Effective Rate, United States
-    -   $rgdp\_us_{t}$: The Real Gross Domestic Product, United States
-    -   $cpi\_us_{t}$: The Consumer Price Index, United States
-    -   $unemr\_us_{t}$: The Unemployment rate, United States
-    -   $impor\_us_{t}$: The Imports of Goods and Services, United
-        States
-    -   $expor\_us_{t}$: The Exports of Goods and Services, United
-        States
-
+* AUS economic indicators
+  +   $crate\_au_{t}$: The Cash Rate Target, Australia
+  +   $rgdp\_au_{t}$: The Real Gross Domestic Product, Australia
+  +   $cpi\_au_{t}$: The Consumer Price Index, Australia
+  +   $unemr\_au_{t}$: The Unemployment rate, Australia
+  +   $impor\_au_{t}$: The Imports of Goods and Services, Australia
+  +   $expor\_au_{t}$: The Exports of Goods and Services, Australia
+* US economic indicators
+  +   $crate\_us_{t}$: The Federal Funds Effective Rate, United States
+  +   $rgdp\_us_{t}$: The Real Gross Domestic Product, United States
+  +   $cpi\_us_{t}$: The Consumer Price Index, United States
+  +   $unemr\_us_{t}$: The Unemployment rate, United States
+  +   $impor\_us_{t}$: The Imports of Goods and Services, United States
+  +   $expor\_us_{t}$: The Exports of Goods and Services, United States
+  
 ### Data Cleaning
-
-For the data cleaning part, most data for AUS is from Reserve Bank of
-Australia (RBA) and Australian Bureau of Statistics (ABS), and data for
-the US is from FRED, the dataset spans from 1990 Q1 to 2023 Q4,
-comprising 136 observations. To better fit the model, the data has been
-transformed to 'quarter' to ensure that seasonality effects are removed
-and logged transformations have been applied to most data except
-exchange rate and cash rate to reducing outlier effects.
-
+For the data cleaning part, most data for AUS is from Reserve Bank of Australia (RBA) and Australian Bureau of Statistics (ABS), and data for the US is from FRED, the dataset spans from 1990 Q1 to 2023 Q4, comprising 136 observations. To better fit the model, the data has been transformed to 'quarter' to ensure that seasonality effects are removed and logged transformations have been applied to most data except exchange rate and cash rate to reducing outlier effects.
 ```{r, warning=FALSE, message=FALSE}
 #| echo: false
 #| message: false
@@ -104,9 +62,6 @@ library(HDInterval)
 library(plotly)       
 library(mgcv)
 library(mvtnorm)
-library(Rmpfr)
-library(dplyr)
-library(psych)
 fredr_set_key("75b470c4883ecfd5a7b4185f30437bd0")
 ```
 
@@ -135,6 +90,7 @@ mcxs2.rgb   = col2rgb(mcxs2)
 mcxs2.shade1= rgb(mcxs2.rgb[1],mcxs2.rgb[2],mcxs2.rgb[3], alpha=120, maxColorValue=255)
 
 ```
+
 
 ```{r, warning=FALSE, message=FALSE}
 #| echo: false
@@ -246,6 +202,7 @@ for(var in variables) {
 #gprice <- log(gprice)
 ```
 
+
 ```{r}
 #| echo: false
 #| message: false
@@ -268,16 +225,11 @@ variable_names <- c("exchange rate", "cpi_au", "cpi_us",
 
 
 colnames(merged_data)   <- variable_names
+
+
 ```
-
 #### Visualisation of data
-
-Plot the variables to see the patterns of data. It shows from the plots
-that the exchange rate and cash rate for the US fluctuate over time, the
-cash rate and unemployment for AU show a downward trend and all other
-variables have a clear upward trend, with the exports、imports, and GDP
-for both countries have a clear drop during the COVID-19 period.
-
+Plot the variables to see the patterns of data. It shows from the plots that the exchange rate and cash rate for the US fluctuate over time, the cash rate and unemployment for AU show a downward trend and all other variables have a clear upward trend, with the exports、imports, and GDP for both countries have a clear drop during the COVID-19 period.
 ```{r all variables plot}
 #| echo: false
 #| message: false
@@ -290,17 +242,11 @@ for (i in 1:13) {
 }
 
 ```
-
-Since most variables show a non-stationary pattern. To determine whether
-a unit root is present in a time series dataset, the ADF test will be
-conducted below.
+Since most variables show a non-stationary pattern. To determine whether a unit root is present in a time series dataset, the ADF test will be conducted below.
 
 #### Augmented Dickey-Fuller test for log transformed variables except exchange rates and cash rates.
 
-From the plot we can observe all ACF plots have a high degree of
-persistence over time, indicating there is significant autocorrelation
-in the time series data.
-
+From the plot we can observe all ACF plots have a high degree of persistence over time, indicating there is significant autocorrelation in the time series data.
 ```{r}
 #| echo: false
 #| message: false
@@ -313,7 +259,6 @@ plot(acf, main = "")
 title(main = paste(colnames(merged_data)[i]), line = 0.5)
 }
 ```
-
 ```{r}
 #| echo: false
 #| message: false
@@ -324,11 +269,7 @@ for (i in 1:13) {
   adf_test[[i]] <- adf_result
 }
 ```
-
-Below is the p-value of each variable and only the cash rate for AUS has
-a p-value less than 0.05 which indicates that $crateau_{t}$ is
-stationary.
-
+Below is the p-value of each variable and only the cash rate for AUS has a p-value less than 0.05 which indicates that $crateau_{t}$ is stationary.
 ```{r}
 #| echo: false
 #| message: false
@@ -343,11 +284,7 @@ rownames(adf_table) <- variable_names
 colnames(adf_table)<- c("P-value")
 knitr::kable(adf_table)
 ```
-
-Below is the ADF test result for all non-stationary data taking the
-first difference. All variables in the first differences are stationary
-as the null hypothesis of non-stationary can be rejected.
-
+Below is the ADF test result for all non-stationary data taking the first difference. All variables in the first differences are stationary as the null hypothesis of non-stationary can be rejected.
 ```{r}
 #| echo: false
 #| message: false
@@ -383,11 +320,9 @@ rownames(dff_adf_table) <- variable_names[-4]
 colnames(dff_adf_table)<- c("P-value")
 knitr::kable(dff_adf_table)
 ```
-
 It can be concluded that all variables are integrated at 1 at the 5% significance level of the ADF test, with the conclusion folding for $crate\_au_{t}$ only at 1% significance level. Appropriate prior distributions will be used to accommodate this fact for the VAR model.
 
 # Model and Hypotheses
-
 In this research, the VAR(p) model will be applied to forecast the AUD/USD exchange rate, below is the basic model that is used in this research.
 
 #### The basic VAR(p) model
@@ -398,6 +333,7 @@ In this research, the VAR(p) model will be applied to forecast the AUD/USD excha
 \epsilon_{t}|Y_{t-1} &\sim iid\mathcal{N}(0_{13},\Sigma)
 \end{aligned}
 ```
+
 For time $t$ = 1,2,.....,$T$：
 
 -   $y_t$ is a $N(13)\times 1$ vector of observations at time $t$
@@ -428,20 +364,21 @@ expor\_us_{t}\\
 
 \end{aligned}
 ```
+
 For further research, we may use the predictive density function like 3-year-ahead forecast and forecast with Bayesian VARS.
 
 # Modelling Framework
 
 ## The basic model
-
 ```{=tex}
 \begin{align}
-Y &=XA+U\\
-U|X&\sim \mathcal{MN}_{T\times N}(0, \Sigma, I_T)\\
+Y &=XA+E\\
+E|X&\sim \mathcal{MN}_{T\times N}(0, \Sigma, I_T)\\
 Y|X,A,\Sigma&\sim \mathcal{MN}_{T\times N} (XA, \Sigma, I_T)
 \end{align}
 ```
-Where $Y$ is a $T\times 13$ Matrix, $X$ is a $T\times(1+p\times13)$, $A$ is a $(1+p\times13)\times13$ matrix that contains $\mu_{0}$ and vectors of the autoregressive slope parameters and $U$ is a $T\times13$ matrix contains vetors of error terms.
+
+Where $Y$ is a $T\times 13$ Matrix, $X$ is a $T\times(1+p\times13)$, $A$ is a $(1+p\times13)\times13$ matrix that contains $\mu_{0}$ and vectors of the autoregressive slope parameters and $E$ is a $T\times13$ matrix contains vetors of error terms.
 
 The kernel of the likelihood function:
 
@@ -450,8 +387,8 @@ The kernel of the likelihood function:
 L(A,\Sigma|Y,X) \propto det(\Sigma)^{-\frac{T}{2}}exp\{-\frac{1}{2}tr[\Sigma^{-1}(Y-XA)'(Y-XA)]\}
 \end{align}
 ```
-The basic model is based on **Natural-conjugate prior distribution**, where the $A$ follows a Matrix-variate Normal distribution and $\Sigma$ follows an Inverse Wishart distribution.
 
+The basic model is based on **Natural-conjugate prior distribution**, where the $A$ follows a Matrix-variate Normal distribution and $\Sigma$ follows an Inverse Wishart distribution.
 ```{=tex}
 \begin{align}
 p(A,\Sigma) &= p(A|\Sigma)p(\Sigma) \\
@@ -459,7 +396,8 @@ A|\Sigma &\sim \mathcal{MN}_{K \times N}(\underline{A},\Sigma,\underline{V}) \\
 \Sigma &\sim \mathcal{IW}_N(\underline{S},\underline{\nu})
 \end{align}
 ```
-The **Minnesota prior** is typically a good choice for specifying priors in BVAR model especially when the model involves many macroeconomic variables. It assumes the variables follow a random walk and it is suitable for unit root non-stationary variables such as in our case, variables are integrated at 1 at the 5% significance level of the ADF test, where:
+
+The **Minnesota prior** is typically a good choice for specifying priors in BVAR model especially when the model involves many macroeconomic variables. It assumes the variables follow a random walk and it is suitable for unit root non-stationary variables such as in our case, most variables are integrated at 1 at the 5% significance level of the ADF test, where: 
 
 ```{=tex}
 \begin{align}
@@ -469,17 +407,16 @@ The **Minnesota prior** is typically a good choice for specifying priors in BVAR
 
 \end{align}
 ```
-The prior mean $\underline{A}$ for the first lag of each variable (the identity matrix portion) is one, while all other coefficients including intercepts, are zeroes. For the column-specific prior covariance
-$\underline{V}$, two shrinkage hyper-parameters $\kappa_1$ and $\kappa_2$ represent the overall shrinkage level for slopes and constant terms respectively.
+The prior mean $\underline{A}$ for the first lag of each variable (the identity matrix portion) is one, while all other coefficients including intercepts, are zeroes. For the column-specific prior covariance $\underline{V}$, two shrinkage hyper-parameters $\kappa_1$ and $\kappa_2$ represent the overall shrinkage level for slopes and constant terms respectively. 
 
 For **posterior distribution**, the kernel of the posterior distribution takes the form of the product of the likelihood and the prior distributions.
-
 ```{=tex}
 \begin{align*}
 p(A,\Sigma|Y,X) &\propto L(A,\Sigma|Y,X)p(A,\Sigma) \\
 &= L(A,\Sigma|Y,X)p(A|\Sigma)p(\Sigma)
 \end{align*}
 ```
+
 ```{=tex}
 \begin{align}
 p(A,\Sigma|Y,X) &\propto \det(\Sigma)^{-\frac{T}{2}} \\
@@ -489,7 +426,8 @@ p(A,\Sigma|Y,X) &\propto \det(\Sigma)^{-\frac{T}{2}} \\
 &\times exp\{-\frac{1}{2}tr[\Sigma^{-1}\underline{S}]\}
 \end{align}
 ```
-The kernel can be represent as the normal-inverse Wishart distribution and we can get the following **full conditional joint posterior distribution:**
+
+The kernel can be represent as the normal-inverse Wishart distribution and we can get the following **full conditional joint posterior distribution: **
 
 ```{=tex}
 \begin{align}
@@ -503,42 +441,25 @@ p(\Sigma|Y,X) &= \mathcal{IW}_N(\bar{S},\bar{\nu}) \\
 
 \end{align}
 ```
-## The extended model
 
+## The extended model
 The extended model will be built based on the the change in distribution of the error to **Laplace distribution** instead of the normally distributed errors assumption. The Laplace distribution is suitable for describing financial anomalies due to its sharp peaks and thick tails and the use of this distribution improves the robustness of the model to anomalies and is particularly suitable for financial time series. As our variables are most financial time series data, a Laplace distribution is more suitable to apply to our error term.
 
 Following [Eltoft,Kim, and Lee 2006b](https://ieeexplore.ieee.org/document/1618702), for covariance with a general Kronecker structure, if each ${\lambda_t}$ has an independent exponential distribution with mean ${\alpha}$, then marginally ${U_t}$ has a multivariate Laplace distribution with mean vector 0 and covariance matrix ${\alpha\Sigma}$.
 
 ```{=tex}
 \begin{align}
-
-vec(U)&\sim N(0,\Sigma\otimes \Omega)\\
-
 U_t &\sim \text{Laplace}(0, \alpha\Sigma) \\
-
-U_t | \lambda_t &\sim \mathcal{MN}(0, \Sigma, \Omega) \\
-
+U_t | \lambda_t &\sim \mathcal{MN}(0, \Sigma, \lambda_t I_T) \\
 \lambda_t &\sim \text{Exponential}(\frac{1}{\alpha})
 \end{align}
 ```
 
-The model is where $$\Omega=diag(\lambda_1,\lambda_2,...,\lambda_t)$$, each lambda independently drawn from an exponential distribution.
-
-The kernel of the likelihood function now is :
+The kernel of the likelihood function:
 
 ```{=tex}
 \begin{align}
-L(A,\Sigma,\Omega |Y,X) &\propto \det(\Sigma)^{-\frac{T}{2}} \det(\Omega)^{-\frac{N}{2}} exp\{-\frac{1}{2} tr[\Sigma^{-1} (Y-XA)' \Omega^{-1} (Y-XA) ]\}\\
-&=\det(\Sigma)^{-\frac{T}{2}}\prod^{T}_{t = 1} \lambda_t^{-\frac{N}{2}} exp({-\frac{1}{2}}\sum^{T}_{t =1}{\frac{1}{\lambda_t}} \epsilon_t' \Sigma^{-1}\epsilon_t)\\
-&=\det(\Sigma)^{-\frac{T}{2}}\prod^{T}_{t = 1}( \lambda_t^{-\frac{N}{2}} exp({-\frac{1}{2}}{\frac{1}{\lambda_t}} \epsilon_t' \Sigma^{-1}\epsilon_t))
-\end{align}
-```
-
-Thence, for each time t, we have the likelihood like: 
-
-```{=tex}
-\begin{align}
-&=\lambda_t^{-\frac{N}{2}} exp({-\frac{1}{2}}{\frac{1}{\lambda_t}} \epsilon_t' \Sigma^{-1}\epsilon_t)
+L(A,\Sigma,\lambda_t|Y,X) &\propto \det(\Sigma)^{-\frac{T}{2}} \det(\lambda_t I_T)^{-\frac{N}{2}} exp\{-\frac{1}{2} tr[\Sigma^{-1} (Y-XA)' (\lambda_t I_T)^{-1} (Y-XA) ]\}
 \end{align}
 ```
 
@@ -548,37 +469,27 @@ For posteriors distribution, $A$, $\Sigma$ and $\lambda_t$ can then be derived u
 \begin{align}
 p(A,\Sigma|Y,X) &\propto L(A,\Sigma,\lambda_t|Y,X)p(A,\Sigma) \\
 \\
-&= \det(\Sigma)^{-\frac{T}{2}} \det(\Omega)^{-\frac{N}{2}} exp\{-\frac{1}{2} tr[\Sigma^{-1} (Y-XA)' \Omega^{-1} (Y-XA) ]\} \\
+&= \det(\Sigma)^{-\frac{T}{2}} \det(\lambda_t I_T)^{-\frac{N}{2}} exp\{-\frac{1}{2} tr[\Sigma^{-1} (Y-XA)' (\lambda_t I_T)^{-1} (Y-XA) ]\} \\
 &\times \det(\Sigma)^{-\frac{N+k+\underline{\nu}+1}{2}} exp\{-\frac{1}{2}tr[\Sigma^{-1}(A-\underline{A})'(\underline{V})^{-1}(A-\underline{A})]\} \\
 &\times exp\{-\frac{1}{2}tr[\Sigma^{-1}\underline{S}]\} \\
-&= \det(\Sigma)^{-\frac{T+N+K+\underline{\nu}+1}{2}} \det(\Omega)^{-\frac{N}{2}} \\
-&\times exp\{-\frac{1}{2} tr[\Sigma^{-1}(Y'\Omega^{-1}Y - 2A'X'\Omega)^{-1}Y + A'X'\Omega^{-1}XA \\
+&= \det(\Sigma)^{-\frac{T+N+K+\underline{\nu}+1}{2}} \det(\lambda_t I_T)^{-\frac{N}{2}} \\
+&\times exp\{-\frac{1}{2} tr[\Sigma^{-1}(Y'(\lambda_t I_T)^{-1}Y - 2A'X'(\lambda_t I_T)^{-1}Y + A'X'(\lambda_t I_T)^{-1}XA \\
 &+ A'\underline{V}^{-1}A -2A'\underline{V}^{-1}\underline{A} + \underline{A}'\underline{V}^{-1}\underline{A} + \underline{S})]\}
 
 \end{align}
 ```
 
-The kernel can be rearranged in the form of the **Matrix-variate normal-inverse Wishart distribution**. 
+The kernel can be rearranged in the form of the **Matrix-variate normal-inverse Wishart distribution**.
 
 ```{=tex}
 \begin{align}
 p(A,\Sigma|Y,X) &\sim MNIW(\bar{A},\bar{V},\bar{S},\bar{\nu}) \\
 &\\
-\bar{V} &= (X'\Omega^{-1}X + \underline{V}^{-1})^{-1} \\
-\bar{A} &= \bar{V}(X'\Omega^{-1}Y + \underline{V}^{-1}\underline{A}) \\
+\bar{V} &= (X'(\lambda_t I_T)^{-1}X + \underline{V}^{-1})^{-1} \\
+\bar{A} &= \bar{V}(X'(\lambda_t I_T)^{-1}Y + \underline{V}^{-1}\underline{A}) \\
 \bar{\nu} &= T + \underline{\nu}\\
-\bar{S} &= Y'\Omega^{-1}Y + \underline{A}'\underline{V}^{-1}\underline{A} + \underline{S} - \bar{A}'\bar{V}^{-1}\bar{A}
+\bar{S} &= Y'(\lambda_t I_T)^{-1}Y + \underline{A}'\underline{V}^{-1}\underline{A} + \underline{S} - \bar{A}'\bar{V}^{-1}\bar{A}
 \end{align}
-```
-
-The prior distribution of
-$$\lambda_t \sim \text{Exponential}(\frac{1}{\alpha})$$ define as:
-
-```{=tex}
-\begin{align}
-p(\lambda_t|\alpha) &= \frac{1}{\alpha}exp\{ -\frac{1}{\alpha}\lambda_t \}\\
-
-\end{align} 
 ```
 
 The kernel of the fully conditional posterior distribution of $\lambda_t$ is then derived as follows:
@@ -587,34 +498,31 @@ The kernel of the fully conditional posterior distribution of $\lambda_t$ is the
 \begin{align}
 p(\lambda_t|Y,X,A,\Sigma) &\propto L(A,\Sigma,\lambda_t|Y,X)p(\lambda_t) \\
 \\
-&\propto \lambda_t^{-\frac{N}{2}}exp({-\frac{1}{2}}{\frac{1}{\lambda_t}}\epsilon_t' \Sigma^{-1}\epsilon_t) \\
+&\propto \det(\lambda_t I_T)^{-\frac{N}{2}} exp\{-\frac{1}{2} tr[\Sigma^{-1} (Y-XA)' (\lambda_t I_T)^{-1} (Y-XA) ]\} \\
 &\times \frac{1}{\alpha}exp\{ -\frac{1}{\alpha}\lambda_t \}\\
 
+&= \lambda_t^{-\frac{TN}{2}} exp\{-\frac{1}{2}\frac{1}{\lambda_t} tr[\Sigma^{-1}(Y-XA)'(Y-XA)]\}\\
+&\times exp\{-\frac{1}{\alpha}\lambda_t \}\\
 
-&= \lambda_t^{-\frac{N}{2}+1-1} exp\{-\frac{1}{2}[\frac{
-\epsilon_t' \Sigma^{-1}\epsilon_t} {\lambda_t} +\frac{2}{\alpha}\lambda_t]\} 
+&= \lambda_t^{-\frac{TN}{2}+1-1} exp\{-\frac{1}{2}[\frac{[tr[\Sigma^{-1}(Y-XA)'(Y-XA)]}{\lambda_t} +\frac{2}{\alpha}\lambda_t]\} 
 \end{align}
 ```
 
-The above expression can be rearranged in the form of a Generalized
-inverse Gaussian distribution kernel as follows:
+The above expression can be rearranged in the form of a Generalized inverse Gaussian distribution kernel as follows:
 
 ```{=tex}
 \begin{align}
 \lambda_t|Y,A,\Sigma &\sim GIG(a,b,p) \\
 \\
 a &=\frac{2}{\alpha} \\
-b &= \epsilon_t' \Sigma^{-1}\epsilon_t \\
-p &= -\frac{N}{2}+1
+b &= tr[\Sigma^{-1}(Y-XA)'(Y-XA)] \\
+p &= -\frac{TN}{2}+1
 \end{align}
 ```
 
-## Proof of model validity
-
-### Proof of basic model validity
-
+## Proof of model validity 
+### Proof of basic model validity 
 To test the model validity, we simulated 1000 observations from a bi-variate Gaussian random walk process with the covariance matrix equal to the identity matrix of order 2 to see how the autoregressive and the covariance matrices and the posterior mean of the constant term behave.
-
 ```{r}
 #| echo: false
 #| message: false
@@ -658,7 +566,6 @@ A.prior[2:(N+1),] = diag(N)
 V.prior       = diag(c(kappa.2,kappa.1*((1:p)^(-2))%x%rep(1,N)))
 S.prior       = diag(diag(Sigma.hat))
 nu.prior      = N+1
-I.matrix            = diag(1,nrow(Y),nrow(Y))
 ```
 
 ```{r function based on basic model}
@@ -693,6 +600,7 @@ I.matrix            = diag(1,nrow(Y),nrow(Y))
 }
 ```
 
+
 ```{r}
 #| echo: false
 #| message: false
@@ -701,11 +609,11 @@ I.matrix            = diag(1,nrow(Y),nrow(Y))
 p=1
 N=2
 
-Y_simulation = (simulation_data[(p+1):nrow(simulation_data),]) #contains the obs of the two variables and moves first obs
+Y_simulation = (simulation_data[(p+1):nrow(simulation_data),c(1,2)]) #contains the obs of the two variables and moves first obs
 X_simulation = matrix(1,nrow(Y_simulation),1) #initializes the X matrix with a column of ones(intercept) in the VAR model.                                      
 # adds the lagged values of the two variables to the X matrix, in this case, it adds one lagged value for each of the two variables.
 for (i in 1:p){
-  X_simulation     = cbind(X_simulation, (simulation_data[(p+1):nrow(simulation_data)-i,]))
+  X_simulation     = cbind(X_simulation, (simulation_data[(p+1):nrow(simulation_data)-i,c(1,2)]))
 }
 
 Y_simulation = as.matrix(Y_simulation)
@@ -746,15 +654,12 @@ colnames(A_df) <- c("Simulation_Y1", "Simulation_Y2")
 rownames(A_df) <- c("Constant", "Y1-Lag", "Y2-Lag")
 knitr::kable(A_df, caption = "Posterior mean of the autoregressive coefficient matrix A")
 ```
-
-The diagonal entries of the covariance matrix are close to 1, which indicates that each variable has a strong autoregressive relationship with itself and similarly, the diagonal elements of the autoregressive
-coefficient matrix are close to one, suggesting that each variable is heavily influenced by its past value. Besides, the posterior means for the constant terms is close to 0, the above can indicate that the
-estimated parameter constant term and means are consistent with what we expect given a Minnesota prior.
+The diagonal entries of the covariance matrix are close to 1, which indicates that each variable has a strong autoregressive relationship with itself and similarly, the diagonal elements of the autoregressive coefficient matrix are close to one, suggesting that each variable is heavily influenced by its past value. Besides, the posterior means for the constant terms is close to 0, the above can indicate that the estimated parameter constant term and means are consistent with what we expect given a Minnesota prior.
 
 ### Proof of extended model
 The Gibbs sampler method will be applied to generate random draws from the full conditional posterior distribution:
-  
-  1. Draw $\Sigma^{(s)}$ from the $IW(\bar{S},\bar{\nu})$ distribution.
+
+1. Draw $\Sigma^{(s)}$ from the $IW(\bar{S},\bar{\nu})$ distribution.
 2. Draw $A^{(s)}$ from the $MN(\bar{A},\Sigma^{(s)}, \bar{V})$ distribution.
 3. Draw $\lambda_t^{(s)}$ from $GIG(a,b,p)$.
 
@@ -763,97 +668,86 @@ Repeat steps 1, step 2 and 3 for $S_1$+$S_2$times.
 Discard the first draws that allowed the algorithm to converge to the stationary posterior distribution.
 
 Output is $\left\{ {A^{(s)}, \Sigma^{(s)}}, \lambda_t^{(s)}\right\}^{S_1+S_2}_{s=S_1+1}$.
+
 ```{r}
-S1= 500
-S2= 9500
-total_S= S1+S2
-S=total_S
+# setup 
+S1                = 5000                             # will be discard
+S2                = 45000                            
+total_S           = S1+S2
+A.posterior       = array(NA, dim = c((1+N*p),N,S1+S2))
+Sigma.posterior   = array(NA, dim = c(N,N,S1+S2))
+lambda.posterior  = matrix(NA, S1+S2, 1)
+
+# set the initial value of lambda
+lambda.posterior[1] = 1.5                             
+
+# parameter alpha
+lambda.priors = list(alpha = 1.5)
 ```
 
 ```{r}
-posterior.draws.extended <- function(total_S,Y, X){
+#| echo: false
+#| message: false
+#| warning: false
+posterior.draws.extended = function (total_S, Y, X){
+for (s in 1:total_S){
+
+    V.bar.inv              = t(X)%*%X + diag(1/diag(lambda.posterior[s]* V.prior)) 
+    V.bar                  = solve(V.bar.inv)
+    A.bar                  = V.bar%*%(t(X)%*%Y + diag(1/diag(lambda.posterior[s]* V.prior))%*%A.prior)
+    nu.bar                 = nrow(Y) + nu.prior
+    S.bar                  = S.prior + t(Y)%*%Y + t(A.prior)%*%diag(1/diag(lambda.posterior[s]* V.prior))%*%A.prior - t(A.bar)%*%V.bar.inv%*%A.bar
+    S.bar.inv              = solve(S.bar)
   
-  A.hat       = solve(t(X)%*%X)%*%t(X)%*%Y
-  Sigma.hat   = t(Y-X%*%A.hat)%*%(Y-X%*%A.hat)/nrow(Y)
-  
-  N = ncol(Y)
-  T <- nrow(Y)
-  kappa.1   = 0.02^2
-  kappa.2   = 100
-  K = 1 + (p*N)
-  
-  A.prior     = matrix(0, K , N)
-  A.prior[2:(N+1),] = diag(N)
-  V.prior     = diag(c(kappa.2,kappa.1*((1:p)^(-2))%x%rep(1,N)))
-  S.prior     = diag(diag(Sigma.hat))
-  nu.prior    = N+1
-  
-  alpha <- 2
-  lambda.0 <- rexp(T, rate = 1/alpha)
-  lambda.priors = list(alpha = 2)
-  
-  
-  # Initialize arrays to store posterior draws
-  Sigma.posterior.draws = array(NA, c(N,N,S))
-  A.posterior.draws = array(NA, c((1+p*N),N,S))
-  
-  lambda.posterior.draws = array(NA,c(T,S+1))
-  b = array(NA,c(T,S))
-  
-  #lambda.posterior.draws <- array(NA,c(T,S+1))
-  
-  for (s in 1:S){
+    Sigma.posterior.IW     = rWishart(1, df=nu.bar, Sigma=S.bar.inv)
+    Sigma.posterior.draw   = apply(Sigma.posterior.IW,3,solve)
+    Sigma.posterior[,,s]   = Sigma.posterior.draw
+    A.posterior[,,s]       = array(rnorm(prod(c(dim(A.bar),1))),c(dim(A.bar),1))
+    L                      = t(chol(V.bar))
+    A.posterior[,,s]       = A.bar + L%*%A.posterior[,,s]%*%chol(Sigma.posterior[,,s])
     
-    if (s == 1) {
-      lambda.s = lambda.0
-    } else {
-      lambda.s    = lambda.posterior.draws[,s]
+    a                             = 2 / lambda.priors$alpha
+    deviation_matrix              = A.posterior[,,s] - A.prior
+    weighted_deviation_squared    = t(deviation_matrix) %*% solve(V.prior) %*% deviation_matrix
+    b                             = sum(diag(solve(Sigma.posterior[,,s] %*% weighted_deviation_squared)))
+    p                             = - (T * N) / 2 + 1            
+    
+    if (s!=total_S){
+      lambda.posterior[s+1] = GIGrvg::rgig(n=1, lambda = p, chi = b, psi = a)
     }
-    
-    Omega = (diag(lambda.s))
-    Omega.inv = diag(1/lambda.s)
-    # Omega.inv = sqrt(diag(1/lambda.s))
-    # Omega.inv = sqrt(Omega.inv)
-    
-    V.bar.inv.ext   = t(X)%*%Omega.inv%*%X + solve(V.prior)
-    V.bar.ext       = solve(V.bar.inv.ext)
-    A.bar.ext       = V.bar.ext%*%(t(X)%*%Omega.inv%*%Y + diag(1/diag(V.prior))%*%A.prior)
-    nu.bar.ext      = T + nu.prior
-    S.bar.ext       = S.prior + t(Y)%*%Omega.inv%*%Y + t(A.prior)%*%diag(1/diag(V.prior))%*%A.prior - t(A.bar.ext)%*%V.bar.inv.ext%*%A.bar.ext
-    S.bar.ext.inv   = solve(S.bar.ext)
-    
-    
-    Sigma.inv.draw = rWishart(1, df = nu.bar.ext, Sigma = S.bar.ext.inv)[,,1]
-    Sigma.posterior.draws[,,s] = solve(Sigma.inv.draw)
-    A.posterior.draws[,,s] = matrix(mvtnorm::rmvnorm(1, mean=as.vector(A.bar.ext), sigma = Sigma.posterior.draws[,,s] %x% V.bar.ext), ncol=N)
-    
-    
-    u.t = Y-X%*%A.posterior.draws[,,s]
-    #    ---- loop lambda posterior ----   #
-    c                      = -N/2 + 1          # N=13
-    a                      = 2 / lambda.priors$alpha
-    for (x in 1:T){
-      b                  = t((u.t)[x,])%*%Sigma.posterior.draws[,,s]%*%(u.t)[x,]
-      lambda.posterior.draws[x,s+1] = GIGrvg::rgig(1, lambda = c, chi = b, psi = a)
-    } # END x loop
-  } # END s loop
-  
-  
-  #}
-  
-  output                 = (list(A.posterior.exten = A.posterior.draws[,,S1:total_S], 
-                                Sigma.posterior.exten = Sigma.posterior.draws[,,S1:total_S], 
-                                lambda.posterior.exten = lambda.posterior.draws[,(S1+1):(S+1)]))
-  
 }
+    output  = list (A.posterior.exten = A.posterior, 
+                    Sigma.posterior.exten = Sigma.posterior, 
+                    lambda.posterior.exten = lambda.posterior)
+    return(output)
+}
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+## Test on basic model
+N           = ncol(Y_simulation)                          
+p           = frequency(Y_simulation)
+A.hat       = solve(t(X_simulation)%*%X_simulation)%*%t(X_simulation)%*%Y_simulation
+Sigma.hat   = t(Y_simulation-X_simulation%*%A.hat)%*%(Y_simulation-X_simulation%*%A.hat)/nrow(Y_simulation)
+
+# Prior distribution (with Minnesota prior)
+kappa.1             = 0.02^2                                     
+kappa.2             = 100                                   
+A.prior             = matrix(0,nrow(A.hat),ncol(A.hat))
+A.prior[2:(N + 1),] = diag(N)
+V.prior             = diag(c(kappa.2,kappa.1*((1:p)^(-2))%x%rep(1,N)))
+S.prior             = diag(diag(Sigma.hat))
+nu.prior            = N+1
 
 # conduct simulation
 posterior.extended = posterior.draws.extended(total_S = total_S, Y=Y_simulation, X=X_simulation)
 ```
 
-
 ```{r}
-Sigma_posterior_mean <- apply(posterior.extended$Sigma.posterior.exten, 1:2, mean)
+Sigma_posterior_mean <- apply(posterior.extended$Sigma.posterior, 1:2, mean)
 
 Sigma_df <- as.data.frame(Sigma_posterior_mean)
 colnames(Sigma_df) <- c("Simulation_Y1", "Simulation_Y2")
@@ -862,20 +756,19 @@ knitr::kable(Sigma_df, caption = "Posterior mean of the covariance matrix Sigma"
 ```
 
 ```{r}
-A_posterior_means <- apply(posterior.extended$A.posterior.exten, 1:2, mean)
+A_posterior_means <- apply(posterior.extended$A.posterior, 1:2, mean)
 
 A_df <- as.data.frame(A_posterior_means)
 colnames(A_df) <- c("Simulation_Y1", "Simulation_Y2")
 rownames(A_df) <- c("Constant", "Y1-Lag", "Y2-Lag")
 knitr::kable(A_df, caption = "Posterior mean of the autoregressive coefficient matrix A")
 ```
+Similarly, the posterior mean of the autoregressive and the covariance matrices are close to an identity matrix and the posterior mean of the constant term is close to zero, so we can conclude that the extended model is also valid.
 
 # Forecasting
-
 The forecast will focus on two models with the sample period from 1990 Q1 to 2023Q4, and forecast how the exchange rate changes for the future up to 2026Q4.
 
-## Forecasting with basic model and extended model
-
+## Forecasting with basic model
 ```{r forecasting static data}
 #| echo: false
 #| message: false
@@ -887,7 +780,7 @@ X             = matrix(1,nrow(Y),1)
 for (i in 1:frequency(Y)){
   X           = cbind(X,y[5:nrow(y)-i,])
 }
-
+ 
 ## Pre-setup 
 N             = ncol(Y)
 p             = frequency(Y)
@@ -904,11 +797,11 @@ S.prior       = diag(diag(Sigma.hat))
 nu.prior      = N+1
 
 h                      = 12
-S                      = 10000
+S                      = 50000
 Y.h                    = array(NA,c(h,N,S))
 
 ## Applying function 
-posterior.sample.draws = posterior.draws(S=10000, Y=Y, X=X)
+posterior.sample.draws = posterior.draws(S=50000, Y=Y, X=X)
 A.posterior.simu       = posterior.sample.draws$A.posterior
 Sigma.posterior.simu   = posterior.sample.draws$Sigma.posterior
 ```
@@ -921,190 +814,22 @@ Sigma.posterior.simu   = posterior.sample.draws$Sigma.posterior
 for (s in 1:S){
   A.posterior.draw     = A.posterior.simu[,,s]
   Sigma.posterior.draw = Sigma.posterior.simu[,,s]
-  x.Ti               = Y[(nrow(Y)-p+1):nrow(Y),]
-  x.Ti               = x.Ti[p:1,]
+    x.Ti               = Y[(nrow(Y)-p+1):nrow(Y),]
+    x.Ti               = x.Ti[p:1,]
   for (i in 1:h){
     x.T               = c(1,as.vector(t(x.Ti)))
     Y.f               = rmvnorm(1, mean = x.T%*%A.posterior.draw, sigma=Sigma.posterior.draw)
-    x.Ti            = rbind(Y.f,x.Ti[1:(p-1),])
+      x.Ti            = rbind(Y.f,x.Ti[1:(p-1),])
     Y.h[i,,s]         = Y.f[1:N]
   }
 }
 ```
 
-```{r}
-# ex_rate.point.f    = apply(Y.h[,1,],1,mean) 
-# ex_rate.interval.f = apply(Y.h[,1,],1,hdi,credMass=0.15)
-# ex_rate.range      = range(y[,1],ex_rate.interval.f)
-# 
-# true_y_value <- ex_rate.point.f[12]  # Set this to your actual true y-value
-# 
-# # Define the range and labels for the y-axis
-# y_min <- min(ex_rate.range[1], true_y_value)  # Adjust as necessary to include true_y_value
-# y_max <- max(ex_rate.range[2], true_y_value)
-# num_labels <- 4  # You can adjust the number of labels
-# 
-# # Generate a sequence of y-values for the axis that includes true_y_value
-# y_values <- pretty(c(y_min, y_max), num_labels)
-# if(!true_y_value %in% y_values) {
-#   y_values <- sort(c(y_values))
-# }
-# 
-# # Generate labels for the y-axis, ensuring true_y_value is included and highlighted
-# y_labels <- sprintf("%.2f", y_values)
-# y_labels[y_values == true_y_value] <- paste(y_labels[y_values == true_y_value], "(True Value)", sep=" ")
-# 
-# # Plot adjustments
-# plot(1:(length(y[,1])+h), c(y[,1], ex_rate.point.f), type="l", ylim=c(min(y_values), max(y_values)), axes=FALSE, xlab="", ylab="", lwd=2, col=mcxs1)
-# axis(1, c(1, 21, 41, 61, 81, 101, nrow(y), nrow(y)+h), c("1992", "1997", "2002", "2007", "2012", "2017", "", ""), col="black")
-# axis(2, at=y_values, labels=y_labels, col="black")
-# 
-# # Red dashed line for the true y-value
-# abline(h=true_y_value, col="red", lty=2, lwd=1)
-# 
-# 
-# text(x=nrow(y), y=9.65, srt=90, "2025-12")
-# abline(v=nrow(y), col=mcxs4)
-# text(x=nrow(y)+h, y=9.65, srt=90, "2026-12")
-# abline(v=nrow(y)+h, col=mcxs2)
-# legend(136, 1.2, legend=c("Y2023Q4", "Y2026Q4"), col=c(mcxs4, mcxs2), lty=1, cex=0.45)
-# 
-# polygon(c(length(y[,1]):(length(y[,1])+h),(length(y[,1]):(length(y[,1])+h))[13:1]),
-#         c(y[136,1],ex_rate.interval.f[1,],ex_rate.interval.f[2,12:1],y[136,1]),
-#         col=mcxs1.shade1, border=mcxs1.shade1)
-
-```
 
 ```{r}
-### Forecasting on extended model
-S1                = 100                            # will be discard
-S2                = 900                            
-total_S           = S1+S2
-S=total_S
-
-y             = ts(merged_data[,1:ncol(merged_data)])
-Y             = ts(y[5:nrow(y),], frequency=4)
-
-X             = matrix(1,nrow(Y),1)
-for (i in 1:frequency(Y)){
-  X           = cbind(X,y[5:nrow(y)-i,])
-}
-
-p             = frequency(Y)
-
-posterior.draws.extended <- function(total_S,Y, X){
-  
-  A.hat       = solve(t(X)%*%X)%*%t(X)%*%Y
-  Sigma.hat   = t(Y-X%*%A.hat)%*%(Y-X%*%A.hat)/nrow(Y)
-  
-  N = ncol(Y)
-  T <- nrow(Y)
-  kappa.1   = 0.02^2
-  kappa.2   = 100
-  K = 1 + (p*N)
-  
-  
-  A.prior     = matrix(0, K , N)
-  A.prior[2:(N+1),] = diag(N)
-  V.prior     = diag(c(kappa.2,kappa.1*((1:p)^(-2))%x%rep(1,N)))
-  S.prior     = diag(diag(Sigma.hat))
-  nu.prior    = N+1
-  
-  alpha <- 2
-  lambda.0 <- rexp(T, rate = 1/alpha)
-  lambda.priors = list(alpha = 2)
-  
-  
-  # Initialize arrays to store posterior draws
-  Sigma.posterior.draws = array(NA, c(N,N,S))
-  A.posterior.draws = array(NA, c((1+p*N),N,S))
-  
-  lambda.posterior.draws = array(NA,c(T,S+1))
-  
- # Omega.inv.test = diag(1/lambda.0)
-  
-  #lambda.posterior.draws <- array(NA,c(T,S+1))
-  
-  for (s in 1:S){
-    
-    if (s == 1) {
-      lambda.s = lambda.0
-    } else {
-      lambda.s    = lambda.posterior.draws[,s]
-    }
-    
-    Omega = (diag(lambda.s))
-    Omega.inv = diag(1/lambda.s)
-    Omega.inv = sqrt(diag(1/lambda.s))
-    # Omega.inv = sqrt(Omega.inv)
-    
-    V.bar.inv.ext   = t(X)%*%Omega.inv%*%X + solve(V.prior)
-    V.bar.ext       = solve(V.bar.inv.ext)
-    A.bar.ext       = V.bar.ext%*%(t(X)%*%Omega.inv%*%Y + diag(1/diag(V.prior))%*%A.prior)
-    nu.bar.ext      = T + nu.prior
-    S.bar.ext       = S.prior + t(Y)%*%Omega.inv%*%Y + t(A.prior)%*%diag(1/diag(V.prior))%*%A.prior - t(A.bar.ext)%*%V.bar.inv.ext%*%A.bar.ext
-    S.bar.ext.inv   = solve(S.bar.ext)
-    
-    
-    Sigma.inv.draw = rWishart(1, df = nu.bar.ext, Sigma = S.bar.ext.inv)[,,1]
-    Sigma.posterior.draws[,,s] = solve(Sigma.inv.draw)
-    A.posterior.draws[,,s] = matrix(mvtnorm::rmvnorm(1, mean=as.vector(A.bar.ext), sigma = Sigma.posterior.draws[,,s] %x% V.bar.ext), ncol=N)
-    
-    
-    u.t = Y-X%*%A.posterior.draws[,,s]
-    #    ---- loop lambda posterior ----   #
-    c                      = -N/2 + 1          # N=13
-    a                      = 2 / lambda.priors$alpha
-    for (x in 1:T){
-      b                  = t((u.t)[x,])%*%Sigma.posterior.draws[,,s]%*%(u.t)[x,]
-      lambda.posterior.draws[x,s+1] = GIGrvg::rgig(1, lambda = c, chi = b, psi = a)
-    } # END x loop
-  } # END s loop
-  
-  
-  #}
-  
-  output                 = (list(A.posterior.exten = A.posterior.draws[,,S1:total_S], 
-                                 Sigma.posterior.exten = Sigma.posterior.draws[,,S1:total_S], 
-                                 lambda.posterior.exten = lambda.posterior.draws[,(S1+1):(S+1)]))
-  }
-
-
-posterior.ext              = posterior.draws.extended(total_S = total_S, Y=Y, X=X)
-A.posterior.ext.simu       = posterior.ext$A.posterior.exten
-Sigma.posterior.ext.simu   = posterior.ext$Sigma.posterior.exten
-
-#posterior.extend.draws     = posterior.draws.extended(total_S = total_S, Y=Y, X=X)
-#A.posterior.ext.simu       = posterior.extend.draws[["A.posterior.exten"]]
-#Sigma.posterior.ext.simu   = posterior.extend.draws[["Sigma.posterior.exten"]]
-
-## Three-year ahead forecasting h=12
-# set up
-h                          = 12
-S                          = 900
-Y.h.ext                    = array(NA,c(h,N,S))
-```
-
-```{r}
-# sampling predictive density
-for (s in 1:S){
-  A.posterior.draw         = A.posterior.ext.simu[,,s]
-  Sigma.posterior.draw     = Sigma.posterior.ext.simu[,,s]
-  x.Ti                   = Y[(nrow(Y)-p+1):nrow(Y),]
-  x.Ti                   = x.Ti[p:1,]
-  for (i in 1:h){
-    x.T                    = c(1,as.vector(t(x.Ti)))
-    Y.f                    = rmvnorm(1, mean = x.T%*%A.posterior.draw, sigma=Sigma.posterior.draw)
-    x.Ti                 = rbind(Y.f,x.Ti[1:(p-1),])
-    Y.h.ext[i,,s]          = Y.f[1:N]
-  }
-}
-```
-
-
-#### 90% and 68% highest density intervals respectively
-```{r}
-par(mfrow = c(3, 2), mar = c(2, 3, 1, 1), oma = c(0, 0, 4, 0))
+#| echo: false
+#| message: false
+#| warning: false
 
 ex_rate.point.f    = apply(Y.h[,1,],1,mean) 
 ex_rate.interval.f = apply(Y.h[,1,],1,hdi,credMass=0.90)
@@ -1130,7 +855,7 @@ y_labels[y_values == true_y_value] <- paste(y_labels[y_values == true_y_value], 
 # Plot adjustments
 plot(1:(length(y[,1])+h), c(y[,1], ex_rate.point.f), type="l", ylim=c(min(y_values), max(y_values)), axes=FALSE, xlab="", ylab="", lwd=2, col=mcxs1)
 axis(1, c(1, 21, 41, 61, 81, 101, nrow(y), nrow(y)+h), c("1992", "1997", "2002", "2007", "2012", "2017", "", ""), col="black")
-axis(2, at=y_values, labels=y_labels, col="black",las=1)
+axis(2, at=y_values, labels=y_labels, col="black")
 
 # Red dashed line for the true y-value
 abline(h=true_y_value, col="red", lty=2, lwd=1)
@@ -1140,234 +865,19 @@ text(x=nrow(y), y=9.65, srt=90, "2025-12")
 abline(v=nrow(y), col=mcxs4)
 text(x=nrow(y)+h, y=9.65, srt=90, "2026-12")
 abline(v=nrow(y)+h, col=mcxs2)
-legend(136, 1.2, legend=c("Y2023Q4", "Y2026Q4"), col=c(mcxs4, mcxs2), lty=1, cex=0.35)
-
-polygon(c(length(y[,1]):(length(y[,1])+h),(length(y[,1]):(length(y[,1])+h))[13:1]),
-        c(y[136,1],ex_rate.interval.f[1,],ex_rate.interval.f[2,12:1],y[136,1]),
-        col=mcxs1.shade1, border=mcxs1.shade1)
-
-
-ex_rate.point.f    = apply(Y.h.ext[,1,],1,mean) 
-ex_rate.interval.f = apply(Y.h.ext[,1,],1,hdi,credMass=0.90)
-ex_rate.range      = range(y[,1],ex_rate.interval.f)         
-
-
-true_y_value <- ex_rate.point.f[12]  # Set this to your actual true y-value
-
-# Define the range and labels for the y-axis
-y_min <- min(ex_rate.range[1], true_y_value)  # Adjust as necessary to include true_y_value
-y_max <- max(ex_rate.range[2], true_y_value)
-num_labels <- 4  # You can adjust the number of labels
-
-# Generate a sequence of y-values for the axis that includes true_y_value
-y_values <- pretty(c(y_min, y_max), num_labels)
-if(!true_y_value %in% y_values) {
-  y_values <- sort(c(y_values))
-}
-
-# Generate labels for the y-axis, ensuring true_y_value is included and highlighted
-y_labels <- sprintf("%.2f", y_values)
-y_labels[y_values == true_y_value] <- paste(y_labels[y_values == true_y_value], "(True Value)", sep=" ")
-
-# Plot adjustments
-plot(1:(length(y[,1])+h), c(y[,1], ex_rate.point.f), type="l", ylim=c(min(y_values), max(y_values)), xlab="", ylab="", lwd=2, col=mcxs1, axes=FALSE)
-axis(1, c(1, 21, 41, 61, 81, 101, nrow(y), nrow(y)+h), c("1992", "1997", "2002", "2007", "2012", "2017", "", ""), col="black")
-axis(2, at=y_values, labels=y_labels, col="black",las=1)
-
-# Red dashed line for the true y-value
-abline(h=true_y_value, col="red", lty=2, lwd=1)
-
-text(x=nrow(y), y=9.65, srt=90, "")
-abline(v=nrow(y), col=mcxs4)
-text(x=nrow(y)+h, y=9.65, srt=90, "")
-abline(v=nrow(y)+h, col=mcxs2)
-legend(136, 1.2, legend=c("Y2023Q4", "Y2026Q4"), col=c(mcxs4, mcxs2), lty=1, cex=0.35)
-
-polygon(c(length(y[,1]):(length(y[,1])+h),(length(y[,1]):(length(y[,1])+h))[13:1]),
-        c(y[136,1],ex_rate.interval.f[1,],ex_rate.interval.f[2,12:1],y[136,1]),
-        col=mcxs1.shade1, border=mcxs1.shade1)
-
-#### 68% highest density intervals
-
-#par(mfrow = c(1, 2), mar = c(4, 4, 1, 1), oma = c(0, 0, 6, 0))
-
-ex_rate.point.f    = apply(Y.h[,1,],1,mean) 
-ex_rate.interval.f = apply(Y.h[,1,],1,hdi,credMass=0.68)
-ex_rate.range      = range(y[,1],ex_rate.interval.f)
-
-true_y_value <- ex_rate.point.f[12]  # Set this to your actual true y-value
-
-# Define the range and labels for the y-axis
-y_min <- min(ex_rate.range[1], true_y_value)  # Adjust as necessary to include true_y_value
-y_max <- max(ex_rate.range[2], true_y_value)
-num_labels <- 4  # You can adjust the number of labels
-
-# Generate a sequence of y-values for the axis that includes true_y_value
-y_values <- pretty(c(y_min, y_max), num_labels)
-if(!true_y_value %in% y_values) {
-  y_values <- sort(c(y_values))
-}
-
-# Generate labels for the y-axis, ensuring true_y_value is included and highlighted
-y_labels <- sprintf("%.2f", y_values)
-y_labels[y_values == true_y_value] <- paste(y_labels[y_values == true_y_value], "(True Value)", sep=" ")
-
-# Plot adjustments
-plot(1:(length(y[,1])+h), c(y[,1], ex_rate.point.f), type="l", ylim=c(min(y_values), max(y_values)), axes=FALSE, xlab="", ylab="", lwd=2, col=mcxs1)
-axis(1, c(1, 21, 41, 61, 81, 101, nrow(y), nrow(y)+h), c("1992", "1997", "2002", "2007", "2012", "2017", "", ""), col="black")
-axis(2, at=y_values, labels=y_labels, col="black",las=1)
-
-# Red dashed line for the true y-value
-abline(h=true_y_value, col="red", lty=2, lwd=1)
-
-
-text(x=nrow(y), y=9.65, srt=90, "2025-12")
-abline(v=nrow(y), col=mcxs4)
-text(x=nrow(y)+h, y=9.65, srt=90, "2026-12")
-abline(v=nrow(y)+h, col=mcxs2)
-#legend(136, 1.2, legend=c("Y2023Q4", "Y2026Q4"), col=c(mcxs4, mcxs2), lty=1, cex=0.35)
-
-polygon(c(length(y[,1]):(length(y[,1])+h),(length(y[,1]):(length(y[,1])+h))[13:1]),
-        c(y[136,1],ex_rate.interval.f[1,],ex_rate.interval.f[2,12:1],y[136,1]),
-        col=mcxs1.shade1, border=mcxs1.shade1)
-
-
-ex_rate.point.f    = apply(Y.h.ext[,1,],1,mean) 
-ex_rate.interval.f = apply(Y.h.ext[,1,],1,hdi,credMass=0.68)
-ex_rate.range      = range(y[,1],ex_rate.interval.f)         
-
-
-true_y_value <- ex_rate.point.f[12]  # Set this to your actual true y-value
-
-# Define the range and labels for the y-axis
-y_min <- min(ex_rate.range[1], true_y_value)  # Adjust as necessary to include true_y_value
-y_max <- max(ex_rate.range[2], true_y_value)
-num_labels <- 4  # You can adjust the number of labels
-
-# Generate a sequence of y-values for the axis that includes true_y_value
-y_values <- pretty(c(y_min, y_max), num_labels)
-if(!true_y_value %in% y_values) {
-  y_values <- sort(c(y_values))
-}
-
-# Generate labels for the y-axis, ensuring true_y_value is included and highlighted
-y_labels <- sprintf("%.2f", y_values)
-y_labels[y_values == true_y_value] <- paste(y_labels[y_values == true_y_value], "(True Value)", sep=" ")
-
-# Plot adjustments
-plot(1:(length(y[,1])+h), c(y[,1], ex_rate.point.f), type="l", ylim=c(min(y_values), max(y_values)), xlab="", ylab="", lwd=2, col=mcxs1, axes=FALSE)
-axis(1, c(1, 21, 41, 61, 81, 101, nrow(y), nrow(y)+h), c("1992", "1997", "2002", "2007", "2012", "2017", "", ""), col="black")
-axis(2, at=y_values, labels=y_labels, col="black",las=1)
-
-# Red dashed line for the true y-value
-abline(h=true_y_value, col="red", lty=2, lwd=1)
-
-text(x=nrow(y), y=9.65, srt=90, "")
-abline(v=nrow(y), col=mcxs4)
-text(x=nrow(y)+h, y=9.65, srt=90, "")
-abline(v=nrow(y)+h, col=mcxs2)
-#legend(136, 1.2, legend=c("Y2023Q4", "Y2026Q4"), col=c(mcxs4, mcxs2), lty=1, cex=0.35)
+legend(136, 1.2, legend=c("Y2023Q4", "Y2026Q4"), col=c(mcxs4, mcxs2), lty=1, cex=0.45)
 
 polygon(c(length(y[,1]):(length(y[,1])+h),(length(y[,1]):(length(y[,1])+h))[13:1]),
         c(y[136,1],ex_rate.interval.f[1,],ex_rate.interval.f[2,12:1],y[136,1]),
         col=mcxs1.shade1, border=mcxs1.shade1)
 ```
+The above presents the historical and forecasting data the AUD/USD exchange rate. The exchange rate shows several peaks and troughs, indicating the volatility in the exchange rate over the years. For the three years forecasting, it shows a clear downward trend and reaching the lowest above 0.6 in 2026. 
 
-```{r}
-# #### 15% highest density intervals
-# 
-# ex_rate.point.f    = apply(Y.h[,1,],1,mean) 
-# ex_rate.interval.f = apply(Y.h[,1,],1,hdi,credMass=0.15)
-# ex_rate.range      = range(y[,1],ex_rate.interval.f)
-# 
-# true_y_value <- ex_rate.point.f[12]  # Set this to your actual true y-value
-# 
-# # Define the range and labels for the y-axis
-# y_min <- min(ex_rate.range[1], true_y_value)  # Adjust as necessary to include true_y_value
-# y_max <- max(ex_rate.range[2], true_y_value)
-# num_labels <- 4  # You can adjust the number of labels
-# 
-# # Generate a sequence of y-values for the axis that includes true_y_value
-# y_values <- pretty(c(y_min, y_max), num_labels)
-# if(!true_y_value %in% y_values) {
-#   y_values <- sort(c(y_values))
-# }
-# 
-# # Generate labels for the y-axis, ensuring true_y_value is included and highlighted
-# y_labels <- sprintf("%.2f", y_values)
-# y_labels[y_values == true_y_value] <- paste(y_labels[y_values == true_y_value], "(True Value)", sep=" ")
-# 
-# # Plot adjustments
-# plot(1:(length(y[,1])+h), c(y[,1], ex_rate.point.f), type="l", ylim=c(min(y_values), max(y_values)), axes=FALSE, xlab="", ylab="", lwd=2, col=mcxs1)
-# axis(1, c(1, 21, 41, 61, 81, 101, nrow(y), nrow(y)+h), c("1992", "1997", "2002", "2007", "2012", "2017", "", ""), col="black")
-# axis(2, at=y_values, labels=y_labels, col="black",las=1)
-# 
-# # Red dashed line for the true y-value
-# abline(h=true_y_value, col="red", lty=2, lwd=1)
-# 
-# 
-# text(x=nrow(y), y=9.65, srt=90, "2025-12")
-# abline(v=nrow(y), col=mcxs4)
-# text(x=nrow(y)+h, y=9.65, srt=90, "2026-12")
-# abline(v=nrow(y)+h, col=mcxs2)
-# #legend(136, 1.2, legend=c("Y2023Q4", "Y2026Q4"), col=c(mcxs4, mcxs2), lty=1, cex=0.35)
-# 
-# polygon(c(length(y[,1]):(length(y[,1])+h),(length(y[,1]):(length(y[,1])+h))[13:1]),
-#         c(y[136,1],ex_rate.interval.f[1,],ex_rate.interval.f[2,12:1],y[136,1]),
-#         col=mcxs1.shade1, border=mcxs1.shade1)
-# 
-# 
-# ex_rate.point.f    = apply(Y.h.ext[,1,],1,mean) 
-# ex_rate.interval.f = apply(Y.h.ext[,1,],1,hdi,credMass=0.15)
-# ex_rate.range      = range(y[,1],ex_rate.interval.f)         
-# 
-# 
-# true_y_value <- ex_rate.point.f[12]  # Set this to your actual true y-value
-# 
-# # Define the range and labels for the y-axis
-# y_min <- min(ex_rate.range[1], true_y_value)  # Adjust as necessary to include true_y_value
-# y_max <- max(ex_rate.range[2], true_y_value)
-# num_labels <- 4  # You can adjust the number of labels
-# 
-# # Generate a sequence of y-values for the axis that includes true_y_value
-# y_values <- pretty(c(y_min, y_max), num_labels)
-# if(!true_y_value %in% y_values) {
-#   y_values <- sort(c(y_values))
-# }
-# 
-# # Generate labels for the y-axis, ensuring true_y_value is included and highlighted
-# y_labels <- sprintf("%.2f", y_values)
-# y_labels[y_values == true_y_value] <- paste(y_labels[y_values == true_y_value], "(True Value)", sep=" ")
-# 
-# # Plot adjustments
-# plot(1:(length(y[,1])+h), c(y[,1], ex_rate.point.f), type="l", ylim=c(min(y_values), max(y_values)), xlab="", ylab="", lwd=2, col=mcxs1, axes=FALSE)
-# axis(1, c(1, 21, 41, 61, 81, 101, nrow(y), nrow(y)+h), c("1992", "1997", "2002", "2007", "2012", "2017", "", ""), col="black")
-# axis(2, at=y_values, labels=y_labels, col="black",las=1)
-# 
-# # Red dashed line for the true y-value
-# abline(h=true_y_value, col="red", lty=2, lwd=1)
-# 
-# text(x=nrow(y), y=9.65, srt=90, "")
-# abline(v=nrow(y), col=mcxs4)
-# text(x=nrow(y)+h, y=9.65, srt=90, "")
-# abline(v=nrow(y)+h, col=mcxs2)
-# #legend(136, 1.2, legend=c("Y2023Q4", "Y2026Q4"), col=c(mcxs4, mcxs2), lty=1, cex=0.35)
-# 
-# polygon(c(length(y[,1]):(length(y[,1])+h),(length(y[,1]):(length(y[,1])+h))[13:1]),
-#         c(y[136,1],ex_rate.interval.f[1,],ex_rate.interval.f[2,12:1],y[136,1]),
-#         col=mcxs1.shade1, border=mcxs1.shade1)
-```
-The above presents the historical and forecasting data the AUD/USD exchange rate for basic and extended model. 
-
-For the point forecast, for basic model, the exchange rate shows several peaks and troughs, indicating the volatility in the exchange rate over the years. For the three years forecasting, it shows a clear downward trend and reaching the lowest above 0.6 in 2026. And for extended model, it also shows a clear downward trend for the first half forecasting period and reaching below 0.06 in around 2025 and slightly increase back to 0.61 fo the following period. For conduct 90% and 68% confident interval in the extended model in which we can notice the extended model has an obvious wider confident interval for both significant level, it probably given by the nature of the Laplace distribution applied in the extended model in which the the fatter fail of Laplace distribution will capture more outliers which resulting a larger variance and then leading to a wider confident interval.
-
-Regard to the 3D with density intervals below for both model forecasting, we could notice that the for each different predictive density at specific horizons, with the back wall we have the one period ahead predictive density and with the front we have the 12 period ahead density which is 3 years. We could see the distribution becomes lower and more dispersed with the increases of the horizon, as the data is more informative about the nearest developments in the future. Hence, one period predictive density is highly concentrated relative to others with smaller variance and taller peak. Similarly, the interval become more wider and dispersed resulting a more uncertainty for the future period forecasting.
-
+Regard to the 3D with density intervals below, we could notice that the for each different predictive density at specific horizons, with the back wall we have the one period ahead predictive density and with the front we have the 12 period ahead density which is 3 years. We could see the distribution becomes lower and more dispersed with the increases of the horizon, as the data is more informative about the nearest developments in the future. Hence, one period predictive density is highly concentrated relative to others with smaller variance and taller peak. Similarly, the interval become more wider and dispersed resulting a more uncertainty for the future period forecasting.
 ```{r}
 #| echo: false
 #| message: false
 #| warning: false
-par(mfrow=c(1,2), mar=c(2,2,1,1))
 limits.1    = range(Y.h[,1,])
 point.f     = apply(Y.h[,1,],1,mean)
 interval.f  = apply(Y.h[,1,],1,hdi,credMass=0.90)
@@ -1392,8 +902,114 @@ for (i in 1:h){
 }
 f4.l1 = trans3d(x=point.f, y=yy, z=0, pmat=f4)
 lines(f4.l1, lwd=2, col=mcxs1)
+```
+
+### Forecasting on extended model
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+# setup 
+S1                = 5000                             # will be discard
+S2                = 45000                            
+total_S           = S1+S2
+A.posterior       = array(NA, dim = c((1+N*p),N,S1+S2))
+Sigma.posterior   = array(NA, dim = c(N,N,S1+S2))
+lambda.posterior  = matrix(NA, S1+S2, 1)
+
+# set the initial value of lambda
+lambda.posterior[1] = 1.5                             
+
+# parameter alpha
+lambda.priors = list(alpha = 1.5)
 
 
+S1                         = 5000                              # determine the
+S2                         = 45000                             # number of draws 
+total_S                    = S1+S2
+posterior.ext              = posterior.draws.extended(total_S = total_S, Y=Y, X=X)
+A.posterior.ext.simu       = posterior.ext$A.posterior.exten[,,(S1+1):total_S]
+Sigma.posterior.ext.simu   = posterior.ext$Sigma.posterior.exten[,,(S1+1):total_S]
+
+## Three-year ahead forecasting h=12
+# set up
+h                          = 12
+S                          = 45000
+Y.h.ext                    = array(NA,c(h,N,S))
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+# sampling predictive density
+for (s in 1:S){
+  A.posterior.draw         = A.posterior.ext.simu[,,s]
+  Sigma.posterior.draw     = Sigma.posterior.ext.simu[,,s]
+    x.Ti                   = Y[(nrow(Y)-p+1):nrow(Y),]
+    x.Ti                   = x.Ti[p:1,]
+  for (i in 1:h){
+    x.T                    = c(1,as.vector(t(x.Ti)))
+    Y.f                    = rmvnorm(1, mean = x.T%*%A.posterior.draw, sigma=Sigma.posterior.draw)
+      x.Ti                 = rbind(Y.f,x.Ti[1:(p-1),])
+    Y.h.ext[i,,s]          = Y.f[1:N]
+  }
+}
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+ex_rate.point.f    = apply(Y.h.ext[,1,],1,mean) 
+ex_rate.interval.f = apply(Y.h.ext[,1,],1,hdi,credMass=0.90)
+ex_rate.range      = range(y[,1],ex_rate.interval.f)         
+#0.88722-0.334598=0.552622
+
+true_y_value <- ex_rate.point.f[12]  # Set this to your actual true y-value
+
+# Define the range and labels for the y-axis
+y_min <- min(ex_rate.range[1], true_y_value)  # Adjust as necessary to include true_y_value
+y_max <- max(ex_rate.range[2], true_y_value)
+num_labels <- 4  # You can adjust the number of labels
+
+# Generate a sequence of y-values for the axis that includes true_y_value
+y_values <- pretty(c(y_min, y_max), num_labels)
+if(!true_y_value %in% y_values) {
+  y_values <- sort(c(y_values))
+}
+
+# Generate labels for the y-axis, ensuring true_y_value is included and highlighted
+y_labels <- sprintf("%.2f", y_values)
+y_labels[y_values == true_y_value] <- paste(y_labels[y_values == true_y_value], "(True Value)", sep=" ")
+
+# Plot adjustments
+plot(1:(length(y[,1])+h), c(y[,1], ex_rate.point.f), type="l", ylim=c(min(y_values), max(y_values)), axes=FALSE, xlab="", ylab="", lwd=2, col=mcxs1)
+axis(1, c(1, 21, 41, 61, 81, 101, nrow(y), nrow(y)+h), c("1992", "1997", "2002", "2007", "2012", "2017", "", ""), col="black")
+axis(2, at=y_values, labels=y_labels, col="black")
+
+# Red dashed line for the true y-value
+abline(h=true_y_value, col="red", lty=2, lwd=1)
+
+text(x=nrow(y), y=9.65, srt=90, "")
+abline(v=nrow(y), col=mcxs4)
+text(x=nrow(y)+h, y=9.65, srt=90, "")
+abline(v=nrow(y)+h, col=mcxs2)
+legend(136, 1.2, legend=c("Y2023Q4", "Y2026Q4"), col=c(mcxs4, mcxs2), lty=1, cex=0.45)
+
+polygon(c(length(y[,1]):(length(y[,1])+h),(length(y[,1]):(length(y[,1])+h))[13:1]),
+        c(y[136,1],ex_rate.interval.f[1,],ex_rate.interval.f[2,12:1],y[136,1]),
+        col=mcxs1.shade1, border=mcxs1.shade1)
+
+```
+The above presents the historical and forecasting data the AUD/USD exchange rate for the extended model. For the three years forecasting, it also shows a clear downward trend for the first half forecasting period and reaching below 0.06 in around 2025 and slightly increase back to 0.61 fo the following period. 
+
+With regard to the 3D with density intervals below, we could notice that the confidence interval widened a little.
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
 limits.1    = range(Y.h.ext[,1,])
 point.f     = apply(Y.h.ext[,1,],1,mean)
 interval.f  = apply(Y.h.ext[,1,],1,hdi,credMass=0.90)
