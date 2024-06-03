@@ -668,7 +668,7 @@ I.matrix            = diag(1,nrow(Y),nrow(Y))
 
 ## Posterior sample draw
 
-    posterior.draws       = function (S, Y, X){
+    posterior.draws       = function (S, Y, X, A.prior, V.prior, S.prior, nu.prior){
   
     # normal-inverse Wishard posterior parameters
     V.bar.inv         = t(X)%*%X + diag(1/diag(V.prior))
@@ -725,7 +725,7 @@ V.prior             = diag(c(kappa.2,kappa.1*((1:p)^(-2))%x%rep(1,N)))
 S.prior             = diag(diag(Sigma.hat))
 nu.prior            = N+1
 
-posterior.sample.draws = posterior.draws(S=1000, Y=Y_simulation, X=X_simulation) 
+posterior.sample.draws = posterior.draws(S=1000, Y=Y_simulation, X=X_simulation, A.prior, V.prior, S.prior, nu.prior) 
 ```
 
 ```{r}
