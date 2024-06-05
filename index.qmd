@@ -933,49 +933,6 @@ for (s in 1:S){
 ```
 
 ```{r}
-# ex_rate.point.f    = apply(Y.h[,1,],1,mean) 
-# ex_rate.interval.f = apply(Y.h[,1,],1,hdi,credMass=0.15)
-# ex_rate.range      = range(y[,1],ex_rate.interval.f)
-# 
-# true_y_value <- ex_rate.point.f[12]  # Set this to your actual true y-value
-# 
-# # Define the range and labels for the y-axis
-# y_min <- min(ex_rate.range[1], true_y_value)  # Adjust as necessary to include true_y_value
-# y_max <- max(ex_rate.range[2], true_y_value)
-# num_labels <- 4  # You can adjust the number of labels
-# 
-# # Generate a sequence of y-values for the axis that includes true_y_value
-# y_values <- pretty(c(y_min, y_max), num_labels)
-# if(!true_y_value %in% y_values) {
-#   y_values <- sort(c(y_values))
-# }
-# 
-# # Generate labels for the y-axis, ensuring true_y_value is included and highlighted
-# y_labels <- sprintf("%.2f", y_values)
-# y_labels[y_values == true_y_value] <- paste(y_labels[y_values == true_y_value], "(True Value)", sep=" ")
-# 
-# # Plot adjustments
-# plot(1:(length(y[,1])+h), c(y[,1], ex_rate.point.f), type="l", ylim=c(min(y_values), max(y_values)), axes=FALSE, xlab="", ylab="", lwd=2, col=mcxs1)
-# axis(1, c(1, 21, 41, 61, 81, 101, nrow(y), nrow(y)+h), c("1992", "1997", "2002", "2007", "2012", "2017", "", ""), col="black")
-# axis(2, at=y_values, labels=y_labels, col="black")
-# 
-# # Red dashed line for the true y-value
-# abline(h=true_y_value, col="red", lty=2, lwd=1)
-# 
-# 
-# text(x=nrow(y), y=9.65, srt=90, "2025-12")
-# abline(v=nrow(y), col=mcxs4)
-# text(x=nrow(y)+h, y=9.65, srt=90, "2026-12")
-# abline(v=nrow(y)+h, col=mcxs2)
-# legend(136, 1.2, legend=c("Y2023Q4", "Y2026Q4"), col=c(mcxs4, mcxs2), lty=1, cex=0.45)
-# 
-# polygon(c(length(y[,1]):(length(y[,1])+h),(length(y[,1]):(length(y[,1])+h))[13:1]),
-#         c(y[136,1],ex_rate.interval.f[1,],ex_rate.interval.f[2,12:1],y[136,1]),
-#         col=mcxs1.shade1, border=mcxs1.shade1)
-
-```
-
-```{r}
 ### Forecasting on extended model
 S1                = 100                            # will be discard
 S2                = 900                            
@@ -1100,7 +1057,6 @@ for (s in 1:S){
   }
 }
 ```
-
 
 #### 90% and 68% highest density intervals respectively
 ```{r}
