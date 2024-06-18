@@ -107,6 +107,7 @@ library(mvtnorm)
 library(Rmpfr)
 library(dplyr)
 library(psych)
+library(ggplot2)
 fredr_set_key("75b470c4883ecfd5a7b4185f30437bd0")
 ```
 
@@ -585,11 +586,35 @@ hist(posterior.sample.draws$A.posterior[1,1,], xlab = "AUD/USD exchange rate", c
 plot.ts(posterior.sample.draws$Sigma.posterior[1,1,], xlab = "Simulation times S", ylab = "AUD/USD exchange rate sigma", col = mcxs2)
 hist(posterior.sample.draws$Sigma.posterior[1,1,], xlab = "AUD/USD exchange rate sigma", col = mcxs2, main = '')
 ```
-The trace plots and the histogram plot of posterior draws of$A$ and $\Sigma$ is presented above with the trace plots shows significant volatility.
+The trace plots and the histogram plots of posterior draws of$A$ and $\Sigma$ is presented above with the trace plots shows significant volatility.
 
 ## The Extended Model
 
-The extended model will be built based on the the change in distribution of the error to **Laplace distribution** instead of the normally distributed errors assumption. The Laplace distribution is suitable for describing financial anomalies due to its sharp peaks and thick tails and the use of this distribution improves the robustness of the model to anomalies and is particularly suitable for financial time series. As our variables are most financial time series data, a Laplace distribution is more suitable to apply to our error term.
+The extended model will be built based on the the change in distribution of the error to **Laplace distribution** instead of the normally distributed errors assumption. The Laplace distribution is suitable for describing financial anomalies due to its sharp peaks and thick tails and the use of this distribution improves the robustness of the model to anomalies and is particularly suitable for financial time series. As our variables are most financial time series data, a Laplace distribution is more suitable to apply to our error term. The following plot gives a general idea of how laplace distribution behaves different with the normal distribution under the same mean and variance.
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+x <- seq(-10, 10, length.out = 1000)
+mean <- 0 
+
+normal_pdf <- dnorm(x, mean = mean, sd = 2)
+
+b_equal_variance <- sqrt(2)
+laplace_pdf_equal_variance <- dexp(abs(x - mean) / b_equal_variance) / (2 * b_equal_variance)
+
+df <- data.frame(x, Normal = normal_pdf, Laplace = laplace_pdf_equal_variance)
+
+plot <- ggplot(df, aes(x)) +
+  geom_line(aes(y = Normal), color = mcxs1, linewidth = 1) +
+  geom_line(aes(y = Laplace), color = mcxs2, linewidth = 1) +
+  labs(title = "Comparison of Normal and Laplace Distributions with Same Mean and Variance",
+       x = "Value", y = "Probability Density") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+print(plot)
+```
 
 Following [Eltoft,Kim, and Lee 2006b](https://ieeexplore.ieee.org/document/1618702), for covariance with a general Kronecker structure, if each ${\lambda_t}$ has an independent exponential distribution with mean ${\alpha}$, then marginally ${U_t}$ has a multivariate Laplace distribution with mean vector 0 and covariance matrix ${\alpha\Sigma}$.
 
@@ -723,7 +748,6 @@ posterior.draws.extended <- function(S1,total_S,Y, X, A.prior, V.prior, S.prior,
       lambda.s    = lambda.posterior.draws[,s]
     }
     
-    Omega = (diag(lambda.s))
     Omega.inv = diag(1/lambda.s)
 
     V.bar.inv.ext   = t(X)%*%Omega.inv%*%X + V.prior.inv
@@ -830,7 +854,7 @@ hist(posterior.ext$Sigma.posterior.exten[1,1,], xlab = "AUD/USD exchange sigma.e
 plot.ts(posterior.ext$lambda.posterior.exten[(S1+1):total_S], xlab = "Simulation times S", ylab = "lambda", col = mcxs3)         
 hist(posterior.ext$lambda.posterior.exten[(S1+1):total_S], xlab = "lambda", col = mcxs3, main = '')
 ```
-Compared to the basic model, by applying laplace distribution into the variance specification of the error term, we introduces more variability to our $A$ and $\Sigma$. That is, the distribution of the coefficient now more dispersion with the basic model more concentrate 0. And for the distribution of Sigma, it shows the similar shape but central around different value.
+Compared to the basic model, by applying laplace distribution into the variance specification of the error term, we introduces more variability to our $A$ and $\Sigma$. That is, the distribution of the coefficient now more dispersion with the basic model more concentrate at 0. And for the distribution of Sigma, it shows the similar shape but central around different value.
 
 The lambda mainly concentrates between 0 to 4, with some large outlines throughout the simulation.
 
@@ -1180,7 +1204,6 @@ At each iteration s:
 A.hat       = solve(t(X)%*%X)%*%t(X)%*%Y
 Sigma.hat   = t(Y-X%*%A.hat)%*%(Y-X%*%A.hat)/nrow(Y)
 
-h = 12
 S = 10000
 N = ncol(Y)
 T = nrow(Y)
@@ -1212,7 +1235,6 @@ V.prior     = V.prior,
 S.prior     = S.prior,
 nu.prior    = nu.prior,
 
-# New priors based on lectures
 h0.v        = 1,
 h0.m        = 0,
 sigmav.s    = 1,
@@ -1398,7 +1420,6 @@ hist(posterior.draws.heter.ext$A.posterior[1,1,], xlab = "AUD/USD exchange rate"
 
 plot.ts(posterior.draws.heter.ext$Sigma.posterior[1,1,], xlab = "Simulation times S", ylab = "AUD/USD exchange rate sigma", col = mcxs2)
 hist(posterior.draws.heter.ext$Sigma.posterior[1,1,], xlab = "AUD/USD exchange rate sigma", col = mcxs2, main = '')
-
 ```
 For extended model with heteroskedasticity, the coefficient range now wider a lot, which ranges from -3 to 3.
 
@@ -1430,14 +1451,14 @@ legend("topright",legend = c("RW1", "RW2"), col = c("#e74c3c", "#2ecc71"), lty =
 #| message: false
 #| warning: false
 
-#################################  basic model proff
+#################################  basic model prof
 
 # simulation data generating process
 p=1
 
-Y_simulation = (simulation_data[(p+1):nrow(simulation_data),]) #contains the obs of the two variables and moves first obs
-X_simulation = matrix(1,nrow(Y_simulation),1) #initializes the X matrix with a column of ones(intercept) in the VAR model.                                      
-# adds the lagged values of the two variables to the X matrix, in this case, it adds one lagged value for each of the two variables.
+Y_simulation = (simulation_data[(p+1):nrow(simulation_data),]) 
+X_simulation = matrix(1,nrow(Y_simulation),1)                                   
+
 for (i in 1:p){
   X_simulation     = cbind(X_simulation, (simulation_data[(p+1):nrow(simulation_data)-i,]))
 }
@@ -1715,6 +1736,9 @@ polygon(c(length(y[,1]):(length(y[,1])+h),(length(y[,1]):(length(y[,1])+h))[13:1
 basic.plot.fun.plot = basic.plot.fun(Y.h)
   
 ```
+The above presents the historical and forecasting data the AUD/USD exchange rate for basic and extended model. 
+
+For the point forecast, for basic model, the exchange rate shows several peaks and troughs, indicating the volatility in the exchange rate over the years. For the three years forecasting, it shows a slightly downward trend and reaching around 0.62 in 2026.
 
 ```{r}
 #| echo: false
@@ -1801,10 +1825,7 @@ lines(f4.l1, lwd=2, col=mcxs1)
 #basic plot for extended
 basic.plot.fun.extend = basic.plot.fun(Y.h.ext)
 ```
-The above presents the historical and forecasting data the AUD/USD exchange rate for basic and extended model. 
-
-For the point forecast, for basic model, the exchange rate shows several peaks and troughs, indicating the volatility in the exchange rate over the years. For the three years forecasting, it shows a slightly downward trend and reaching around 0.67 in 2026. And for extended model, it shows a clear increasing trend and reaching around 0.75 in the end of the forecasting period. For conduct 90% confident interval, we can notice the extended model has an wider confident interval, and this may be given by the nature of the Laplace distribution applied in the extended model in which the the fatter fail of Laplace distribution will capture more economic activities not covered by the underlying normal distribution.
-
+For extended model, it shows a clear increasing trend and reaching around 0.70 in the end of the forecasting period. For conduct 90% confident interval, we can notice the extended model has an wider confident interval, and this may be given by the nature of the Laplace distribution applied in the extended model in which the the fatter fail of Laplace distribution will capture more economic activities not covered by the underlying normal distribution.
 ```{r}
 #| echo: false
 #| message: false
@@ -1813,7 +1834,6 @@ par(mfrow=c(1,2), mar=c(1,2,1,1))
 basic.plot.3d = basic.plot.3d.fun(Y.h)
 basic.plot.3d.ext = basic.plot.3d.fun(Y.h.ext)
 ```
-
 Regard to the 3D with density intervals above for both model forecasting, we could notice that the for each different predictive density at specific horizons, with the back wall we have the one period ahead predictive density and with the front we have the 12 period ahead density which is 3 years. We could see the distribution becomes lower and more dispersed with the increases of the horizon, as the data is more informative about the nearest developments in the future. Hence, one period predictive density is highly concentrated relative to others with smaller variance and taller peak. Similarly, the interval become more wider and dispersed resulting a more uncertainty for the future period forecasting.
 
 ### Forecasting on Basic Model With Stochastic Volatility Heteroskedasticity
@@ -1851,7 +1871,7 @@ Y.h.heter       = sampling.predictive.density(A.posterior.simu = A.posterior.het
 #basic plot on basic heter
 basic.plot.fun.heter = basic.plot.fun(Y.h.heter)
 ```
-By involving the heteroskedasticity in the error term, the forecasting plot looks similar to the extended model, with the heteroskedasticity extension, it shows an increasing trend but reaching to the mean value more slowly and we could notice that the confident interval is narrower compared to the basic model, indicating a more informative estimating of the parameters as it has a higher certainty from a more concentrated mean value and then leading to a narrower confident interval as expected.
+By involving the heteroskedasticity in the error term, the forecasting plot looks similar to the extended model, with the heteroskedasticity extension, it shows an increasing trend and reaching to 0.75, we could notice that the confident interval is slightly narrower compared to the basic model, indicating a more informative estimating of the parameters as it has a higher certainty from a more concentrated mean value and then leading to a narrower confident interval as the model can better accommodate shifts in variance that might otherwise skew or widen the distribution of observed values.
 
 ```{r}
 #| echo: false
@@ -1939,12 +1959,16 @@ plot_ly(y = yy.erate, x = x.erate, z=z.erate) %>%
   add_surface(colors = c(mcxs1,"magenta2",mcxs5))
 
 ```
-The 3D plots above allow us to access to alternative vantage points. We could notice that for the first few forecasting periods, the extended model has very sharp and concentrated densities around the point estimated, and it shows clearly heavy tails, which may increase the possibility of capturing extreme values that deviate significantly from the central forecast.
 
 
 # Conclusion 
-In this research project, we use one basic and three extended Bayesian models to forecast the AUD/USD exchange rate. For the basic model, we use Minnesota before fitting our non-stationary data property.  Then we applied the Laplace distribution to the error term to capture the leptokurtotic and anomies of the financial data. Then we introduced the stochastic volatility model to further capture the volatility of the error term.
+In this research project, we use one basic and two extended Bayesian models to forecast the AUD/USD exchange rate, with the extension model with heteroskedasticity as a remaining topic to do further forecasting. For the basic model, we use Minnesota prior distribution before fitting our non-stationary data property. Then we applied the Laplace distribution to the error term to capture the leptokurtotic and anomies of the financial data. We also introduced the stochastic volatility model to further capture the volatility of the error term.
 
-We do the forecasting in h=12 steps which is a 3-year period in our case and for the point estimate of the forecasting, among four different models, the basic model forecasting shows a slightly decreasing trend, while the extended and its extension with heteroskedasticity has an opposite trend and shows a clearly increasing trend among forecasting periods.
+We do the forecasting in h=12 steps which is 3 years in our case and for the point estimate of the forecasting, among different models, the basic model forecasting shows a slightly decreasing trend, while the extended and the basic model with heteroskedasticity has an opposite trend and shows an increasing trend among forecasting periods.
 
-And for the confident interval, compared to the basic model. The extended model and its extension provided a narrower confident interval which means a more informative and precise forecasting of the AUD/USD exchange rate.
+In conclusion, compared to the basic model, both extension models increase the estimation of the forecasting in different ways and provide more informative forecasting of the AUD/USD exchange rate.
+
+# References {.unnumbered}
+Woźniak, T. (2016), Bayesian Vector Autoregressions. Australian Economic Review, 49: 365-380. https://doi.org/10.1111/1467-8462.12179
+
+Eltoft, T., Kim, T., & Lee, T.-W. (2006). On the multivariate Laplace distribution. IEEE Signal Processing Letters, 13(5), 300–303. https://doi.org/10.1109/LSP.2006.870353
