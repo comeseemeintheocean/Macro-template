@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -110,18 +144,36 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#model-and-hypotheses" id="toc-model-and-hypotheses" class="nav-link" data-scroll-target="#model-and-hypotheses">Model and Hypotheses</a></li>
   <li><a href="#modelling-framework" id="toc-modelling-framework" class="nav-link" data-scroll-target="#modelling-framework">Modelling Framework</a>
   <ul class="collapse">
-  <li><a href="#the-basic-model" id="toc-the-basic-model" class="nav-link" data-scroll-target="#the-basic-model">The basic model</a></li>
-  <li><a href="#the-extended-model" id="toc-the-extended-model" class="nav-link" data-scroll-target="#the-extended-model">The extended model</a></li>
-  <li><a href="#proof-of-model-validity" id="toc-proof-of-model-validity" class="nav-link" data-scroll-target="#proof-of-model-validity">Proof of model validity</a>
+  <li><a href="#the-basic-model" id="toc-the-basic-model" class="nav-link" data-scroll-target="#the-basic-model">The basic model</a>
   <ul class="collapse">
-  <li><a href="#proof-of-basic-model-validity" id="toc-proof-of-basic-model-validity" class="nav-link" data-scroll-target="#proof-of-basic-model-validity">Proof of basic model validity</a></li>
-  <li><a href="#proof-of-extended-model" id="toc-proof-of-extended-model" class="nav-link" data-scroll-target="#proof-of-extended-model">Proof of extended model</a></li>
+  <li><a href="#estimation-outcomes-on-basic-model" id="toc-estimation-outcomes-on-basic-model" class="nav-link" data-scroll-target="#estimation-outcomes-on-basic-model">Estimation Outcomes on Basic Model</a></li>
+  </ul></li>
+  <li><a href="#the-extended-model" id="toc-the-extended-model" class="nav-link" data-scroll-target="#the-extended-model">The Extended Model</a>
+  <ul class="collapse">
+  <li><a href="#estimation-outcomes-on-extended-model" id="toc-estimation-outcomes-on-extended-model" class="nav-link" data-scroll-target="#estimation-outcomes-on-extended-model">Estimation Outcomes on Extended Model</a></li>
+  </ul></li>
+  <li><a href="#the-basic-model-with-stochastic-volatility-heteroskedasticity" id="toc-the-basic-model-with-stochastic-volatility-heteroskedasticity" class="nav-link" data-scroll-target="#the-basic-model-with-stochastic-volatility-heteroskedasticity">The Basic Model With Stochastic Volatility Heteroskedasticity</a>
+  <ul class="collapse">
+  <li><a href="#estimation-outcomes-on-basic-stochastic-volatility-model" id="toc-estimation-outcomes-on-basic-stochastic-volatility-model" class="nav-link" data-scroll-target="#estimation-outcomes-on-basic-stochastic-volatility-model">Estimation Outcomes on Basic Stochastic Volatility Model</a></li>
+  </ul></li>
+  <li><a href="#the-extension-model-with-stochastic-volatility-heteroskedasticity" id="toc-the-extension-model-with-stochastic-volatility-heteroskedasticity" class="nav-link" data-scroll-target="#the-extension-model-with-stochastic-volatility-heteroskedasticity">The Extension Model With Stochastic Volatility Heteroskedasticity</a></li>
+  <li><a href="#proof-of-model-validity" id="toc-proof-of-model-validity" class="nav-link" data-scroll-target="#proof-of-model-validity">Proof of Model Validity</a>
+  <ul class="collapse">
+  <li><a href="#proof-of-basic-model-validity" id="toc-proof-of-basic-model-validity" class="nav-link" data-scroll-target="#proof-of-basic-model-validity">Proof of Basic Model Validity</a></li>
+  <li><a href="#proof-of-extended-model" id="toc-proof-of-extended-model" class="nav-link" data-scroll-target="#proof-of-extended-model">Proof of Extended Model</a></li>
   </ul></li>
   </ul></li>
   <li><a href="#forecasting" id="toc-forecasting" class="nav-link" data-scroll-target="#forecasting">Forecasting</a>
   <ul class="collapse">
-  <li><a href="#forecasting-with-basic-model-and-extended-model" id="toc-forecasting-with-basic-model-and-extended-model" class="nav-link" data-scroll-target="#forecasting-with-basic-model-and-extended-model">Forecasting with basic model and extended model</a></li>
+  <li><a href="#forecasting-with-models" id="toc-forecasting-with-models" class="nav-link" data-scroll-target="#forecasting-with-models">Forecasting With Models</a>
+  <ul class="collapse">
+  <li><a href="#forecasting-with-basic-model" id="toc-forecasting-with-basic-model" class="nav-link" data-scroll-target="#forecasting-with-basic-model">Forecasting With Basic Model</a></li>
+  <li><a href="#forecasting-on-extended-model" id="toc-forecasting-on-extended-model" class="nav-link" data-scroll-target="#forecasting-on-extended-model">Forecasting on Extended Model</a></li>
+  <li><a href="#forecasting-on-basic-model-with-stochastic-volatility-heteroskedasticity" id="toc-forecasting-on-basic-model-with-stochastic-volatility-heteroskedasticity" class="nav-link" data-scroll-target="#forecasting-on-basic-model-with-stochastic-volatility-heteroskedasticity">Forecasting on Basic Model With Stochastic Volatility Heteroskedasticity</a></li>
+  <li><a href="#interactive-3d-versions" id="toc-interactive-3d-versions" class="nav-link" data-scroll-target="#interactive-3d-versions">Interactive 3D versions</a></li>
   </ul></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
 </nav>
     </div>
@@ -219,7 +271,7 @@ ul.task-list li input[type="checkbox"] {
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">exchange rate</td>
-<td style="text-align: right;">0.736</td>
+<td style="text-align: right;">0.671</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">cpi_au</td>
@@ -227,7 +279,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="odd">
 <td style="text-align: left;">cpi_us</td>
-<td style="text-align: right;">0.450</td>
+<td style="text-align: right;">0.410</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">cashrate_au</td>
@@ -235,11 +287,11 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="odd">
 <td style="text-align: left;">cashrate_us</td>
-<td style="text-align: right;">0.270</td>
+<td style="text-align: right;">0.047</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">export_au</td>
-<td style="text-align: right;">0.498</td>
+<td style="text-align: right;">0.431</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">export_us</td>
@@ -247,7 +299,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td style="text-align: left;">import_au</td>
-<td style="text-align: right;">0.176</td>
+<td style="text-align: right;">0.095</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">import_us</td>
@@ -263,11 +315,11 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td style="text-align: left;">unemployemtrate_au</td>
-<td style="text-align: right;">0.360</td>
+<td style="text-align: right;">0.419</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">unemployemtrate_us</td>
-<td style="text-align: right;">0.358</td>
+<td style="text-align: right;">0.328</td>
 </tr>
 </tbody>
 </table>
@@ -294,11 +346,11 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="odd">
 <td style="text-align: left;">cpi_us</td>
-<td style="text-align: right;">0.024</td>
+<td style="text-align: right;">0.012</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">cashrate_us</td>
-<td style="text-align: right;">0.010</td>
+<td style="text-align: right;">0.012</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">export_au</td>
@@ -431,9 +483,88 @@ p(\Sigma|Y,X) &amp;= \mathcal{IW}_N(\bar{S},\bar{\nu}) \\
 \bar{S} &amp;= \underline{S} + Y'Y + \underline{A}'\underline{V}^{-1}\underline{A} - \bar{A}'\bar{V}^{-1}\bar{A} \\
 
 \end{align}\]</span>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">########################## basic model code </span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Posterior sample draw</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>posterior.draws       <span class="ot">=</span> <span class="cf">function</span> (S, Y, X, A.prior, V.prior, S.prior, nu.prior){</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># normal-inverse Wishard posterior parameters</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    V.bar.inv         <span class="ot">=</span> <span class="fu">t</span>(X)<span class="sc">%*%</span>X <span class="sc">+</span> <span class="fu">diag</span>(<span class="dv">1</span><span class="sc">/</span><span class="fu">diag</span>(V.prior))</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    V.bar             <span class="ot">=</span> <span class="fu">solve</span>(V.bar.inv)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    A.bar             <span class="ot">=</span> V.bar<span class="sc">%*%</span>(<span class="fu">t</span>(X)<span class="sc">%*%</span>Y <span class="sc">+</span> <span class="fu">diag</span>(<span class="dv">1</span><span class="sc">/</span><span class="fu">diag</span>(V.prior))<span class="sc">%*%</span>A.prior)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    nu.bar            <span class="ot">=</span> <span class="fu">nrow</span>(Y) <span class="sc">+</span> nu.prior</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    S.bar             <span class="ot">=</span> S.prior <span class="sc">+</span> <span class="fu">t</span>(Y)<span class="sc">%*%</span>Y <span class="sc">+</span> <span class="fu">t</span>(A.prior)<span class="sc">%*%</span><span class="fu">diag</span>(<span class="dv">1</span><span class="sc">/</span><span class="fu">diag</span>(V.prior))<span class="sc">%*%</span>A.prior <span class="sc">-</span> <span class="fu">t</span>(A.bar)<span class="sc">%*%</span>V.bar.inv<span class="sc">%*%</span>A.bar</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    S.bar.inv         <span class="ot">=</span> <span class="fu">solve</span>(S.bar)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># posterior draws </span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    Sigma.posterior   <span class="ot">=</span> <span class="fu">rWishart</span>(S, <span class="at">df=</span>nu.bar, <span class="at">Sigma=</span>S.bar.inv)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    Sigma.posterior   <span class="ot">=</span> <span class="fu">apply</span>(Sigma.posterior,<span class="dv">3</span>,solve)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    Sigma.posterior   <span class="ot">=</span> <span class="fu">array</span>(Sigma.posterior,<span class="fu">c</span>(N,N,S))</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    A.posterior       <span class="ot">=</span> <span class="fu">array</span>(<span class="fu">rnorm</span>(<span class="fu">prod</span>(<span class="fu">c</span>(<span class="fu">dim</span>(A.bar),S))),<span class="fu">c</span>(<span class="fu">dim</span>(A.bar),S))</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    L                 <span class="ot">=</span> <span class="fu">t</span>(<span class="fu">chol</span>(V.bar))</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (s <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>S){</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>      A.posterior[,,s]<span class="ot">=</span> A.bar <span class="sc">+</span> L<span class="sc">%*%</span>A.posterior[,,s]<span class="sc">%*%</span><span class="fu">chol</span>(Sigma.posterior[,,s])</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    output            <span class="ot">=</span> <span class="fu">list</span>(<span class="at">A.posterior=</span>A.posterior, <span class="at">Sigma.posterior=</span>Sigma.posterior)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(output)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="estimation-outcomes-on-basic-model" class="level3">
+<h3 class="anchored" data-anchor-id="estimation-outcomes-on-basic-model">Estimation Outcomes on Basic Model</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">round</span>(<span class="fu">apply</span>(posterior.sample.draws<span class="sc">$</span>A.posterior, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, mean),<span class="dv">6</span>))         <span class="co"># posterior draw A</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]
+[1,]  0.000059  4.392627  4.378695  4.318534  3.112916  9.391475  7.132752
+[2,]  0.999963  0.000269  0.000219  0.001834 -0.002820  0.000639  0.000834
+[3,]  0.000002  0.001848  0.001678 -0.011600 -0.009140  0.004496  0.003641
+[4,] -0.000030  0.001743  0.001599 -0.010009 -0.007712  0.004351  0.003495
+[5,] -0.000022 -0.012155 -0.011054  0.165295  0.089789 -0.029951 -0.023588
+[6,] -0.000220 -0.009505 -0.008065  0.097097  0.164386 -0.023265 -0.018084
+          [,8]      [,9]     [,10]     [,11]     [,12]     [,13]
+[1,]  9.350008  7.398900 12.774987  9.591428  6.398212  5.058243
+[2,]  0.000699  0.000708  0.000293  0.000161 -0.001682  0.004085
+[3,]  0.005130  0.003820  0.002282  0.001757 -0.010652 -0.001399
+[4,]  0.004897  0.003737  0.002191  0.001702 -0.011251 -0.001923
+[5,] -0.034214 -0.024050 -0.014877 -0.011495  0.047403  0.025955
+[6,] -0.024253 -0.019813 -0.011394 -0.008092  0.045546 -0.061624</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">round</span>(<span class="fu">apply</span>(posterior.sample.draws<span class="sc">$</span>Sigma.posterior, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, mean),<span class="dv">6</span>))     <span class="co"># posterior draw sigma</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]
+[1,]  0.001747 -0.000231 -0.000211  0.003646 -0.003595 -0.001070 -0.001400
+[2,] -0.000231  0.035757  0.032414 -0.220595 -0.172679  0.086973  0.070738
+[3,] -0.000211  0.032414  0.029752 -0.197326 -0.144079  0.080007  0.064462
+[4,]  0.003646 -0.220595 -0.197326  3.155867  1.821344 -0.534370 -0.425034
+[5,] -0.003595 -0.172679 -0.144079  1.821344  3.454625 -0.425686 -0.330479
+[6,] -0.001070  0.086973  0.080007 -0.534370 -0.425686  0.222121  0.177485
+          [,8]      [,9]     [,10]     [,11]     [,12]     [,13]
+[1,] -0.002148 -0.000876 -0.000230 -0.000166 -0.001206  0.011349
+[2,]  0.098956  0.074169  0.044397  0.034177 -0.206940 -0.034877
+[3,]  0.090641  0.068504  0.040728  0.031601 -0.198525 -0.039418
+[4,] -0.622403 -0.422772 -0.267864 -0.204680  0.722705  0.330735
+[5,] -0.440899 -0.361154 -0.208957 -0.147903  0.823135 -1.288953
+[6,]  0.244858  0.192238  0.109810  0.085626 -0.587810 -0.104552</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>), <span class="at">mar=</span><span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.ts</span>(posterior.sample.draws<span class="sc">$</span>A.posterior[<span class="dv">2</span>,<span class="dv">1</span>,], <span class="at">xlab =</span> <span class="st">"Simulation times S"</span>, <span class="at">ylab =</span> <span class="st">"AUD/USD exchange rate"</span>, <span class="at">col =</span> mcxs1)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(posterior.sample.draws<span class="sc">$</span>A.posterior[<span class="dv">2</span>,<span class="dv">1</span>,], <span class="at">xlab =</span> <span class="st">"AUD/USD exchange rate"</span>, <span class="at">col =</span> mcxs1, <span class="at">main =</span> <span class="st">''</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.ts</span>(posterior.sample.draws<span class="sc">$</span>Sigma.posterior[<span class="dv">1</span>,<span class="dv">1</span>,], <span class="at">xlab =</span> <span class="st">"Simulation times S"</span>, <span class="at">ylab =</span> <span class="st">"AUD/USD exchange rate sigma"</span>, <span class="at">col =</span> mcxs2)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(posterior.sample.draws<span class="sc">$</span>Sigma.posterior[<span class="dv">1</span>,<span class="dv">1</span>,], <span class="at">xlab =</span> <span class="st">"AUD/USD exchange rate sigma"</span>, <span class="at">col =</span> mcxs2, <span class="at">main =</span> <span class="st">''</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The trace plots and the histogram plot of posterior draws of<span class="math inline">\(A\)</span> and <span class="math inline">\(\Sigma\)</span> is presented above with the trace plots shows significant volatility.</p>
+</section>
 </section>
 <section id="the-extended-model" class="level2">
-<h2 class="anchored" data-anchor-id="the-extended-model">The extended model</h2>
+<h2 class="anchored" data-anchor-id="the-extended-model">The Extended Model</h2>
 <p>The extended model will be built based on the the change in distribution of the error to <strong>Laplace distribution</strong> instead of the normally distributed errors assumption. The Laplace distribution is suitable for describing financial anomalies due to its sharp peaks and thick tails and the use of this distribution improves the robustness of the model to anomalies and is particularly suitable for financial time series. As our variables are most financial time series data, a Laplace distribution is more suitable to apply to our error term.</p>
 <p>Following <a href="https://ieeexplore.ieee.org/document/1618702">Eltoft,Kim, and Lee 2006b</a>, for covariance with a general Kronecker structure, if each <span class="math inline">\({\lambda_t}\)</span> has an independent exponential distribution with mean <span class="math inline">\({\alpha}\)</span>, then marginally <span class="math inline">\({U_t}\)</span> has a multivariate Laplace distribution with mean vector 0 and covariance matrix <span class="math inline">\({\alpha\Sigma}\)</span>.</p>
 <span class="math display">\[\begin{align}
@@ -502,78 +633,6 @@ a &amp;=\frac{2}{\alpha} \\
 b &amp;= \epsilon_t' \Sigma^{-1}\epsilon_t \\
 p &amp;= -\frac{N}{2}+1
 \end{align}\]</span>
-</section>
-<section id="proof-of-model-validity" class="level2">
-<h2 class="anchored" data-anchor-id="proof-of-model-validity">Proof of model validity</h2>
-<section id="proof-of-basic-model-validity" class="level3">
-<h3 class="anchored" data-anchor-id="proof-of-basic-model-validity">Proof of basic model validity</h3>
-<p>To test the model validity, we simulated 1000 observations from a bi-variate Gaussian random walk process with the covariance matrix equal to the identity matrix of order 2 to see how the autoregressive and the covariance matrices and the posterior mean of the constant term behave.</p>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<table class="table table-sm table-striped small">
-<caption>Posterior mean of the covariance matrix Sigma</caption>
-<thead>
-<tr class="header">
-<th style="text-align: left;"></th>
-<th style="text-align: right;">Simulation_Y1</th>
-<th style="text-align: right;">Simulation_Y2</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Y1-Lag</td>
-<td style="text-align: right;">0.9804481</td>
-<td style="text-align: right;">0.0891369</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Y2-Lag</td>
-<td style="text-align: right;">0.0891369</td>
-<td style="text-align: right;">1.0182041</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<table class="table table-sm table-striped small">
-<caption>Posterior mean of the autoregressive coefficient matrix A</caption>
-<thead>
-<tr class="header">
-<th style="text-align: left;"></th>
-<th style="text-align: right;">Simulation_Y1</th>
-<th style="text-align: right;">Simulation_Y2</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Constant</td>
-<td style="text-align: right;">0.0609321</td>
-<td style="text-align: right;">0.0765025</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Y1-Lag</td>
-<td style="text-align: right;">0.9894527</td>
-<td style="text-align: right;">0.0048336</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Y2-Lag</td>
-<td style="text-align: right;">0.0023207</td>
-<td style="text-align: right;">0.9959293</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p>The diagonal entries of the covariance matrix are close to 1, which indicates that each variable has a strong autoregressive relationship with itself and similarly, the diagonal elements of the autoregressive coefficient matrix are close to one, suggesting that each variable is heavily influenced by its past value. Besides, the posterior means for the constant terms is close to 0, the above can indicate that the estimated parameter constant term and means are consistent with what we expect given a Minnesota prior.</p>
-</section>
-<section id="proof-of-extended-model" class="level3">
-<h3 class="anchored" data-anchor-id="proof-of-extended-model">Proof of extended model</h3>
 <p>The Gibbs sampler method will be applied to generate random draws from the full conditional posterior distribution:</p>
 <ol type="1">
 <li>Draw <span class="math inline">\(\Sigma^{(s)}\)</span> from the <span class="math inline">\(IW(\bar{S},\bar{\nu})\)</span> distribution.</li>
@@ -584,6 +643,256 @@ p &amp;= -\frac{N}{2}+1
 <p>Discard the first draws that allowed the algorithm to converge to the stationary posterior distribution.</p>
 <p>Output is <span class="math inline">\(\left\{ {A^{(s)}, \Sigma^{(s)}}, \lambda_t^{(s)}\right\}^{S_1+S_2}_{s=S_1+1}\)</span>.</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>posterior.draws.extended <span class="ot">&lt;-</span> <span class="cf">function</span>(S1,total_S,Y, X, A.prior, V.prior, S.prior, nu.prior, lambda.priors){</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  Sigma.posterior.draws <span class="ot">=</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="fu">c</span>(N,N,total_S))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  A.posterior.draws <span class="ot">=</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="fu">c</span>((<span class="dv">1</span><span class="sc">+</span>p<span class="sc">*</span>N),N,total_S))</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  lambda.posterior.draws <span class="ot">=</span> <span class="fu">array</span>(<span class="cn">NA</span>,<span class="fu">c</span>(T,total_S<span class="sc">+</span><span class="dv">1</span>))</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (s <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>total_S){</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (s <span class="sc">==</span> <span class="dv">1</span>) {</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>      lambda.s <span class="ot">=</span> lambda<span class="fl">.0</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>      lambda.s    <span class="ot">=</span> lambda.posterior.draws[,s]</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    Omega <span class="ot">=</span> (<span class="fu">diag</span>(lambda.s))</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    Omega.inv <span class="ot">=</span> <span class="fu">diag</span>(<span class="dv">1</span><span class="sc">/</span>lambda.s)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    V.bar.inv.ext   <span class="ot">=</span> <span class="fu">t</span>(X)<span class="sc">%*%</span>Omega.inv<span class="sc">%*%</span>X <span class="sc">+</span> V.prior.inv</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    V.bar.inv.ext   <span class="ot">=</span> <span class="fl">0.5</span> <span class="sc">*</span> (<span class="fu">t</span>(V.bar.inv.ext) <span class="sc">+</span> V.bar.inv.ext)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    V.bar.ext       <span class="ot">=</span> <span class="fu">solve</span>(V.bar.inv.ext)</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    V.bar.ext       <span class="ot">=</span> <span class="fl">0.5</span> <span class="sc">*</span> (<span class="fu">t</span>(V.bar.ext) <span class="sc">+</span> V.bar.ext)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    A.bar.ext       <span class="ot">=</span> V.bar.ext<span class="sc">%*%</span>(<span class="fu">t</span>(X)<span class="sc">%*%</span>Omega.inv<span class="sc">%*%</span>Y <span class="sc">+</span> V.prior.inv<span class="sc">%*%</span>A.prior)</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    nu.bar.ext      <span class="ot">=</span> T <span class="sc">+</span> nu.prior</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    S.bar.ext       <span class="ot">=</span> S.prior <span class="sc">+</span> <span class="fu">t</span>(Y)<span class="sc">%*%</span>Omega.inv<span class="sc">%*%</span>Y <span class="sc">+</span> <span class="fu">t</span>(A.prior)<span class="sc">%*%</span>V.prior.inv<span class="sc">%*%</span>A.prior <span class="sc">-</span> <span class="fu">t</span>(A.bar.ext)<span class="sc">%*%</span>V.bar.inv.ext<span class="sc">%*%</span>A.bar.ext</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    S.bar.ext       <span class="ot">=</span> <span class="fl">0.5</span> <span class="sc">*</span> (<span class="fu">t</span>(S.bar.ext) <span class="sc">+</span> S.bar.ext)</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    S.bar.ext.inv   <span class="ot">=</span> <span class="fu">solve</span>(S.bar.ext)</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    S.bar.ext.inv   <span class="ot">=</span> <span class="fl">0.5</span> <span class="sc">*</span> (<span class="fu">t</span>(S.bar.ext.inv) <span class="sc">+</span> S.bar.ext.inv)</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    Sigma.inv.draw <span class="ot">=</span> <span class="fu">rWishart</span>(<span class="dv">1</span>, <span class="at">df =</span> nu.bar.ext, <span class="at">Sigma =</span> S.bar.ext.inv)[,,<span class="dv">1</span>]</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    Sigma.posterior.draws[,,s] <span class="ot">=</span> <span class="fu">solve</span>(Sigma.inv.draw)</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>    A.posterior.draws[,,s] <span class="ot">=</span> <span class="fu">matrix</span>(mvtnorm<span class="sc">::</span><span class="fu">rmvnorm</span>(<span class="dv">1</span>, <span class="at">mean=</span><span class="fu">as.vector</span>(A.bar.ext), <span class="at">sigma =</span> Sigma.posterior.draws[,,s] <span class="sc">%x%</span> V.bar.ext), <span class="at">ncol=</span>N)</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>    u.t <span class="ot">=</span> Y<span class="sc">-</span>X<span class="sc">%*%</span>A.posterior.draws[,,s]</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>    <span class="co">#    ---- loop lambda posterior ----   #</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>    c                      <span class="ot">=</span> <span class="sc">-</span>N<span class="sc">/</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">1</span>          <span class="co"># N=13</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>    a                      <span class="ot">=</span> <span class="dv">2</span> <span class="sc">/</span> lambda.priors<span class="sc">$</span>alpha</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (x <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>T){</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>      b                  <span class="ot">=</span> <span class="fu">t</span>((u.t)[x,])<span class="sc">%*%</span> Sigma.inv.draw <span class="sc">%*%</span>(u.t)[x,]</span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>      lambda.posterior.draws[x,s<span class="sc">+</span><span class="dv">1</span>] <span class="ot">=</span> GIGrvg<span class="sc">::</span><span class="fu">rgig</span>(<span class="dv">1</span>, <span class="at">lambda =</span> c, <span class="at">chi =</span> b, <span class="at">psi =</span> a)</span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>    } <span class="co"># </span><span class="re">END</span><span class="co"> x loop</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>  } <span class="co"># </span><span class="re">END</span><span class="co"> s loop</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>  output                 <span class="ot">=</span> (<span class="fu">list</span>(<span class="at">A.posterior.exten =</span> A.posterior.draws[,,S1<span class="sc">:</span>total_S], </span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">Sigma.posterior.exten =</span> Sigma.posterior.draws[,,S1<span class="sc">:</span>total_S], </span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">lambda.posterior.exten =</span> lambda.posterior.draws[,(S1<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>(total_S<span class="sc">+</span><span class="dv">1</span>)]))</span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="estimation-outcomes-on-extended-model" class="level3">
+<h3 class="anchored" data-anchor-id="estimation-outcomes-on-extended-model">Estimation Outcomes on Extended Model</h3>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>          [,1]      [,2]      [,3]      [,4]     [,5]      [,6]      [,7]
+[1,]  0.053895  0.002288 -0.006514  2.317809 1.084531 -0.029302 -0.033987
+[2,]  0.966115 -0.000186  0.003070  0.034186 0.269116  0.023185  0.030331
+[3,]  0.001977  0.999375  0.001663 -0.037328 0.022723  0.007156  0.009715
+[4,] -0.004543  0.000732  1.000200  0.026527 0.120949  0.010594  0.007228
+[5,] -0.006454  0.003007  0.000810  1.041637 0.436674  0.004589  0.003559
+[6,]  0.001694 -0.000022 -0.001236  0.091633 0.914949  0.004972  0.006985
+          [,8]     [,9]     [,10]     [,11]     [,12]     [,13]
+[1,] -0.196590 0.067950  0.018445  0.007454 -0.408787  0.245716
+[2,]  0.064429 0.024355  0.001374  0.001106 -0.022734 -0.104245
+[3,]  0.026864 0.006673 -0.000599  0.000997  0.036264 -0.024756
+[4,]  0.023646 0.007703  0.000250  0.001194 -0.009401 -0.035531
+[5,]  0.011355 0.003308 -0.002759 -0.001262 -0.047686  0.021475
+[6,]  0.002964 0.004346  0.000525  0.001722 -0.023745 -0.050207</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          [,1]     [,2]     [,3]      [,4]      [,5]      [,6]     [,7]
+[1,]  0.000997 0.000000 0.000019  0.001402 -0.000324 -0.000326 0.000125
+[2,]  0.000000 0.000012 0.000007  0.000115  0.000063  0.000007 0.000019
+[3,]  0.000019 0.000007 0.000040  0.000187  0.000807  0.000039 0.000041
+[4,]  0.001402 0.000115 0.000187  0.060030  0.016529 -0.000299 0.000935
+[5,] -0.000324 0.000063 0.000807  0.016529  0.268300  0.001330 0.001038
+[6,] -0.000326 0.000007 0.000039 -0.000299  0.001330  0.001329 0.000146
+          [,8]     [,9]    [,10]     [,11]     [,12]     [,13]
+[1,] -0.000852 0.000085  1.4e-05  0.000025 -0.001019  0.000321
+[2,]  0.000034 0.000016  0.0e+00 -0.000001 -0.000062 -0.000084
+[3,]  0.000051 0.000038  1.0e-06  0.000002 -0.000043 -0.000162
+[4,] -0.002035 0.001126  1.2e-04  0.000080 -0.002775 -0.007521
+[5,]  0.001359 0.001533 -8.8e-05  0.000162 -0.003860 -0.024361
+[6,]  0.000879 0.000152  1.5e-05  0.000019 -0.000550 -0.001346</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.898383</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Compared to the basic model, by applying laplace distribution into the variance specification of the error term, we introduces more variability to our <span class="math inline">\(A\)</span> and <span class="math inline">\(\Sigma\)</span>, in which both fluctuates more.That is, the coefficient of the exchange rate now range from 0.85 to 1.05, which is broader than 0.90 to 1.05 as in the basic model.</p>
+<p>The lambda mainly concentrates between 0 to 4, with some large outlines throughout the simulation.</p>
+</section>
+</section>
+<section id="the-basic-model-with-stochastic-volatility-heteroskedasticity" class="level2">
+<h2 class="anchored" data-anchor-id="the-basic-model-with-stochastic-volatility-heteroskedasticity">The Basic Model With Stochastic Volatility Heteroskedasticity</h2>
+<p>The second modification enhances the model by capturing stochastic volatility in the error terms, which means the variance might vary over time according to a stochastic process. This adjustment allows the model to specifically account for heteroskedasticity, creating a more dynamic error structure. By integrating this feature with the earlier enhancement that introduced laplace errors, the model becomes significantly more robust in handling error variability.</p>
+<p>With the stochastic volatility in innovation term, the basic model now with:</p>
+<span class="math display">\[\begin{align}
+Y &amp;= X A + U
+\\
+U |X &amp;\sim \mathcal{MN}_{T\times 13}(0,\Sigma,\mathrm{diag}(\sigma_{T}^{2}))
+\end{align} \]</span>
+<p>With <span class="math inline">\(\mathrm{diag}(\sigma_{T}^{2})=diag(e^{h_1},e^{h_2},...,e^{h_T})\)</span>, represent as:</p>
+<p>Where <span class="math inline">\(h_t\)</span> follows an AR(1) process:</p>
+<span class="math display">\[\begin{align}
+h_t &amp;= h_{t-1} + \sigma_v v_t \\
+v_t &amp;\sim \mathcal{N}(0,1) \\
+\sigma^2_v &amp;\sim IG2(\bar{s},\bar{\nu})
+\end{align}\]</span>
+<p>The basic heteroskedasticity model is still based on Natural-conjugate prior distribution, where the <span class="math inline">\(A\)</span> follows a Matrix-variate Normal distribution and <span class="math inline">\(\Sigma\)</span> follows an Inverse Wishart distribution.</p>
+<p>With the likelihood function now changes to :</p>
+<span class="math display">\[\begin{align}
+L\left( {A},{\Sigma}|Y,X \right) &amp;\propto \text{det}({\Sigma})^{-\frac{T}{2}}\exp\left\{ -\frac{1}{2}\text{tr}\left[ {\Sigma}^{-1}(Y-X{A})'(Y-X{A}) \right] \right\}\\
+&amp;=\text{det}({\Sigma})^{-\frac{T}{2}}\\
+&amp;\quad\times\exp\left\{ -\frac{1}{2}\text{tr}\left[ {\Sigma}^{-1}({A}-\widehat{A})'X' \ \mathrm{diag}(\sigma_{T}^{2})^{-1} \ X({A}-\widehat{A}) \right] \right\}\\
+&amp;\quad\times \exp\left\{ -\frac{1}{2}\text{tr}\left[ {\Sigma}^{-1}(Y-X\widehat{A})' \ \mathrm{diag}(\sigma_{T}^{2})^{-1} \ (Y-X\widehat{A}) \right] \right\}
+\end{align} \]</span>
+<p>For posterior distribution,</p>
+<span class="math display">\[\begin{align}
+p\left( {A},{\Sigma} |Y,X\right)
+&amp;\propto  \text{det}({\Sigma})^{-\frac{T}{2}}\\
+&amp;\quad\times\exp\left\{ -\frac{1}{2}\text{tr}\left[ {\Sigma}^{-1}({A}-\widehat{A})'X' \ \mathrm{diag}(\sigma_{T}^{2})^{-1} \ X({A}-\widehat{A}) \right] \right\}\\
+&amp;\quad\times \exp\left\{ -\frac{1}{2}\text{tr}\left[ {\Sigma}^{-1}(Y-X\widehat{A})' \ \mathrm{diag}(\sigma_{T}^{2})^{-1} \ (Y-X\widehat{A}) \right] \right\}\\
+&amp; \quad\times\text{det}({\Sigma})^{-\frac{N+K+\underline{\nu}+1}{2}}\\
+&amp;\quad\times\exp\left\{ -\frac{1}{2}\text{tr}\left[ {\Sigma}^{-1}({A}-\underline{A})'\underline{V}^{-1}({A}-\underline{A}) \right] \right\}\\
+&amp;\quad\times \exp\left\{ -\frac{1}{2}\text{tr}\left[ {\Sigma}^{-1}\underline{S} \right] \right\} \\
+
+\end{align}\]</span>
+<p>Similarly, the kernel can be rearranged in the form of the Matrix-variate normal-inverse Wishart distribution.</p>
+<span class="math display">\[\begin{align}
+\bar{V} &amp;= (X'\mathrm{diag}(\sigma_{T}^{2})^{-1}X + \underline{V}^{-1})^{-1}\\
+\bar{A} &amp;= \bar{V}(X'\mathrm{diag}(\sigma_{T}^{2})^{-1}Y+\underline{V}^{-1}\underline{A})\\
+\bar{\nu} &amp;= T+\underline{\nu}\\
+\bar{S} &amp;= Y'\mathrm{diag}(\sigma_{T}^{2})^{-1}Y+\underline{A}'\underline{V}^{-1}\underline{A}-\bar{A'}\bar{V}^{-1}\bar{A}+\underline{S}
+\end{align}\]</span>
+<section id="estimation-outcomes-on-basic-stochastic-volatility-model" class="level3">
+<h3 class="anchored" data-anchor-id="estimation-outcomes-on-basic-stochastic-volatility-model">Estimation Outcomes on Basic Stochastic Volatility Model</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>A.posterior.heter       <span class="ot">=</span> posterior.heter[[<span class="st">"A"</span>]]</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>Sigma.posterior.heter   <span class="ot">=</span> posterior.heter[[<span class="st">"Sigma"</span>]]</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">round</span>(<span class="fu">apply</span>(A.posterior.heter, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, mean),<span class="dv">6</span>))         <span class="co"># posterior draw A</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]
+[1,]  0.002433  0.004684  0.005299 -0.000170  0.107246  0.021246  0.011413
+[2,]  0.999935 -0.000006  0.000010 -0.000476 -0.000135  0.000095  0.000061
+[3,]  0.000035  1.000014 -0.000012  0.001561  0.000573 -0.000122  0.000002
+[4,]  0.000043  0.000014  0.999987  0.001408  0.000445 -0.000125 -0.000002
+[5,]  0.000224 -0.000039  0.000022  0.987175 -0.002772 -0.000306  0.000317
+[6,] -0.000238  0.000001 -0.000145  0.001761  0.989091 -0.000693  0.000004
+          [,8]      [,9]     [,10]     [,11]     [,12]     [,13]
+[1,]  0.015815  0.017676  0.006747  0.006314 -0.112386 -0.033454
+[2,]  0.000100  0.000020  0.000002 -0.000003  0.000293 -0.000485
+[3,]  0.000085 -0.000043 -0.000006  0.000001  0.000794 -0.000339
+[4,]  0.000034 -0.000045 -0.000007  0.000006  0.000596 -0.000516
+[5,] -0.000421 -0.000092 -0.000092 -0.000039  0.007116  0.008091
+[6,] -0.000107 -0.000142  0.000069  0.000104  0.003440  0.004358</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">round</span>(<span class="fu">apply</span>(Sigma.posterior.heter, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, mean),<span class="dv">6</span>))     <span class="co"># posterior draw sigma</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         [,1]     [,2]     [,3]      [,4]      [,5]      [,6]     [,7]
+[1,]  5.1e-05 -1.0e-06  0.0e+00  0.000032 -0.000066 -0.000027  1.0e-06
+[2,] -1.0e-06  1.0e-06  0.0e+00  0.000017  0.000006  0.000000  0.0e+00
+[3,]  0.0e+00  0.0e+00  2.0e-06 -0.000010  0.000028  0.000001  0.0e+00
+[4,]  3.2e-05  1.7e-05 -1.0e-05  0.005334 -0.000706 -0.000147 -3.0e-06
+[5,] -6.6e-05  6.0e-06  2.8e-05 -0.000706  0.017044  0.000109 -4.5e-05
+[6,] -2.7e-05  0.0e+00  1.0e-06 -0.000147  0.000109  0.000126  8.0e-06
+          [,8]     [,9]    [,10]  [,11]     [,12]     [,13]
+[1,] -0.000054 -1.0e-06 -1.0e-06  0e+00 -0.000016  0.000043
+[2,]  0.000000  1.0e-06  0.0e+00  0e+00 -0.000008 -0.000006
+[3,] -0.000002  1.0e-06  0.0e+00  0e+00 -0.000011 -0.000002
+[4,] -0.000039  1.0e-05  3.0e-06 -5e-06 -0.000192 -0.000514
+[5,] -0.000143 -2.3e-05 -3.6e-05 -9e-06 -0.001070 -0.000842
+[6,]  0.000042  1.1e-05  2.0e-06  1e-06 -0.000168  0.000004</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>), <span class="at">mar=</span><span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.ts</span>(A.posterior.heter[<span class="dv">2</span>,<span class="dv">1</span>,], <span class="at">xlab =</span> <span class="st">"Simulation times S"</span>, <span class="at">ylab =</span> <span class="st">"AUD/USD exchange rate"</span>, <span class="at">col =</span> mcxs1)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(A.posterior.heter[<span class="dv">2</span>,<span class="dv">1</span>,], <span class="at">xlab =</span> <span class="st">"AUD/USD exchange rate"</span>, <span class="at">col =</span> mcxs1, <span class="at">main =</span> <span class="st">''</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.ts</span>(Sigma.posterior.heter[<span class="dv">1</span>,<span class="dv">1</span>,], <span class="at">xlab =</span> <span class="st">"Simulation times S"</span>, <span class="at">ylab =</span> <span class="st">"AUD/USD exchange rate sigma"</span>, <span class="at">col =</span> mcxs2)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(Sigma.posterior.heter[<span class="dv">1</span>,<span class="dv">1</span>,], <span class="at">xlab =</span> <span class="st">"AUD/USD exchange rate sigma"</span>, <span class="at">col =</span> mcxs2, <span class="at">main =</span> <span class="st">''</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We can notice that compared to the above two models, the involve of the heteroskedasticity brings out outliers, which seems all around the zero, with the coeffcient now central round 1 and the sigma more central around zero. The change is obvious and significant, which will be demonstrated in the following forecasting plot.</p>
+</section>
+</section>
+<section id="the-extension-model-with-stochastic-volatility-heteroskedasticity" class="level2">
+<h2 class="anchored" data-anchor-id="the-extension-model-with-stochastic-volatility-heteroskedasticity">The Extension Model With Stochastic Volatility Heteroskedasticity</h2>
+<p>With stochastic volatility heteroskedasticity in our extended model, we have: <span class="math inline">\(\Omega=diag(e^{h_1}\lambda_1,e^{h_2}\lambda_2,...,e^{h_T}\lambda_t)\)</span>, represent as:</p>
+<p><span class="math display">\[\\\Omega = \left(
+\begin{array}{cccc}
+e^{h_1}\lambda_1 &amp; 0 &amp; \cdots &amp; 0 \\
+0 &amp; e^{h_2}\lambda_2 &amp; \cdots &amp; \vdots \\
+0 &amp; \cdots &amp; \ddots &amp; \vdots \\
+0 &amp; \cdots &amp; 0 &amp;  e^{h_T}\lambda_T\\
+\end{array}
+\right)\]</span> The likelihood function now change to:</p>
+<span class="math display">\[\begin{align}
+L(A,\Sigma,\Omega |Y,X) &amp;\propto \det(\Sigma)^{-\frac{T}{2}} \det(\Omega)^{-\frac{N}{2}} exp\{-\frac{1}{2} tr[\Sigma^{-1} (Y-XA)' \Omega^{-1} (Y-XA) ]\}\\
+&amp;=\det(\Sigma)^{-\frac{T}{2}}\prod^{T}_{t = 1} (e^{h_t}\lambda_t)^{-\frac{N}{2}} exp({-\frac{1}{2}}\sum^{T}_{t =1}{\frac{1}{e^{h_t}\lambda_t}} \epsilon_t' \Sigma^{-1}\epsilon_t)\\
+&amp;=\det(\Sigma)^{-\frac{T}{2}}\prod^{T}_{t = 1}( (e^{h_t}\lambda_t)^{-\frac{N}{2}} exp({-\frac{1}{2}}{\frac{1}{e^{h_t}\lambda_t}} \epsilon_t' \Sigma^{-1}\epsilon_t))
+\end{align}\]</span>
+<p>For posterior distribution,</p>
+<span class="math display">\[\begin{align}
+p(\lambda_t|Y,X,A,\Sigma) &amp;\propto L(A,\Sigma,\lambda_t|Y,X)p(\lambda_t) \\
+\\
+&amp;\propto (e^{h_t}\lambda_t)^{-\frac{N}{2}} exp({-\frac{1}{2}}{\frac{1}{e^{h_t}\lambda_t}} \epsilon_t' \Sigma^{-1}\epsilon_t) \\
+&amp;\times \frac{1}{\alpha}exp\{ -\frac{1}{\alpha}\lambda_t \}\\
+
+
+&amp;= \lambda_t^{-\frac{N}{2}+1-1} exp\{-\frac{1}{2}[\frac{e^{-h_t}
+\epsilon_t'\Sigma^{-1}\epsilon_t} {\lambda_t} +\frac{2}{\alpha}\lambda_t]\}
+\end{align}\]</span>
+<span class="math display">\[\begin{align}
+\lambda_t|Y,A,\Sigma &amp;\sim GIG(a,b,p) \\
+\\
+a &amp;=\frac{2}{\alpha} \\
+b &amp;= \epsilon_t' e^{-h_t}\Sigma^{-1}\epsilon_t \\
+p &amp;= -\frac{N}{2}+1
+\end{align}\]</span>
+<p>Gibbs Sampling Routine for SV and Laplace Distributed Errors</p>
+<p>Initialize <span class="math inline">\(\lambda^{(0)}\)</span> and <span class="math inline">\(h_t^{(0)}\)</span>.</p>
+<p>At each iteration s:</p>
+<ol type="1">
+<li>Draw <span class="math inline">\(\Sigma^{(s)}\)</span> from the <span class="math inline">\(IW(\bar{S},\bar{\nu})\)</span> distribution</li>
+<li>Draw <span class="math inline">\(A^{(s)}\)</span> from the <span class="math inline">\(MN(\bar{A},\Sigma^{(s)}, \bar{V})\)</span> distribution</li>
+<li>Draw <span class="math inline">\(\lambda_t^{(s)}\)</span> from <span class="math inline">\(GIG(a,b,p)\)</span></li>
+<li>Draw <span class="math inline">\(h^{(s)}\)</span> from the SV sampling routine described above</li>
+</ol>
+</section>
+<section id="proof-of-model-validity" class="level2">
+<h2 class="anchored" data-anchor-id="proof-of-model-validity">Proof of Model Validity</h2>
+<section id="proof-of-basic-model-validity" class="level3">
+<h3 class="anchored" data-anchor-id="proof-of-basic-model-validity">Proof of Basic Model Validity</h3>
+<p>To test the model validity, we simulated 1000 observations from a bi-variate Gaussian random walk process with the covariance matrix equal to the identity matrix of order 2 to see how the autoregressive and the covariance matrices and the posterior mean of the constant term behave.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <caption>Posterior mean of the covariance matrix Sigma</caption>
@@ -597,13 +906,13 @@ p &amp;= -\frac{N}{2}+1
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Y1-Lag</td>
-<td style="text-align: right;">0.8807142</td>
-<td style="text-align: right;">0.0401071</td>
+<td style="text-align: right;">0.9792907</td>
+<td style="text-align: right;">0.0879718</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Y2-Lag</td>
-<td style="text-align: right;">0.0401071</td>
-<td style="text-align: right;">0.9144334</td>
+<td style="text-align: right;">0.0879718</td>
+<td style="text-align: right;">1.0175614</td>
 </tr>
 </tbody>
 </table>
@@ -623,62 +932,150 @@ p &amp;= -\frac{N}{2}+1
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Constant</td>
-<td style="text-align: right;">0.0534449</td>
-<td style="text-align: right;">0.1156099</td>
+<td style="text-align: right;">0.0613107</td>
+<td style="text-align: right;">0.0816854</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Y1-Lag</td>
-<td style="text-align: right;">0.9910194</td>
-<td style="text-align: right;">0.0093511</td>
+<td style="text-align: right;">0.9887103</td>
+<td style="text-align: right;">0.0051631</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Y2-Lag</td>
-<td style="text-align: right;">0.0026859</td>
-<td style="text-align: right;">0.9932683</td>
+<td style="text-align: right;">0.0025990</td>
+<td style="text-align: right;">0.9954842</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
+<p>The diagonal entries of the covariance matrix are close to 1, which indicates that each variable has a strong autoregressive relationship with itself and similarly, the diagonal elements of the autoregressive coefficient matrix are close to one, suggesting that each variable is heavily influenced by its past value. Besides, the posterior means for the constant terms is close to 0, the above can indicate that the estimated parameter constant term and means are consistent with what we expect given a Minnesota prior.</p>
+</section>
+<section id="proof-of-extended-model" class="level3">
+<h3 class="anchored" data-anchor-id="proof-of-extended-model">Proof of Extended Model</h3>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>Posterior mean of the covariance matrix Sigma</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Simulation_Y1</th>
+<th style="text-align: right;">Simulation_Y2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Y1-Lag</td>
+<td style="text-align: right;">1.2315213</td>
+<td style="text-align: right;">0.1088601</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Y2-Lag</td>
+<td style="text-align: right;">0.1088601</td>
+<td style="text-align: right;">1.3150093</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>Posterior mean of the autoregressive coefficient matrix A</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Simulation_Y1</th>
+<th style="text-align: right;">Simulation_Y2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Constant</td>
+<td style="text-align: right;">0.0569282</td>
+<td style="text-align: right;">0.1098639</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Y1-Lag</td>
+<td style="text-align: right;">0.9901086</td>
+<td style="text-align: right;">0.0101672</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Y2-Lag</td>
+<td style="text-align: right;">0.0028611</td>
+<td style="text-align: right;">0.9930109</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Similarly, the posterior mean of the autoregressive and the covariance matrices are close to an identity matrix and the posterior mean of the constant term is close to zero, so we can conclude that the extended model is also valid.</p>
 </section>
 </section>
 </section>
 <section id="forecasting" class="level1">
 <h1>Forecasting</h1>
 <p>The forecast will focus on two models with the sample period from 1990 Q1 to 2023Q4, and forecast how the exchange rate changes for the future up to 2026Q4.</p>
-<section id="forecasting-with-basic-model-and-extended-model" class="level2">
-<h2 class="anchored" data-anchor-id="forecasting-with-basic-model-and-extended-model">Forecasting with basic model and extended model</h2>
-<section id="and-68-highest-density-intervals-respectively" class="level4">
-<h4 class="anchored" data-anchor-id="and-68-highest-density-intervals-respectively">90% and 68% highest density intervals respectively</h4>
+<section id="forecasting-with-models" class="level2">
+<h2 class="anchored" data-anchor-id="forecasting-with-models">Forecasting With Models</h2>
+<section id="forecasting-with-basic-model" class="level3">
+<h3 class="anchored" data-anchor-id="forecasting-with-basic-model">Forecasting With Basic Model</h3>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="forecasting-on-extended-model" class="level3">
+<h3 class="anchored" data-anchor-id="forecasting-on-extended-model">Forecasting on Extended Model</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-41-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>The above presents the historical and forecasting data the AUD/USD exchange rate for basic and extended model.</p>
-<p>For the point forecast, for basic model, the exchange rate shows several peaks and troughs, indicating the volatility in the exchange rate over the years. For the three years forecasting, it shows a clear downward trend and reaching the lowest above 0.6 in 2026. And for extended model, it also shows a clear downward trend for the first half forecasting period and reaching below 0.06 in around 2025 and slightly increase back to 0.61 fo the following period. For conduct 90% and 68% confident interval in the extended model in which we can notice the extended model has an obvious wider confident interval for both significant level, it probably given by the nature of the Laplace distribution applied in the extended model in which the the fatter fail of Laplace distribution will capture more outliers which resulting a larger variance and then leading to a wider confident interval.</p>
-<p>Regard to the 3D with density intervals below for both model forecasting, we could notice that the for each different predictive density at specific horizons, with the back wall we have the one period ahead predictive density and with the front we have the 12 period ahead density which is 3 years. We could see the distribution becomes lower and more dispersed with the increases of the horizon, as the data is more informative about the nearest developments in the future. Hence, one period predictive density is highly concentrated relative to others with smaller variance and taller peak. Similarly, the interval become more wider and dispersed resulting a more uncertainty for the future period forecasting.</p>
+<p>For the point forecast, for basic model, the exchange rate shows several peaks and troughs, indicating the volatility in the exchange rate over the years. For the three years forecasting, it shows a slightly downward trend and reaching around 0.67 in 2026. And for extended model, it shows a clear increasing trend and reaching around 0.75 in the end of the forecasting period. For conduct 90% confident interval for both models in which we can notice the extended model has an obvious narrow confident interval for both significant level, which means more informative, and this may be given by the nature of the Laplace distribution applied in the extended model in which the the fatter fail of Laplace distribution will capture more economic activities not covered by the underlying normal distribution, and resulting a more informative estimating of the parameters as it has a higher certainty from a more concentrated distribution and then leading to a narrower confident interval as expected.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-42-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+<p>Regard to the 3D with density intervals above for both model forecasting, we could notice that the for each different predictive density at specific horizons, with the back wall we have the one period ahead predictive density and with the front we have the 12 period ahead density which is 3 years. We could see the distribution becomes lower and more dispersed with the increases of the horizon, as the data is more informative about the nearest developments in the future. Hence, one period predictive density is highly concentrated relative to others with smaller variance and taller peak. Similarly, the interval become more wider and dispersed resulting a more uncertainty for the future period forecasting.</p>
+</section>
+<section id="forecasting-on-basic-model-with-stochastic-volatility-heteroskedasticity" class="level3">
+<h3 class="anchored" data-anchor-id="forecasting-on-basic-model-with-stochastic-volatility-heteroskedasticity">Forecasting on Basic Model With Stochastic Volatility Heteroskedasticity</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-45-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>By involving the heteroskedasticity in the error term, the forecasting plot looks similar to the extended model, with the heteroskedasticity extension, it shows an increasing trend but reaching to the mean value more slowly and we could notice that the confident interval is also narrower compared to the basic model, indicating a more informative forecasting.</p>
+</section>
+<section id="interactive-3d-versions" class="level3">
+<h3 class="anchored" data-anchor-id="interactive-3d-versions">Interactive 3D versions</h3>
 <p>Interactive versions of the above 3D plots are provided below.</p>
 <div class="cell">
 <div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-9d43406124dc93cd8ff7" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-9d43406124dc93cd8ff7">{"x":{"visdat":{"608c72b56cc1":["function () ","plotlyVisDat"]},"cur_data":"608c72b56cc1","attrs":{"608c72b56cc1":{"y":[1,2,3,4,5,6,7,8,9,10,11,12],"x":[0.1676102778726753,0.27885558106325903,0.39010088425384282,0.50134618744442661,0.61259149063501039,0.72383679382559407,0.83508209701617786,0.94632740020676165,1.0575727033973452],"z":[[0,0,0,0.05663160438519306,6.3733027792225245,2.5592091695975383,0,0,0],[0,0,0.0017978287106410512,0.40990494602615929,5.6532723806107832,2.8819194231576071,0.042248974700064688,0,0],[0,0,0.0044945717766026287,0.78025766041821543,5.0330214754396208,3.0572077224451095,0.11416212312570671,0,0],[0,0,0.02876525937025682,1.087686369937835,4.6114306427942946,2.9915869745067112,0.26787647788551655,0.0017978287106410525,0],[0,0,0.070115319715000998,1.3519671904020691,4.2087170116106991,2.9367531988321591,0.41080386038148003,0.010786972263846315,0],[0,0.0035956574212821025,0.1546132691151304,1.4571401699745705,3.9794938510039657,2.8252878187724138,0.55013558545616148,0.018877201461731049,0],[0,0.0089891435532052574,0.1959633294598746,1.617146925221624,3.6900434285907564,2.760565985189336,0.67598359520103501,0.040451145989423683,0],[0.0008989143553205255,0.017079372751089988,0.28585476499192713,1.6566991568557272,3.5192497010798567,2.654494091261514,0.78834788961610069,0.061126176161795782,0.0053934861319231515],[0.0008989143553205255,0.031462002436218398,0.35597008470692815,1.709735103819638,3.3628386032540853,2.5798841997699102,0.83329360738212699,0.11236429441506578,0.0026967430659615758],[0.0008989143553205255,0.044046803410705757,0.44406369152833969,1.7735580230473953,3.1650774450835697,2.487296021171896,0.91779155678225632,0.14921978298320734,0.0071913148425642023],[0.0026967430659615766,0.071014234070321522,0.49260506671564808,1.7600743077175875,3.0742870951961967,2.4504405326037544,0.93756767259930784,0.18787310026198997,0.012584800974487354],[0.0053934861319231532,0.092588178598014145,0.58519324531366224,1.7519840785197027,2.9259662265683097,2.3857186990206767,0.99330036262918042,0.22203184576416998,0.026967430659615758]],"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"surface","colors":["#05386B","#8EE4AF","#EDF5E1"],"inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":"AUD/USD"},"yaxis":{"title":"h-step forecast"},"zaxis":{"title":"density"}},"title":"AUD/USD forecast densities for basic model","hovermode":"closest","showlegend":false,"legend":{"yanchor":"top","y":0.5}},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"colorbar":{"title":"","ticklen":2,"len":0.5,"lenmode":"fraction","y":1,"yanchor":"top"},"colorscale":[["0","rgba(5,56,107,1)"],["0.0416666666666667","rgba(28,69,113,1)"],["0.0833333333333333","rgba(42,81,119,1)"],["0.125","rgba(54,95,125,1)"],["0.166666666666667","rgba(65,109,130,1)"],["0.208333333333333","rgba(76,123,136,1)"],["0.25","rgba(86,137,142,1)"],["0.291666666666667","rgba(95,151,148,1)"],["0.333333333333333","rgba(105,166,153,1)"],["0.375","rgba(114,181,159,1)"],["0.416666666666667","rgba(124,197,164,1)"],["0.458333333333333","rgba(133,212,170,1)"],["0.5","rgba(142,228,175,1)"],["0.541666666666667","rgba(151,230,179,1)"],["0.583333333333333","rgba(159,231,183,1)"],["0.625","rgba(168,233,187,1)"],["0.666666666666667","rgba(176,234,191,1)"],["0.708333333333333","rgba(184,236,196,1)"],["0.75","rgba(192,237,200,1)"],["0.791666666666667","rgba(199,238,204,1)"],["0.833333333333333","rgba(207,240,208,1)"],["0.875","rgba(215,241,212,1)"],["0.916666666666667","rgba(222,242,217,1)"],["0.958333333333333","rgba(230,244,221,1)"],["1","rgba(237,245,225,1)"]],"showscale":true,"y":[1,2,3,4,5,6,7,8,9,10,11,12],"x":[0.1676102778726753,0.27885558106325903,0.39010088425384282,0.50134618744442661,0.61259149063501039,0.72383679382559407,0.83508209701617786,0.94632740020676165,1.0575727033973452],"z":[[0,0,0,0.05663160438519306,6.3733027792225245,2.5592091695975383,0,0,0],[0,0,0.0017978287106410512,0.40990494602615929,5.6532723806107832,2.8819194231576071,0.042248974700064688,0,0],[0,0,0.0044945717766026287,0.78025766041821543,5.0330214754396208,3.0572077224451095,0.11416212312570671,0,0],[0,0,0.02876525937025682,1.087686369937835,4.6114306427942946,2.9915869745067112,0.26787647788551655,0.0017978287106410525,0],[0,0,0.070115319715000998,1.3519671904020691,4.2087170116106991,2.9367531988321591,0.41080386038148003,0.010786972263846315,0],[0,0.0035956574212821025,0.1546132691151304,1.4571401699745705,3.9794938510039657,2.8252878187724138,0.55013558545616148,0.018877201461731049,0],[0,0.0089891435532052574,0.1959633294598746,1.617146925221624,3.6900434285907564,2.760565985189336,0.67598359520103501,0.040451145989423683,0],[0.0008989143553205255,0.017079372751089988,0.28585476499192713,1.6566991568557272,3.5192497010798567,2.654494091261514,0.78834788961610069,0.061126176161795782,0.0053934861319231515],[0.0008989143553205255,0.031462002436218398,0.35597008470692815,1.709735103819638,3.3628386032540853,2.5798841997699102,0.83329360738212699,0.11236429441506578,0.0026967430659615758],[0.0008989143553205255,0.044046803410705757,0.44406369152833969,1.7735580230473953,3.1650774450835697,2.487296021171896,0.91779155678225632,0.14921978298320734,0.0071913148425642023],[0.0026967430659615766,0.071014234070321522,0.49260506671564808,1.7600743077175875,3.0742870951961967,2.4504405326037544,0.93756767259930784,0.18787310026198997,0.012584800974487354],[0.0053934861319231532,0.092588178598014145,0.58519324531366224,1.7519840785197027,2.9259662265683097,2.3857186990206767,0.99330036262918042,0.22203184576416998,0.026967430659615758]],"type":"surface","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-c62b0d0632069c489282" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-c62b0d0632069c489282">{"x":{"visdat":{"1c136294236a":["function () ","plotlyVisDat"]},"cur_data":"1c136294236a","attrs":{"1c136294236a":{"y":[1,2,3,4,5,6,7,8,9,10,11,12],"x":[0.12580777037474403,0.26059291193550238,0.39537805349626076,0.53016319505701903,0.66494833661777741,0.79973347817853568,0.93451861973929407,1.0693037613000524,1.2040889028608111],"z":[[0,0,0,0.16990003300680706,6.4332016864717181,0.81611369566588565,0,0,0],[0,0,0.0014838430830288825,0.60911758558335627,5.3974792145175581,1.4074251642528957,0.003709607707572202,0,0],[0,0,0.016322273913317708,0.98749757175572128,4.6911699069958104,1.6811942130717246,0.043031449407837541,0,0],[0,0,0.060095644862669745,1.2338155235385158,4.2074370619283954,1.8088047182122085,0.1083205450611083,0.00074192154151444102,0],[0,0.00074192154151444102,0.10535285889505067,1.3881352041735195,3.8379601342542036,1.8985772247354558,0.18622230692012454,0.0022257646245433232,0],[0,0.003709607707572205,0.16693234684074928,1.4838430830288825,3.573094143933548,1.9148994986487735,0.26857559802822745,0.0081611369566588505,0],[0,0.0089030584981732927,0.22554414862039016,1.5862282557578755,3.3327115644828691,1.9015449109015137,0.3509288891363303,0.013354587747259939,0],[0.00074192154151444124,0.020773803162404347,0.29899438123031985,1.6351950774978286,3.1182962389851956,1.9008029893599991,0.41473414170657219,0.02967686166057764,0],[0.00074192154151444124,0.035612233992693171,0.37912190771387949,1.6767426838226374,2.942460833646273,1.8755776569485081,0.4703782573201552,0.037096077075722052,0.001483843083028882],[0.0051934507906010886,0.051934507906010868,0.43847563103503479,1.6960326439020128,2.7881411530112694,1.8355138937067283,0.54011888222251259,0.061579487945698605,0.0022257646245433232],[0.008161136956658854,0.077159840317501865,0.49486166819013233,1.6648719391584061,2.6827882941162189,1.8088047182122085,0.59056954704549458,0.089030584981732927,0.0029676861660577641],[0.0089030584981732944,0.094224035772334014,0.54605425455462875,1.6537431160356897,2.5692742982645091,1.8243850705840117,0.60095644862669673,0.11648168201776724,0.0051934507906010868]],"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"surface","colors":["#05386B","#8EE4AF","#EDF5E1"],"inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":"AUD/USD"},"yaxis":{"title":"h-step forecast"},"zaxis":{"title":"density"}},"title":"AUD/USD forecast densities for basic model","hovermode":"closest","showlegend":false,"legend":{"yanchor":"top","y":0.5}},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"colorbar":{"title":"","ticklen":2,"len":0.5,"lenmode":"fraction","y":1,"yanchor":"top"},"colorscale":[["0","rgba(5,56,107,1)"],["0.0416666666666667","rgba(28,69,113,1)"],["0.0833333333333333","rgba(42,81,119,1)"],["0.125","rgba(54,95,125,1)"],["0.166666666666667","rgba(65,109,130,1)"],["0.208333333333333","rgba(76,123,136,1)"],["0.25","rgba(86,137,142,1)"],["0.291666666666667","rgba(95,151,148,1)"],["0.333333333333333","rgba(105,166,153,1)"],["0.375","rgba(114,181,159,1)"],["0.416666666666667","rgba(124,197,164,1)"],["0.458333333333333","rgba(133,212,170,1)"],["0.5","rgba(142,228,175,1)"],["0.541666666666667","rgba(151,230,179,1)"],["0.583333333333333","rgba(159,231,183,1)"],["0.625","rgba(168,233,187,1)"],["0.666666666666667","rgba(176,234,191,1)"],["0.708333333333333","rgba(184,236,196,1)"],["0.75","rgba(192,237,200,1)"],["0.791666666666667","rgba(199,238,204,1)"],["0.833333333333333","rgba(207,240,208,1)"],["0.875","rgba(215,241,212,1)"],["0.916666666666667","rgba(222,242,217,1)"],["0.958333333333333","rgba(230,244,221,1)"],["1","rgba(237,245,225,1)"]],"showscale":true,"y":[1,2,3,4,5,6,7,8,9,10,11,12],"x":[0.12580777037474403,0.26059291193550238,0.39537805349626076,0.53016319505701903,0.66494833661777741,0.79973347817853568,0.93451861973929407,1.0693037613000524,1.2040889028608111],"z":[[0,0,0,0.16990003300680706,6.4332016864717181,0.81611369566588565,0,0,0],[0,0,0.0014838430830288825,0.60911758558335627,5.3974792145175581,1.4074251642528957,0.003709607707572202,0,0],[0,0,0.016322273913317708,0.98749757175572128,4.6911699069958104,1.6811942130717246,0.043031449407837541,0,0],[0,0,0.060095644862669745,1.2338155235385158,4.2074370619283954,1.8088047182122085,0.1083205450611083,0.00074192154151444102,0],[0,0.00074192154151444102,0.10535285889505067,1.3881352041735195,3.8379601342542036,1.8985772247354558,0.18622230692012454,0.0022257646245433232,0],[0,0.003709607707572205,0.16693234684074928,1.4838430830288825,3.573094143933548,1.9148994986487735,0.26857559802822745,0.0081611369566588505,0],[0,0.0089030584981732927,0.22554414862039016,1.5862282557578755,3.3327115644828691,1.9015449109015137,0.3509288891363303,0.013354587747259939,0],[0.00074192154151444124,0.020773803162404347,0.29899438123031985,1.6351950774978286,3.1182962389851956,1.9008029893599991,0.41473414170657219,0.02967686166057764,0],[0.00074192154151444124,0.035612233992693171,0.37912190771387949,1.6767426838226374,2.942460833646273,1.8755776569485081,0.4703782573201552,0.037096077075722052,0.001483843083028882],[0.0051934507906010886,0.051934507906010868,0.43847563103503479,1.6960326439020128,2.7881411530112694,1.8355138937067283,0.54011888222251259,0.061579487945698605,0.0022257646245433232],[0.008161136956658854,0.077159840317501865,0.49486166819013233,1.6648719391584061,2.6827882941162189,1.8088047182122085,0.59056954704549458,0.089030584981732927,0.0029676861660577641],[0.0089030584981732944,0.094224035772334014,0.54605425455462875,1.6537431160356897,2.5692742982645091,1.8243850705840117,0.60095644862669673,0.11648168201776724,0.0051934507906010868]],"type":"surface","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 <div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-be284d728379236719ec" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-be284d728379236719ec">{"x":{"visdat":{"608c64f72dbc":["function () ","plotlyVisDat"]},"cur_data":"608c64f72dbc","attrs":{"608c64f72dbc":{"y":[1,2,3,4,5,6,7,8,9,10,11,12],"x":[-0.65045251376531854,-0.32837012168194818,-0.0062877295985778736,0.31579466248479243,0.63787705456816268,0.95995944665153299,1.2820418387349033,1.6041242308182737,1.9262066229016441],"z":[[0,0,0,0.18628773715909663,2.6459758222412439,0.27253205991793761,0,0,0],[0,0,0,0.40017365760102241,2.2147542084470389,0.48986775327021698,0,0,0],[0,0,0.0068995458207072825,0.49676729909092437,1.9663705589015763,0.60371025931188715,0.031047956193182766,0,0],[0,0,0.031047956193182773,0.65545685296719192,1.7007380448043459,0.66580617169825262,0.05174659365530461,0,0],[0,0,0.05519636656565826,0.70030390080178917,1.545498263838432,0.74170117572603278,0.05864613947601189,0.0034497729103536426,0],[0,0,0.08624432275884103,0.67615549042931367,1.4316557577967617,0.78999799647098368,0.11729227895202378,0.0034497729103536426,0],[0,0.0068995458207072825,0.10694296022096288,0.78309845065027661,1.2246693831755431,0.83829481721593468,0.13454114350379198,0.010349318731060929,0],[0,0.013799091641414565,0.16558909969697477,0.69340435498108188,1.2108702915341285,0.82104595266416647,0.18283796424874296,0.01379909164141457,0.0034497729103536408],[0.0034497729103536412,0.013799091641414565,0.1759384184280357,0.70030390080178917,1.207420518623775,0.74860072154674007,0.23458455790404756,0.017248864551768214,0.0034497729103536408],[0.0068995458207072825,0.02759818328282913,0.21388592044192575,0.70030390080178917,1.1142766500442267,0.73480162990532549,0.26908228700758396,0.031047956193182784,0.0068995458207072816],[0.0068995458207072825,0.044847047834597337,0.23113478499369397,0.6382079884154237,1.1453246062374094,0.68995458207072813,0.29668047029041311,0.044847047834597357,0.0068995458207072816],[0.0068995458207072825,0.044847047834597337,0.26563251409723038,0.62440889677400913,1.0832286938510438,0.69685412789143542,0.27598183282829125,0.093143868579548358,0.013799091641414563]],"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"surface","colors":["#05386B","magenta2","#EDF5E1"],"inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":"AUD/USD"},"yaxis":{"title":"h-step forecast"},"zaxis":{"title":"density"}},"title":"AUD/USD forecast densities for extended model","hovermode":"closest","showlegend":false,"legend":{"yanchor":"top","y":0.5}},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"colorbar":{"title":"","ticklen":2,"len":0.5,"lenmode":"fraction","y":1,"yanchor":"top"},"colorscale":[["0","rgba(5,56,107,1)"],["0.0416666666666667","rgba(40,58,117,1)"],["0.0833333333333333","rgba(62,60,127,1)"],["0.125","rgba(81,61,138,1)"],["0.166666666666667","rgba(99,62,148,1)"],["0.208333333333333","rgba(116,61,159,1)"],["0.25","rgba(134,60,170,1)"],["0.291666666666667","rgba(151,58,181,1)"],["0.333333333333333","rgba(168,55,192,1)"],["0.375","rgba(185,49,203,1)"],["0.416666666666667","rgba(203,42,215,1)"],["0.458333333333333","rgba(220,29,226,1)"],["0.5","rgba(238,0,238,1)"],["0.541666666666667","rgba(240,59,237,1)"],["0.583333333333333","rgba(242,85,237,1)"],["0.625","rgba(243,106,236,1)"],["0.666666666666667","rgba(244,125,235,1)"],["0.708333333333333","rgba(245,142,234,1)"],["0.75","rgba(245,158,233,1)"],["0.791666666666667","rgba(245,173,232,1)"],["0.833333333333333","rgba(245,188,231,1)"],["0.875","rgba(243,203,230,1)"],["0.916666666666667","rgba(242,217,228,1)"],["0.958333333333333","rgba(240,231,227,1)"],["1","rgba(237,245,225,1)"]],"showscale":true,"y":[1,2,3,4,5,6,7,8,9,10,11,12],"x":[-0.65045251376531854,-0.32837012168194818,-0.0062877295985778736,0.31579466248479243,0.63787705456816268,0.95995944665153299,1.2820418387349033,1.6041242308182737,1.9262066229016441],"z":[[0,0,0,0.18628773715909663,2.6459758222412439,0.27253205991793761,0,0,0],[0,0,0,0.40017365760102241,2.2147542084470389,0.48986775327021698,0,0,0],[0,0,0.0068995458207072825,0.49676729909092437,1.9663705589015763,0.60371025931188715,0.031047956193182766,0,0],[0,0,0.031047956193182773,0.65545685296719192,1.7007380448043459,0.66580617169825262,0.05174659365530461,0,0],[0,0,0.05519636656565826,0.70030390080178917,1.545498263838432,0.74170117572603278,0.05864613947601189,0.0034497729103536426,0],[0,0,0.08624432275884103,0.67615549042931367,1.4316557577967617,0.78999799647098368,0.11729227895202378,0.0034497729103536426,0],[0,0.0068995458207072825,0.10694296022096288,0.78309845065027661,1.2246693831755431,0.83829481721593468,0.13454114350379198,0.010349318731060929,0],[0,0.013799091641414565,0.16558909969697477,0.69340435498108188,1.2108702915341285,0.82104595266416647,0.18283796424874296,0.01379909164141457,0.0034497729103536408],[0.0034497729103536412,0.013799091641414565,0.1759384184280357,0.70030390080178917,1.207420518623775,0.74860072154674007,0.23458455790404756,0.017248864551768214,0.0034497729103536408],[0.0068995458207072825,0.02759818328282913,0.21388592044192575,0.70030390080178917,1.1142766500442267,0.73480162990532549,0.26908228700758396,0.031047956193182784,0.0068995458207072816],[0.0068995458207072825,0.044847047834597337,0.23113478499369397,0.6382079884154237,1.1453246062374094,0.68995458207072813,0.29668047029041311,0.044847047834597357,0.0068995458207072816],[0.0068995458207072825,0.044847047834597337,0.26563251409723038,0.62440889677400913,1.0832286938510438,0.69685412789143542,0.27598183282829125,0.093143868579548358,0.013799091641414563]],"type":"surface","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-f60161632d25553a70a3" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-f60161632d25553a70a3">{"x":{"visdat":{"1c136ba136b5":["function () ","plotlyVisDat"]},"cur_data":"1c136ba136b5","attrs":{"1c136ba136b5":{"y":[1,2,3,4,5,6,7,8,9,10,11,12],"x":[-0.069590749177660671,0.12664327567562,0.32287730052890068,0.5191113253821813,0.71534535023546209,0.91157937508874265,1.1078133999420232,1.304047424795304,1.5002814496485848],"z":[[0,0,0,0.12026456684891999,4.9756916555629438,0,0,0,0],[0,0,0,0.37251439985830725,4.6678958997292677,0.055545922824289315,0,0,0],[0,0,0.00050959562224118637,0.58756375244408787,4.2841703961816542,0.22371247816388082,0,0,0],[0,0,0.0020383824889647455,0.72770254856041416,3.8887241933224934,0.47647190679550927,0.0010191912444823734,0,0],[0,0,0.010701508067064915,0.81993935618606895,3.5518814870210691,0.70782831929300793,0.0056055518446530535,0,0],[0,0,0.026498972356541691,0.88873476518862904,3.2486720917875633,0.91472414192292961,0.017326251156200349,0,0],[0,0,0.0448444147572244,0.91574333316741197,3.0168060836678232,1.0716795935732151,0.046882797246189177,0,0],[0,0.0010191912444823727,0.068795409002560162,0.92440645874551208,2.7722001849920539,1.238317362046083,0.090198425136690047,0.0010191912444823721,0],[0,0.0040767649779294909,0.090198425136689991,0.97332763848066595,2.5433917506057613,1.344822847094491,0.13708122238287923,0.0030575737334471165,0],[0.00050959562224118637,0.010191912444823727,0.10752467629289032,0.96364532165808348,2.3859267033332348,1.429925316008769,0.19007916709596262,0.0081535299558589767,0],[0.0020383824889647455,0.01273989055602966,0.12943728804926133,0.96364532165808348,2.2396727597500141,1.4768081132549582,0.25581700236507571,0.015287868667235582,0.00050959562224118604],[0.0040767649779294909,0.019874229267406267,0.1651089816061444,0.94580947487964195,2.1173698104121295,1.4977015337668469,0.31900685952298286,0.024460589867576932,0.0025479781112059305]],"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"surface","colors":["#05386B","magenta2","#EDF5E1"],"inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":"AUD/USD"},"yaxis":{"title":"h-step forecast"},"zaxis":{"title":"density"}},"title":"AUD/USD forecast densities for extended model","hovermode":"closest","showlegend":false,"legend":{"yanchor":"top","y":0.5}},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"colorbar":{"title":"","ticklen":2,"len":0.5,"lenmode":"fraction","y":1,"yanchor":"top"},"colorscale":[["0","rgba(5,56,107,1)"],["0.0416666666666667","rgba(40,58,117,1)"],["0.0833333333333333","rgba(62,60,127,1)"],["0.125","rgba(81,61,138,1)"],["0.166666666666667","rgba(99,62,148,1)"],["0.208333333333333","rgba(116,61,159,1)"],["0.25","rgba(134,60,170,1)"],["0.291666666666667","rgba(151,58,181,1)"],["0.333333333333333","rgba(168,55,192,1)"],["0.375","rgba(185,49,203,1)"],["0.416666666666667","rgba(203,42,215,1)"],["0.458333333333333","rgba(220,29,226,1)"],["0.5","rgba(238,0,238,1)"],["0.541666666666667","rgba(240,59,237,1)"],["0.583333333333333","rgba(242,85,237,1)"],["0.625","rgba(243,106,236,1)"],["0.666666666666667","rgba(244,125,235,1)"],["0.708333333333333","rgba(245,142,234,1)"],["0.75","rgba(245,158,233,1)"],["0.791666666666667","rgba(245,173,232,1)"],["0.833333333333333","rgba(245,188,231,1)"],["0.875","rgba(243,203,230,1)"],["0.916666666666667","rgba(242,217,228,1)"],["0.958333333333333","rgba(240,231,227,1)"],["1","rgba(237,245,225,1)"]],"showscale":true,"y":[1,2,3,4,5,6,7,8,9,10,11,12],"x":[-0.069590749177660671,0.12664327567562,0.32287730052890068,0.5191113253821813,0.71534535023546209,0.91157937508874265,1.1078133999420232,1.304047424795304,1.5002814496485848],"z":[[0,0,0,0.12026456684891999,4.9756916555629438,0,0,0,0],[0,0,0,0.37251439985830725,4.6678958997292677,0.055545922824289315,0,0,0],[0,0,0.00050959562224118637,0.58756375244408787,4.2841703961816542,0.22371247816388082,0,0,0],[0,0,0.0020383824889647455,0.72770254856041416,3.8887241933224934,0.47647190679550927,0.0010191912444823734,0,0],[0,0,0.010701508067064915,0.81993935618606895,3.5518814870210691,0.70782831929300793,0.0056055518446530535,0,0],[0,0,0.026498972356541691,0.88873476518862904,3.2486720917875633,0.91472414192292961,0.017326251156200349,0,0],[0,0,0.0448444147572244,0.91574333316741197,3.0168060836678232,1.0716795935732151,0.046882797246189177,0,0],[0,0.0010191912444823727,0.068795409002560162,0.92440645874551208,2.7722001849920539,1.238317362046083,0.090198425136690047,0.0010191912444823721,0],[0,0.0040767649779294909,0.090198425136689991,0.97332763848066595,2.5433917506057613,1.344822847094491,0.13708122238287923,0.0030575737334471165,0],[0.00050959562224118637,0.010191912444823727,0.10752467629289032,0.96364532165808348,2.3859267033332348,1.429925316008769,0.19007916709596262,0.0081535299558589767,0],[0.0020383824889647455,0.01273989055602966,0.12943728804926133,0.96364532165808348,2.2396727597500141,1.4768081132549582,0.25581700236507571,0.015287868667235582,0.00050959562224118604],[0.0040767649779294909,0.019874229267406267,0.1651089816061444,0.94580947487964195,2.1173698104121295,1.4977015337668469,0.31900685952298286,0.024460589867576932,0.0025479781112059305]],"type":"surface","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>The 3D plots above allow us to access to alternative vantage points. We could notice that for the first few forecasting periods, the extended model has very sharp and concentrated densities around the point estimated, and it shows clearly heavy tails, which may increase the possibility of capturing extreme values that deviate significantly from the central forecast.</p>
-
-
 </section>
 </section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>In this research project, we use one basic and three extended Bayesian models to forecast the AUD/USD exchange rate. For the basic model, we use Minnesota before fitting our non-stationary data property. Then we applied the Laplace distribution to the error term to capture the leptokurtotic and anomies of the financial data. Then we introduced the stochastic volatility model to further capture the volatility of the error term.</p>
+<p>We do the forecasting in h=12 steps which is a 3-year period in our case and for the point estimate of the forecasting, among four different models, the basic model forecasting shows a slightly decreasing trend, while the extended and its extension with heteroskedasticity has an opposite trend and shows a clearly increasing trend among forecasting periods.</p>
+<p>And for the confident interval, compared to the basic model. The extended model and its extension provided a narrower confident interval which means a more informative and precise forecasting of the AUD/USD exchange rate.</p>
+
+
 </section>
 
 </main> <!-- /main -->
