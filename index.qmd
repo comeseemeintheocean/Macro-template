@@ -385,8 +385,8 @@ In this research, the VAR(p) model will be applied to forecast the AUD/USD excha
 
 ```{=tex}
 \begin{aligned}
- y_{t}&=\mu_{0}+A_{1}y_{t-1}+\cdots+A_{p}y_{t-p}+\epsilon_{t} \\
-\epsilon_{t}|Y_{t-1} &\sim iid\mathcal{N}(0_{13},\Sigma)
+ y_{t}=\mu_{0}+A_{1}y_{t-1}+\cdots+A_{p}y_{t-p}+\epsilon_{t} \\
+\epsilon_{t}|Y_{t-1} \sim iid\mathcal{N}(0_{13},\Sigma)
 \end{aligned}
 ```
 For time $t$ = 1,2,.....,$T$：
@@ -499,8 +499,6 @@ p(\Sigma|Y,X) &= \mathcal{IW}_N(\bar{S},\bar{\nu}) \\
 #| echo: true
 #| message: false
 #| warning: false
-
-########################## basic model code 
 ## Posterior sample draw
 posterior.draws       = function (S, Y, X, A.prior, V.prior, S.prior, nu.prior){
   
@@ -581,8 +579,8 @@ head(round(apply(posterior.sample.draws$Sigma.posterior, 1:2, mean),6))     # po
 #| warning: false
 par(mfrow=c(2,2), mar=c(4,4,2,2))
 
-plot.ts(posterior.sample.draws$A.posterior[2,1,], xlab = "Simulation times S", ylab = "AUD/USD exchange rate", col = mcxs1)
-hist(posterior.sample.draws$A.posterior[2,1,], xlab = "AUD/USD exchange rate", col = mcxs1, main = '')
+plot.ts(posterior.sample.draws$A.posterior[1,1,], xlab = "Simulation times S", ylab = "AUD/USD exchange rate", col = mcxs1)
+hist(posterior.sample.draws$A.posterior[1,1,], xlab = "AUD/USD exchange rate", col = mcxs1, main = '')
 
 plot.ts(posterior.sample.draws$Sigma.posterior[1,1,], xlab = "Simulation times S", ylab = "AUD/USD exchange rate sigma", col = mcxs2)
 hist(posterior.sample.draws$Sigma.posterior[1,1,], xlab = "AUD/USD exchange rate sigma", col = mcxs2, main = '')
@@ -608,7 +606,7 @@ U_t | \lambda_t &\sim \mathcal{MN}(0, \Sigma, \Omega) \\
 \end{align}
 ```
 
-The model is where $$\Omega=diag(\lambda_1,\lambda_2,...,\lambda_t)$$, each lambda independently drawn from an exponential distribution.
+The model is where $\Omega=diag(\lambda_1,\lambda_2,...,\lambda_t)$, each lambda independently drawn from an exponential distribution.
 
 The kernel of the likelihood function now is :
 
@@ -782,7 +780,7 @@ posterior.draws.extended <- function(S1,total_S,Y, X, A.prior, V.prior, S.prior,
   T = nrow(Y)
   p = (K - 1) / N
   
-  kappa.1   = 1
+  kappa.1   = 0.02^2
   kappa.2   = 100
   
   A.prior     = matrix(0, K , N)
@@ -811,29 +809,35 @@ posterior.ext = posterior.draws.extended(S1=S1,total_S = total_S, Y=Y, X=X, A.pr
 ```
 
 ```{r}
+#| echo: true
+#| message: false
+#| warning: false
 head(round(apply(posterior.ext$A.posterior.exten, 1:2, mean),6))
 head(round(apply(posterior.ext$Sigma.posterior.exten, 1:2, mean),6))
 round(mean(posterior.ext$lambda.posterior.exten),6)
 ```
 
 ```{r}
+#| echo: true
+#| message: false
+#| warning: false
 par(mfrow=c(3,2), mar=c(2,2,2,2))
-plot.ts(posterior.ext$A.posterior.exten[2,1,], xlab = "Simulation times S", ylab = "AUD/USD exchange rate.exten", col = mcxs1)   
-hist(posterior.ext$A.posterior.exten[2,1,], xlab = "AUD/USD exchange rate.exten", col = mcxs1, main = '')
+plot.ts(posterior.ext$A.posterior.exten[1,1,], xlab = "Simulation times S", ylab = "AUD/USD exchange rate.exten", col = mcxs1)   
+hist(posterior.ext$A.posterior.exten[1,1,], xlab = "AUD/USD exchange rate.exten", col = mcxs1, main = '')
 plot.ts(posterior.ext$Sigma.posterior.exten[1,1,], xlab = "Simulation times S", ylab = "AUD/USD exchange rate sigma.exten", col = mcxs2) 
 hist(posterior.ext$Sigma.posterior.exten[1,1,], xlab = "AUD/USD exchange sigma.exten", col = mcxs2, main = '')
 
 plot.ts(posterior.ext$lambda.posterior.exten[(S1+1):total_S], xlab = "Simulation times S", ylab = "lambda", col = mcxs3)         
 hist(posterior.ext$lambda.posterior.exten[(S1+1):total_S], xlab = "lambda", col = mcxs3, main = '')
 ```
-Compared to the basic model, by applying laplace distribution into the variance specification of the error term, we introduces more variability to our $A$ and $\Sigma$, in which both fluctuates more.That is, the coefficient of the exchange rate now range from 0.85 to 1.05, which is broader than 0.90 to 1.05 as in the basic model.
+Compared to the basic model, by applying laplace distribution into the variance specification of the error term, we introduces more variability to our $A$ and $\Sigma$. That is, the distribution of the coefficient now more dispersion with the basic model more concentrate 0. And for the distribution of Sigma, it shows the similar shape but central around different value.
 
 The lambda mainly concentrates between 0 to 4, with some large outlines throughout the simulation.
 
 ## The Basic Model With Stochastic Volatility Heteroskedasticity
 The second modification enhances the model by capturing stochastic volatility in the error terms, which means the variance might vary over time according to a stochastic process. This adjustment allows the model to specifically account for heteroskedasticity, creating a more dynamic error structure. By integrating this feature with the earlier enhancement that introduced laplace errors, the model becomes significantly more robust in handling error variability.
 
-With the stochastic volatility in innovation term, the basic model now with:
+With the stochastic volatility in innovation term, the basic model now is:
 ```{=tex}
 \begin{align}
 Y &= X A + U
@@ -905,8 +909,6 @@ Similarly, the kernel can be rearranged in the form of the Matrix-variate normal
 ### Estimation Outcomes on Basic Stochastic Volatility Model
 ```{r}
 posterior.draws.hetero = function (S, Y, X, A.prior, V.prior, S.prior, nu.prior){
-  # A single iteration of the Gibbs sampler for the SV component
-  #
   # aux is a list containing:
   #   Y - a TxN matrix
   #   X - a TxK matrix
@@ -942,8 +944,6 @@ posterior.draws.hetero = function (S, Y, X, A.prior, V.prior, S.prior, nu.prior)
   sigmav.s          = 1
   sigmav.nu         = 1
 
-
-  # Define posterior
   posteriors    = list(                        
     H           = matrix(NA,T,S),
     sigma2      = matrix(NA,T,S),
@@ -954,7 +954,6 @@ posterior.draws.hetero = function (S, Y, X, A.prior, V.prior, S.prior, nu.prior)
     Sigma       = array(NA, c(N, N, S))
   )
   
-  # Define auxiliary
   aux        = list(
     Y        = Y,
     X        = X,
@@ -985,7 +984,6 @@ posterior.draws.hetero = function (S, Y, X, A.prior, V.prior, S.prior, nu.prior)
       L                      = t(chol(V.bar))
       aux$A                  = A.bar + L%*%A.norm[,,1]%*%chol(aux$Sigma[,,1])
   
- 
       # posterior draw for sigma2   
       N             = dim(aux$Y)[2] # 10
       alpha.st      = c(1.92677,1.34744,0.73504,0.02266,0-0.85173,-1.97278,-3.46788,-5.55246,-8.68384,-14.65000)
@@ -1047,7 +1045,6 @@ posterior.draws.hetero = function (S, Y, X, A.prior, V.prior, S.prior, nu.prior)
       posteriors$Sigma[,,s]        = aux$Sigma
       
   }
-        
   return(posteriors)
 }
 ```
@@ -1067,12 +1064,12 @@ posterior.draws.hetero = function (S, Y, X, A.prior, V.prior, S.prior, nu.prior)
   A.hat       = solve(t(X)%*%X)%*%t(X)%*%Y
   Sigma.hat   = t(Y-X%*%A.hat)%*%(Y-X%*%A.hat)/nrow(Y)
   
-  # N = ncol(Y)
-  # K = ncol(X)
-  # T = nrow(Y)
-  # p = (K - 1) / N
-  # 
-  kappa.1   = 0.02
+  N = ncol(Y)
+  K = ncol(X)
+  T = nrow(Y)
+  p = (K - 1) / N
+
+  kappa.1   = 0.02^2
   kappa.2   = 100
   
   A.prior     = matrix(0, K , N)
@@ -1087,15 +1084,18 @@ posterior.draws.hetero = function (S, Y, X, A.prior, V.prior, S.prior, nu.prior)
 posterior.heter = posterior.draws.hetero(S = S, Y = Y, X = X, A.prior, V.prior, S.prior, nu.prior)
 ```
 
-
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+A.posterior.heter       = posterior.heter[["A"]]
+Sigma.posterior.heter   = posterior.heter[["Sigma"]]
+```
 
 ```{r}
 #| echo: true
 #| message: false
 #| warning: false
-A.posterior.heter       = posterior.heter[["A"]]
-Sigma.posterior.heter   = posterior.heter[["Sigma"]]
-
 head(round(apply(A.posterior.heter, 1:2, mean),6))         # posterior draw A
 head(round(apply(Sigma.posterior.heter, 1:2, mean),6))     # posterior draw sigma
 ```
@@ -1105,18 +1105,18 @@ head(round(apply(Sigma.posterior.heter, 1:2, mean),6))     # posterior draw sigm
 #| message: false
 #| warning: false
 par(mfrow=c(2,2), mar=c(4,4,2,2))
-plot.ts(A.posterior.heter[2,1,], xlab = "Simulation times S", ylab = "AUD/USD exchange rate", col = mcxs1)
-hist(A.posterior.heter[2,1,], xlab = "AUD/USD exchange rate", col = mcxs1, main = '')
+plot.ts(A.posterior.heter[1,1,], xlab = "Simulation times S", ylab = "AUD/USD exchange rate", col = mcxs1)
+hist(A.posterior.heter[1,1,], xlab = "AUD/USD exchange rate", col = mcxs1, main = '')
 
 plot.ts(Sigma.posterior.heter[1,1,], xlab = "Simulation times S", ylab = "AUD/USD exchange rate sigma", col = mcxs2)
 hist(Sigma.posterior.heter[1,1,], xlab = "AUD/USD exchange rate sigma", col = mcxs2, main = '')
 ```
-We can notice that compared to the above two models, the involve of the heteroskedasticity brings out outliers, which seems all around the zero, with the coeffcient now central round 1 and the sigma more central around zero. The change is obvious and significant, which will be demonstrated in the following forecasting plot.
+We can notice that compared to the above two models, the involve of the heteroskedasticity brings out outliers, and these outliers seems all around the zero, with the coefficient also central round 1 and the sigma more central around zero. The change is obvious and significant, which will be demonstrated in the following forecasting plot.
 
 ## The Extension Model With Stochastic Volatility Heteroskedasticity
 
 With stochastic volatility heteroskedasticity in our extended model, we have:
-$\Omega=diag(e^{h_1}\lambda_1,e^{h_2}\lambda_2,...,e^{h_T}\lambda_t)$, represent as:
+$\Omega=diag(e^{h_1}\lambda_1,e^{h_2}\lambda_2,...,e^{h_T}\lambda_t)$, represents as:
 
 $$\\\Omega = \left(
 \begin{array}{cccc}
@@ -1126,7 +1126,9 @@ e^{h_1}\lambda_1 & 0 & \cdots & 0 \\
 0 & \cdots & 0 &  e^{h_T}\lambda_T\\
 \end{array}
 \right)$$
+
 The likelihood function now change to:
+
 ```{=tex}
 \begin{align}
 L(A,\Sigma,\Omega |Y,X) &\propto \det(\Sigma)^{-\frac{T}{2}} \det(\Omega)^{-\frac{N}{2}} exp\{-\frac{1}{2} tr[\Sigma^{-1} (Y-XA)' \Omega^{-1} (Y-XA) ]\}\\
@@ -1145,8 +1147,8 @@ p(\lambda_t|Y,X,A,\Sigma) &\propto L(A,\Sigma,\lambda_t|Y,X)p(\lambda_t) \\
 &\times \frac{1}{\alpha}exp\{ -\frac{1}{\alpha}\lambda_t \}\\
 
 
-&= \lambda_t^{-\frac{N}{2}+1-1} exp\{-\frac{1}{2}[\frac{e^{-h_t}
-\epsilon_t'\Sigma^{-1}\epsilon_t} {\lambda_t} +\frac{2}{\alpha}\lambda_t]\} 
+&= \lambda_t^{-\frac{N}{2}+1-1} exp\{-\frac{1}{2}[\frac{
+\epsilon_t'e^{-h_t}\Sigma^{-1}\epsilon_t} {\lambda_t} +\frac{2}{\alpha}\lambda_t]\} 
 \end{align}
 ```
 
@@ -1170,6 +1172,235 @@ At each iteration s:
 2. Draw $A^{(s)}$ from the $MN(\bar{A},\Sigma^{(s)}, \bar{V})$ distribution
 3. Draw $\lambda_t^{(s)}$ from $GIG(a,b,p)$
 4. Draw $h^{(s)}$ from the SV sampling routine described above
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+A.hat       = solve(t(X)%*%X)%*%t(X)%*%Y
+Sigma.hat   = t(Y-X%*%A.hat)%*%(Y-X%*%A.hat)/nrow(Y)
+
+h = 12
+S = 10000
+N = ncol(Y)
+T = nrow(Y)
+K = 1 + (p*N)
+N = ncol(Y)
+kappa.1   = 0.02^2
+kappa.2   = 100
+K = 1 + (p*N)
+
+A.prior     = matrix(0, K , N)
+A.prior[2:(N+1),] = diag(N)
+V.prior     = diag(c(kappa.2,kappa.1*((1:p)^(-2))%x%rep(1,N)))
+S.prior     = diag(diag(Sigma.hat))
+nu.prior    = N+1
+
+alpha <- 1
+lambda.0 <- rexp(T, rate = 1/alpha)
+lambda.priors = list(alpha = alpha)
+
+H                 = diag(T)
+sdiag(H,-1)       = -1
+HH                = 2*diag(T)
+sdiag(HH,-1)      = -1
+sdiag(HH,1)       = -1
+
+priors = list(
+A.prior     = A.prior,
+V.prior     = V.prior,
+S.prior     = S.prior,
+nu.prior    = nu.prior,
+
+# New priors based on lectures
+h0.v        = 1,
+h0.m        = 0,
+sigmav.s    = 1,
+sigmav.nu   = 1, 
+HH          = HH 
+)
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+SVcommon.Gibbs.iteration = function(aux, priors){
+  T             = dim(aux$Y)[1]
+  N             = dim(aux$Y)[2]
+  alpha.st      = c(1.92677,1.34744,0.73504,0.02266,0-0.85173,-1.97278,-3.46788,-5.55246,-8.68384,-14.65000)
+  sigma.st      = c(0.11265,0.17788,0.26768,0.40611,0.62699,0.98583,1.57469,2.54498,4.16591,7.33342)
+  pi.st         = c(0.00609,0.04775,0.13057,0.20674,0.22715,0.18842,0.12047,0.05591,0.01575,0.00115)
+  
+  Lambda        = solve(chol(aux$Sigma))
+  Z             = rowSums( ( aux$Y - aux$X %*% aux$A ) %*% Lambda ) / sqrt(N)
+  Y.tilde       = as.vector(log((Z + 0.0000001)^2))
+  Ytilde.alpha  = as.matrix(Y.tilde - alpha.st[as.vector(aux$s)])
+  
+  # sampling initial condition
+  ############################################################
+  V.h0.bar      = 1/((1 / priors$h0.v) + (1 / aux$sigma.v2))
+  m.h0.bar      = V.h0.bar*((priors$h0.m / priors$h0.v) + (aux$H[1] / aux$sigma.v2))
+  h0.draw       = rnorm(1, mean = m.h0.bar, sd = sqrt(V.h0.bar))
+  aux$h0        = h0.draw
+  
+  # sampling sigma.v2
+  ############################################################
+  sigma.v2.s    = priors$sigmav.s + sum(c(aux$H[1] - aux$h0, diff(aux$H))^2)
+  sigma.v2.draw = sigma.v2.s / rchisq(1, priors$sigmav.nu + T)
+  aux$sigma.v2  = sigma.v2.draw
+  
+  # sampling auxiliary states
+  ############################################################
+  Pr.tmp        = simplify2array(lapply(1:10,function(x){
+    dnorm(Y.tilde, mean = as.vector(aux$H + alpha.st[x]), sd = sqrt(sigma.st[x]), log = TRUE) + log(pi.st[x])
+  }))
+  Pr            = t(apply(Pr.tmp, 1, function(x){exp(x - max(x)) / sum(exp(x - max(x)))}))
+  s.cum         = t(apply(Pr, 1, cumsum))
+  r             = matrix(rep(runif(T), 10), ncol = 10)
+  ss            = apply(s.cum < r, 1, sum) + 1
+  aux$s         = as.matrix(ss)
+  
+  # sampling log-volatilities using functions for tridiagonal precision matrix
+  ############################################################
+  Sigma.s.inv   = diag(1 / sigma.st[as.vector(aux$s)])
+  D.inv         = Sigma.s.inv + (1 / aux$sigma.v2) * priors$HH
+  b             = as.matrix(Ytilde.alpha / sigma.st[as.vector(aux$s)] + (aux$h0/aux$sigma.v2)*diag(T)[,1])
+  lead.diag     = diag(D.inv)
+  sub.diag      = mgcv::sdiag(D.inv, -1)
+  D.chol        = mgcv::trichol(ld = lead.diag, sd = sub.diag)
+  D.L           = diag(D.chol$ld)
+  mgcv::sdiag(D.L,-1) = D.chol$sd
+  x             = as.matrix(rnorm(T))
+  a             = forwardsolve(D.L, b)
+  draw          = backsolve(t(D.L), a + x)
+  aux$H         = as.matrix(draw)
+  aux$sigma2    = as.matrix(exp(draw))
+  
+  return(aux)
+}
+```
+
+```{r}
+posterior.draws.hetero.ext = function(Y,X,priors,S){
+  alpha <- 1
+  lambda.0 <- rexp(T, rate = 1/alpha)
+  lambda.priors = list(alpha = alpha)
+  
+  Omega.inv = diag(1/lambda.0)
+
+  aux <- list(
+    Y = sqrt(Omega.inv)%*%Y, 
+    X = sqrt(Omega.inv)%*%X,  
+    H = matrix(1,T,1), 
+    h0 = 0, 
+    sigma.v2 = 1,
+    s = matrix(1,T,1),
+    A = matrix(0, K, N), 
+    Sigma = diag(diag(matrix(1, N, N))),
+    sigma2 = matrix(1, T, 1) 
+  )
+  
+  A.posterior        = array(NA, dim = c(K,N,S))
+  Sigma.posterior    = array(NA,dim=c(N,N,S))
+  sigma2.posterior    = matrix(NA, nrow(Y), (S)) 
+  lambda.posterior.draws = array(NA,c(T,S))
+  
+  for (s in 1:S){
+    if (s == 1) {
+      lambda.s = lambda.0
+    } else {
+      lambda.s    = lambda.posterior.draws[,s-1]
+      
+      Omega.inv = diag(1/lambda.s)
+      
+      aux <- list(
+      Y = sqrt(Omega.inv)%*%Y, 
+      X = sqrt(Omega.inv)%*%X,  
+      H = matrix(1,T,1), 
+      h0 = 0, 
+      sigma.v2 = 1,
+      s = matrix(1,T,1),
+      A = matrix(0, K, N), 
+      Sigma = diag(diag(matrix(1, N, N))),
+      sigma2 = matrix(1, T, 1) 
+  )
+    }
+    
+    Omega.inv = diag(1/lambda.s)
+    
+    # normal-inverse Wishart posterior parameters
+    V.bar.inv   = t(X)%*%diag(1/as.vector(aux$sigma2))%*%X + diag(1/diag(priors$V.prior))
+    V.bar       = solve(V.bar.inv)
+    A.bar       = V.bar%*%(t(X)%*%diag(1/as.vector(aux$sigma2))%*%Y + diag(1/diag(priors$V.prior))%*%priors$A.prior)
+    nu.bar      = nrow(Y) + priors$nu.prior
+    S.bar       = priors$S.prior + t(Y)%*%diag(1/as.vector(aux$sigma2))%*%Y + t(priors$A.prior)%*%diag(1/diag(priors$V.prior))%*%priors$A.prior - t(A.bar)%*%V.bar.inv%*%A.bar
+    S.bar.inv   = solve(S.bar)
+    
+    #posterior draws
+    Sigma.posterior   = rWishart(S, df=nu.bar, Sigma=S.bar.inv)
+    Sigma.posterior   = apply(Sigma.posterior,3,solve)
+    Sigma.posterior   = array(Sigma.posterior,c(N,N,S))
+    A.posterior       = array(rnorm(prod(c(dim(A.bar),S))),c(dim(A.bar),S))
+    L                 = t(chol(V.bar))
+    
+    # Draw using stochastic volatility Gibbs common sampler
+    A.posterior[,,s]= A.bar + L%*%A.posterior[,,s]%*%chol(Sigma.posterior[,,s])
+    aux = SVcommon.Gibbs.iteration(aux, priors)
+    sigma2.posterior[,s]  = aux$sigma2
+    
+
+     # posterior draws for lambda
+      u.t = Y-X%*%A.posterior[,,s]
+      c                      = -N/2 + 1       
+      a                      = 2 / lambda.priors$alpha
+    for (x in 1:T){
+      b                      = t((u.t)[x,])%*%Sigma.posterior[,,s]%*%(u.t)[x,]
+      
+      lambda.posterior.draws[x,s] = GIGrvg::rgig(1, lambda = c, chi = b, psi = a)
+    } 
+    
+    
+    
+    
+  }
+  
+  posterior.sv = list(
+    Sigma.posterior   = Sigma.posterior,
+    A.posterior       = A.posterior
+  )
+  return(posterior.sv)
+}
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+posterior.draws.heter.ext = posterior.draws.hetero.ext(Y=Y, X=X, priors=priors, S=S)
+```
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+head(round(apply(posterior.draws.heter.ext$Sigma.posterior, 1:2, mean),6))
+head(round(apply(posterior.draws.heter.ext$A.posterior, 1:2, mean),6))
+```
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+par(mfrow=c(2,2), mar=c(4,4,2,2))
+plot.ts(posterior.draws.heter.ext$A.posterior[1,1,], xlab = "Simulation times S", ylab = "AUD/USD exchange rate", col = mcxs1)
+hist(posterior.draws.heter.ext$A.posterior[1,1,], xlab = "AUD/USD exchange rate", col = mcxs1, main = '')
+
+plot.ts(posterior.draws.heter.ext$Sigma.posterior[1,1,], xlab = "Simulation times S", ylab = "AUD/USD exchange rate sigma", col = mcxs2)
+hist(posterior.draws.heter.ext$Sigma.posterior[1,1,], xlab = "AUD/USD exchange rate sigma", col = mcxs2, main = '')
+
+```
+For extended model with heteroskedasticity, the coefficient range now wider a lot, which ranges from -3 to 3.
 
 ## Proof of Model Validity
 
@@ -1220,7 +1451,7 @@ A.hat       = solve(t(X_simulation)%*%X_simulation)%*%t(X_simulation)%*%Y_simula
 Sigma.hat   = t(Y_simulation-X_simulation%*%A.hat)%*%(Y_simulation-X_simulation%*%A.hat)/nrow(Y_simulation)
 
 # Minnesota prior
-kappa.1             = 1                                    
+kappa.1             = 0.02^2                                    
 kappa.2             = 100                                  
 A.prior             = matrix(0,nrow(A.hat),ncol(A.hat))
 A.prior[2:(N + 1),] = diag(N)
@@ -1274,7 +1505,7 @@ total_S = S1+S2
   T = nrow(Y_simulation)
   p = (K - 1) / N
   
-  kappa.1   = 1
+  kappa.1   = 0.02^2
   kappa.2   = 100
   
   A.prior     = matrix(0, K , N)
@@ -1532,7 +1763,7 @@ lines(f4.l1, lwd=2, col=mcxs1)
   T = nrow(Y)
   p = (K - 1) / N
 
-  kappa.1   = 1
+  kappa.1   = 0.02^2
   kappa.2   = 100
 
   A.prior     = matrix(0, K , N)
@@ -1545,12 +1776,7 @@ lines(f4.l1, lwd=2, col=mcxs1)
   alpha <- 1
   lambda.0 <- rexp(T, rate = 1/alpha)
   lambda.priors = list(alpha = alpha)
- # ################### test  need to delete
- #  S1= 50
- #  S2= 950
- #  total_S = S1+S2
- # 
- #  posterior.ext              = posterior.draws.extended(S1 = S1, total_S = total_S , Y=Y, X=X,  A.prior, V.prior, S.prior, nu.prior, lambda.priors)
+
   h                          = 12
   S                          = 9500
   Y.h.ext                    = array(NA,c(h,N,S))
@@ -1577,7 +1803,7 @@ basic.plot.fun.extend = basic.plot.fun(Y.h.ext)
 ```
 The above presents the historical and forecasting data the AUD/USD exchange rate for basic and extended model. 
 
-For the point forecast, for basic model, the exchange rate shows several peaks and troughs, indicating the volatility in the exchange rate over the years. For the three years forecasting, it shows a slightly downward trend and reaching around 0.67 in 2026. And for extended model, it shows a clear increasing trend and reaching around 0.75 in the end of the forecasting period. For conduct 90% confident interval for both models in which we can notice the extended model has an obvious narrow confident interval for both significant level, which means more informative, and this may be given by the nature of the Laplace distribution applied in the extended model in which the the fatter fail of Laplace distribution will capture more economic activities not covered by the underlying normal distribution, and resulting a more informative estimating of the parameters as it has a higher certainty from a more concentrated distribution and then leading to a narrower confident interval as expected.
+For the point forecast, for basic model, the exchange rate shows several peaks and troughs, indicating the volatility in the exchange rate over the years. For the three years forecasting, it shows a slightly downward trend and reaching around 0.67 in 2026. And for extended model, it shows a clear increasing trend and reaching around 0.75 in the end of the forecasting period. For conduct 90% confident interval, we can notice the extended model has an wider confident interval, and this may be given by the nature of the Laplace distribution applied in the extended model in which the the fatter fail of Laplace distribution will capture more economic activities not covered by the underlying normal distribution.
 
 ```{r}
 #| echo: false
@@ -1604,13 +1830,14 @@ Sigma.posterior.heter.simu   = posterior.heter[["Sigma"]]
 #| message: false
 #| warning: false
 # set up for heter-basic model
-kappa.1   = 0.02
+kappa.1   = 0.02^2
 kappa.2   = 100
 h         = 12
 N         = ncol(Y)
-S   = 9500
-Y.h.heter      = array(NA,c(h,N,S))
+S         = 9500
 p         = frequency(Y)
+
+Y.h.heter      = array(NA,c(h,N,S))
 
 Y.h.heter       = sampling.predictive.density(A.posterior.simu = A.posterior.heter.simu ,
                                                 Sigma.posterior.simu = Sigma.posterior.heter.simu,
@@ -1624,8 +1851,31 @@ Y.h.heter       = sampling.predictive.density(A.posterior.simu = A.posterior.het
 #basic plot on basic heter
 basic.plot.fun.heter = basic.plot.fun(Y.h.heter)
 ```
+By involving the heteroskedasticity in the error term, the forecasting plot looks similar to the extended model, with the heteroskedasticity extension, it shows an increasing trend but reaching to the mean value more slowly and we could notice that the confident interval is narrower compared to the basic model, indicating a more informative estimating of the parameters as it has a higher certainty from a more concentrated mean value and then leading to a narrower confident interval as expected.
 
-By involving the heteroskedasticity in the error term, the forecasting plot looks similar to the extended model, with the heteroskedasticity extension, it shows an increasing trend but reaching to the mean value more slowly and we could notice that the confident interval is also narrower compared to the basic model, indicating a more informative forecasting.
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+# ### Forecasting on Extended Model With Stochastic Volatility Heteroskedasticity
+# 
+# A.posterior.heter.ext.simu       = posterior.draws.heter.ext$A.posterior
+# Sigma.posterior.heter.ext.simu   = posterior.draws.heter.ext$Sigma.posterior
+# h                          = 12
+# S                          = 1000
+# 
+# Y.h.heter.ext      = array(NA,c(h,N,S))
+# Y.h.heter.ext      = sampling.predictive.density(A.posterior.simu = A.posterior.heter.ext.simu ,
+#                      Sigma.posterior.simu = Sigma.posterior.heter.ext.simu,S = S, h = h)
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+# basic.plot.fun.heter.ext = basic.plot.fun(Y.h.heter.ext)
+```
+
 
 ### Interactive 3D versions
 Interactive versions of the above 3D plots are provided below.
@@ -1650,7 +1900,7 @@ Interactive versions of the above 3D plots are provided below.
   }
   x.erate           = hist(Y.h[i,1,], breaks=x.erate, plot=FALSE)$mids
   yy.erate          = 1:h
-  
+
   # plot using plot_ly
   par(mfrow=c(1,1))
   plot_ly(y = yy.erate, x = x.erate, z=z.erate) %>%
