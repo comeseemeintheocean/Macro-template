@@ -570,8 +570,8 @@ posterior.sample.draws = posterior.draws(S=S, Y=Y, X=X,A.prior, V.prior, S.prior
 #| echo: true
 #| message: false
 #| warning: false
-head(round(apply(posterior.sample.draws$A.posterior, 1:2, mean),6))         # posterior draw A
-head(round(apply(posterior.sample.draws$Sigma.posterior, 1:2, mean),6))     # posterior draw sigma
+head(round(apply(posterior.sample.draws$A.posterior, 1:2, base::mean),6))         # posterior draw A
+head(round(apply(posterior.sample.draws$Sigma.posterior, 1:2, base::mean),6)) # posterior draw sigma
 ```
 
 ```{r}
@@ -836,8 +836,10 @@ posterior.ext = posterior.draws.extended(S1=S1,total_S = total_S, Y=Y, X=X, A.pr
 #| echo: true
 #| message: false
 #| warning: false
-head(round(apply(posterior.ext$A.posterior.exten, 1:2, mean),6))
-head(round(apply(posterior.ext$Sigma.posterior.exten, 1:2, mean),6))
+
+head(round(apply(posterior.ext$A.posterior.exten, 1:2, base::mean),6))  # posterior draw A
+head(round(apply(posterior.ext$Sigma.posterior.exten, 1:2, base::mean),6))  # posterior draw sigma
+
 round(mean(posterior.ext$lambda.posterior.exten),6)
 ```
 
@@ -1120,8 +1122,9 @@ Sigma.posterior.heter   = posterior.heter[["Sigma"]]
 #| echo: true
 #| message: false
 #| warning: false
-head(round(apply(A.posterior.heter, 1:2, mean),6))         # posterior draw A
-head(round(apply(Sigma.posterior.heter, 1:2, mean),6))     # posterior draw sigma
+
+head(round(apply(A.posterior.heter, 1:2, base::mean),6))         # posterior draw A
+head(round(apply(Sigma.posterior.heter, 1:2, base::mean),6))     # posterior draw sigma
 ```
 
 ```{r}
@@ -1406,8 +1409,8 @@ posterior.draws.heter.ext = posterior.draws.hetero.ext(Y=Y, X=X, priors=priors, 
 #| echo: true
 #| message: false
 #| warning: false
-head(round(apply(posterior.draws.heter.ext$Sigma.posterior, 1:2, mean),6))
-head(round(apply(posterior.draws.heter.ext$A.posterior, 1:2, mean),6))
+head(round(apply(posterior.draws.heter.ext$Sigma.posterior, 1:2, base::mean),6))
+head(round(apply(posterior.draws.heter.ext$A.posterior, 1:2, base::mean),6))
 ```
 
 ```{r}
@@ -1485,7 +1488,7 @@ posterior.sample.draws = posterior.draws(S=S, Y=Y_simulation, X=X_simulation, A.
 ```
 
 ```{r}
-Sigma_posterior_mean <- apply(posterior.sample.draws$Sigma.posterior, 1:2, mean)
+Sigma_posterior_mean <- apply(posterior.sample.draws$Sigma.posterior, 1:2, base::mean)
 
 Sigma_df <- as.data.frame(Sigma_posterior_mean)
 colnames(Sigma_df) <- c("Simulation_Y1", "Simulation_Y2")
@@ -1495,7 +1498,7 @@ knitr::kable(Sigma_df, caption = "Posterior mean of the covariance matrix Sigma"
 
 ```{r}
 # Calculate posterior mean of autoregressive coefficients (including the constant term)
-A_posterior_means <- apply(posterior.sample.draws$A.posterior, 1:2, mean)
+A_posterior_means <- apply(posterior.sample.draws$A.posterior, 1:2, base::mean)
 
 A_df <- as.data.frame(A_posterior_means)
 colnames(A_df) <- c("Simulation_Y1", "Simulation_Y2")
@@ -1544,7 +1547,7 @@ posterior.extended = posterior.draws.extended(S1 = S1, total_S = total_S , Y=Y_s
 ```
 
 ```{r}
-Sigma_posterior_mean <- apply(posterior.extended$Sigma.posterior.exten, 1:2, mean)
+Sigma_posterior_mean <- apply(posterior.extended$Sigma.posterior.exten, 1:2, base::mean)
 
 Sigma_df <- as.data.frame(Sigma_posterior_mean)
 colnames(Sigma_df) <- c("Simulation_Y1", "Simulation_Y2")
@@ -1553,7 +1556,7 @@ knitr::kable(Sigma_df, caption = "Posterior mean of the covariance matrix Sigma"
 ```
 
 ```{r}
-A_posterior_means <- apply(posterior.extended$A.posterior.exten, 1:2, mean)
+A_posterior_means <- apply(posterior.extended$A.posterior.exten, 1:2, base::mean)
 
 A_df <- as.data.frame(A_posterior_means)
 colnames(A_df) <- c("Simulation_Y1", "Simulation_Y2")
@@ -1660,7 +1663,7 @@ Y.h       = sampling.predictive.density(A.posterior.simu = A.posterior.simu,
 #| warning: false
 basic.plot.2d.fun = function(Y.h){
 limits.1    = range(Y.h[,1,])
-point.f     = apply(Y.h[,1,],1,mean)
+point.f     = apply(Y.h[,1,],1,base::mean)
 interval.f  = apply(Y.h[,1,],1,hdi,credMass=0.90)
 
 x           = seq(from=limits.1[1], to=limits.1[2], length.out=100)
@@ -1693,7 +1696,7 @@ lines(f4.l1, lwd=2, col=mcxs1)
 #| warning: false
 basic.plot.fun = function(Y.h){
   
-ex_rate.point.f    = apply(Y.h[,1,],1,mean) 
+ex_rate.point.f    = apply(Y.h[,1,],1,base::mean) 
 ex_rate.interval.f = apply(Y.h[,1,],1,hdi,credMass=0.90)
 ex_rate.range      = range(y[,1],ex_rate.interval.f)
 
@@ -1746,7 +1749,7 @@ For the point forecast, for basic model, the exchange rate shows several peaks a
 #| warning: false
 basic.plot.3d.fun = function(Y.h){
 limits.1    = range(Y.h[,1,])
-point.f     = apply(Y.h[,1,],1,mean)
+point.f     = apply(Y.h[,1,],1,base::mean)
 interval.f  = apply(Y.h[,1,],1,hdi,credMass=0.90)
 
 x           = seq(from=limits.1[1], to=limits.1[2], length.out=100)
@@ -1908,7 +1911,7 @@ Interactive versions of the above 3D plots are provided below.
   
   # Forecasting on Extended model
   limits.1        = range(Y.h[,1,])
-  point.f         = apply(Y.h[,1,],1,mean)
+  point.f         = apply(Y.h[,1,],1,base::mean)
   interval.f      = apply(Y.h[,1,],1,hdi,credMass=0.90)
   theta = 180
   phi   = 15.5
@@ -1935,7 +1938,7 @@ Interactive versions of the above 3D plots are provided below.
 
 # Forecasting on Extended model
 limits.1        = range(Y.h.ext[,1,])
-point.f         = apply(Y.h.ext[,1,],1,mean)
+point.f         = apply(Y.h.ext[,1,],1,base::mean)
 interval.f      = apply(Y.h.ext[,1,],1,hdi,credMass=0.90)
 theta = 180
 phi   = 15.5
