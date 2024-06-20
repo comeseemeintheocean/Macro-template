@@ -592,7 +592,7 @@ The trace plots and the histogram plots of posterior draws of$A$ and $\Sigma$ is
 
 The extended model will be built based on the the change in distribution of the error to **Laplace distribution** instead of the normally distributed errors assumption. The Laplace distribution is suitable for describing financial anomalies due to its sharp peaks and thick tails and the use of this distribution improves the robustness of the model to anomalies and is particularly suitable for financial time series. As our variables are most financial time series data, a Laplace distribution is more suitable to apply to our error term. The following plot gives a general idea of how laplace distribution behaves different with the normal distribution under the same mean and variance.
 ```{r}
-#| echo: true
+#| echo: false
 #| message: false
 #| warning: false
 x <- seq(-10, 10, length.out = 1000)
